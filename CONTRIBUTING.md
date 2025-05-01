@@ -48,8 +48,8 @@ Create a new branch for your changes. Use a descriptive name that reflects the p
 git checkout main
 git pull upstream main
 
-# Create a new branch
-git checkout -b branch-name
+# Create a new branch from upstream’s main branch
+git checkout -b branch-name upstream/main
 ```
 
 Branch naming convention: `type/description`
