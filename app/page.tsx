@@ -4,6 +4,7 @@ import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { HandHeart, Handshake, PackageOpen } from "lucide-react"
 import WaitlistForm from "@/components/waitlist-form"
+import EmailWaitlistForm from "@/components/EmailWaitlistForm"
 
 export default function Home() {
   return (
@@ -38,9 +39,8 @@ export default function Home() {
             TunaResQ connects those in need with those who can help, creating a circular giving economy for Africans to
             support each other with fundraising, donations and volunteering.
           </p>
-          <div className="flex flex-col sm:flex-row gap-2 justify-center max-w-md mx-auto">
-            <Input placeholder="Enter your email address" className="rounded-full border-[#e5e1e1]" />
-            <Button className="bg-[#f97343] hover:bg-[#cf3c07] text-white rounded-full px-6">Join The Waitlist</Button>
+          <div className="max-w-md mx-auto">
+            <EmailWaitlistForm />
           </div>
         </div>
       </section>
