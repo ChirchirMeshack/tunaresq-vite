@@ -3,6 +3,7 @@ import Image from "next/image"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { HandHeart, Handshake, PackageOpen } from "lucide-react"
+import WaitlistForm from "@/components/waitlist-form"
 
 export default function Home() {
   return (
@@ -211,37 +212,7 @@ export default function Home() {
           <div className="absolute inset-0 bg-[#111827]/70"></div>
         </div>
         <div className="container mx-auto px-4 py-16 md:py-24 relative">
-          <div className="bg-[#fff8f2] rounded-xl p-8 max-w-md mx-auto">
-            <h2 className="text-2xl md:text-3xl font-serif font-bold text-[#111827] mb-4 text-center">
-              Join Our Waitlist
-            </h2>
-            <p className="text-[#3f4550] mb-6 text-center">
-              Be the first to know when we launch and get early access to our platform. Join our waitlist to stay
-              updated.
-            </p>
-            <form className="space-y-4">
-              <div>
-                <label htmlFor="fullName" className="block text-sm font-medium text-[#3f4550] mb-1">
-                  Full Name *
-                </label>
-                <Input id="fullName" placeholder="Enter your name" className="rounded-lg border-[#e5e1e1]" />
-              </div>
-              <div>
-                <label htmlFor="email" className="block text-sm font-medium text-[#3f4550] mb-1">
-                  Email Address *
-                </label>
-                <Input
-                  id="email"
-                  type="email"
-                  placeholder="Enter your email address"
-                  className="rounded-lg border-[#e5e1e1]"
-                />
-              </div>
-              <Button className="w-full bg-[#f97343] hover:bg-[#cf3c07] text-white rounded-full">
-                JOIN THE WAITLIST
-              </Button>
-            </form>
-          </div>
+            <WaitlistForm />
         </div>
       </section>
 
