@@ -47,20 +47,66 @@ export default function Home() {
 
       {/* Image Gallery */}
       <section className="container mx-auto px-4 py-8">
-        <div className="flex flex-wrap justify-center gap-2 md:gap-4">
-          {[1, 2, 3, 4, 5].map((i) => (
-            <div key={i} className="w-[120px] md:w-[150px] h-[180px] md:h-[220px] rounded-[40px] overflow-hidden">
-              <Image
-                src={`/images/gallery-${i}.jpg`}
-                alt={`Community member ${i}`}
-                width={150}
-                height={220}
-                className="w-full h-full object-cover"
-              />
-            </div>
-          ))}
-        </div>
-      </section>
+  <div className="flex justify-center items-center">
+    {/* Using different heights for the capsule images to match the Figma design */}
+    <div className="relative flex space-x-2"> {/* Replaced -space-x with space-x */}
+      {[1, 2, 3, 4, 5].map((i) => {
+        // Define the dimensions for each image
+        let containerClasses
+        let width
+        let height
+
+        switch (i) {
+          case 1:
+            containerClasses = "w-[80px] md:w-[120px] h-[160px] md:h-[240px]"
+            width = 200 // Example width
+            height = 340 // Example height
+            break
+          case 2:
+            containerClasses = "w-[90px] md:w-[130px] h-[180px] md:h-[280px]"
+            width = 206 // Example width
+            height = 400 // Example height
+            break
+          case 3:
+            containerClasses = "w-[100px] md:w-[150px] h-[200px] md:h-[320px]"
+            width = 250 // Example width
+            height = 460 // Example height
+            break
+          case 4:
+            containerClasses = "w-[90px] md:w-[130px] h-[180px] md:h-[280px]"
+            width = 205 // Example width
+            height = 400 // Example height
+            break
+          case 5:
+            containerClasses = "w-[80px] md:w-[120px] h-[160px] md:h-[240px]"
+            width = 200 // Example width
+            height = 340 // Example height
+            break
+          default:
+            containerClasses = "w-[80px] md:w-[120px] h-[160px] md:h-[240px]"
+            width = 200 // Example width
+            height = 340 // Example height
+        }
+
+        return (
+          <div
+            key={i}
+            className={`${containerClasses} rounded-[40px] overflow-hidden`}
+            style={{ zIndex: i }} // Apply z-index as inline style
+          >
+            <Image
+              src={`/images/gallery-${i}.jpg`}
+              alt={`Community member ${i}`}
+              width={width} // Use dynamic width
+              height={height} // Use dynamic height
+              className="w-full h-full object-cover"
+            />
+          </div>
+        )
+      })}
+    </div>
+  </div>
+</section>
 
       {/* Our Approach */}
       <section className="container mx-auto px-4 py-12 md:py-20">
