@@ -170,70 +170,113 @@ export default function Home() {
         </div>
       </section>
 
-      {/* How It Works */}
-      <section id="how-it-works" className="container mx-auto px-4 py-12 md:py-20">
-        <h2 className="text-3xl md:text-4xl font-serif font-bold text-[#111827] text-center mb-12">How It Works</h2>
+      {/* How TunaresQ Works */}
+      <section className="w-full py-12 md:py-24 bg-white">
+        <div className="container px-4 md:px-6 mx-auto">
+          <h2 className="text-3xl md:text-4xl font-serif font-bold text-[#111827] text-center mb-12">
+        How TunaResQ Works
+          </h2>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 max-w-6xl mx-auto">
           {/* Step 1 */}
-          <div className="relative">
-            <div className="absolute -top-4 -left-4 w-10 h-10 rounded-full bg-[#f97343] text-white flex items-center justify-center font-bold text-xl">
-              1
-            </div>
-            <div className="border border-[#e5e1e1] rounded-lg p-6 h-full">
-              <h3 className="font-bold text-xl mb-3 text-[#111827]">Join the Waitlist</h3>
-              <p className="text-[#3f4550]">
-                Be among the first to make an impact by joining our waitlist! Sign up with your email to secure your
-                spot and get exclusive early access to our platform. Once we launch, you'll be ready to start donating
-                or receiving essentials, helping to build a stronger, more connected community.
-              </p>
-            </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 mb-12 items-center">
+        <div className="flex flex-col space-y-4">
+          <div className="flex items-center space-x-3">
+            <span className="rounded-full bg-[#F973434D] text-[#f97343] font-bold w-10 h-10 flex items-center justify-center text-lg">
+          1
+            </span>
+            <h3 className="text-xl md:text-2xl font-semibold text-[#111827]">Create Your Fundraiser or Item Request</h3>
+          </div>
+          <p className="text-[#3f4550]">
+            Create a fundraising campaign or item request, sharing your story and what you need help with.
+          </p>
+        </div>
+        <div className="relative h-56 md:h-64 rounded-lg overflow-hidden">
+          <Image
+            src="/Step 1 image.svg"
+            alt="Create profile illustration"
+            fill
+            className="object-cover"
+            sizes="(max-width: 768px) 100vw, 50vw"
+            priority
+          />
+        </div>
           </div>
 
           {/* Step 2 */}
-          <div className="relative">
-            <div className="absolute -top-4 -left-4 w-10 h-10 rounded-full bg-[#f97343] text-white flex items-center justify-center font-bold text-xl">
-              2
-            </div>
-            <div className="border border-[#e5e1e1] rounded-lg p-6 h-full">
-              <h3 className="font-bold text-xl mb-3 text-[#111827]">Get Notified and Prepare</h3>
-              <p className="text-[#3f4550]">
-                Excited for what's coming? We'll keep you updated! You'll receive a notification via email when TunaResQ
-                officially launches or when your spot is ready. This is the perfect time to think about what you'd like
-                to donate or prepare a list of essentials your family needs, so you're all set to hit the ground running
-                when you gain access.
-              </p>
-            </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 mb-12 items-center">
+        <div className="relative h-56 md:h-64 rounded-lg overflow-hidden order-last md:order-first">
+          <Image
+            src="/Step 2 image.svg"
+            alt="Browse stories illustration"
+            fill
+            className="object-cover"
+            sizes="(max-width: 768px) 100vw, 50vw"
+            priority
+          />
+        </div>
+        <div className="flex flex-col space-y-4">
+          <div className="flex items-center space-x-3">
+            <span className="rounded-full bg-[#F973434D] text-[#f97343] font-bold w-10 h-10 flex items-center justify-center text-lg">
+          2
+            </span>
+            <h3 className="text-xl md:text-2xl font-semibold text-[#111827]">Donate items or Contribute to fundraiser</h3>
+          </div>
+          <p className="text-[#3f4550]">
+            As a donor,you can browse verified campaigns and choose to give through financial
+            contributions or by donating physical items.
+          </p>
+        </div>
           </div>
 
           {/* Step 3 */}
-          <div className="relative">
-            <div className="absolute -top-4 -left-4 w-10 h-10 rounded-full bg-[#f97343] text-white flex items-center justify-center font-bold text-xl">
-              3
-            </div>
-            <div className="border border-[#e5e1e1] rounded-lg p-6 h-full">
-              <h3 className="font-bold text-xl mb-3 text-[#111827]">Get Matched with a Real Need</h3>
-              <p className="text-[#3f4550]">
-                Be among the first to make an impact by joining our waitlist! Sign up with your email to secure your
-                spot and get exclusive early access to our platform. Once we launch, you'll be ready to start donating
-                or receiving essentials, helping to build a stronger, more connected community.
-              </p>
-            </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 mb-12 items-center">
+        <div className="flex flex-col space-y-4">
+          <div className="flex items-center space-x-3">
+            <span className="rounded-full bg-[#F973434D] text-[#f97343] font-bold w-10 h-10 flex items-center justify-center text-lg">
+          3
+            </span>
+            <h3 className="text-xl md:text-2xl font-semibold text-[#111827]">Connect With Supporters</h3>
+          </div>
+          <p className="text-[#3f4550]">
+            Create a fundraising campaign or item request, sharing your story and what you need help with.
+            We will help you amplify your request and mobilize help.
+          </p>
+        </div>
+        <div className="relative h-56 md:h-64 rounded-lg overflow-hidden">
+          <Image
+            src="/Step 3 image.svg"
+            alt="Connect with supporters illustration"
+            fill
+            className="object-cover"
+            sizes="(max-width: 768px) 100vw, 50vw"
+            priority
+          />
+        </div>
           </div>
 
           {/* Step 4 */}
-          <div className="relative">
-            <div className="absolute -top-4 -left-4 w-10 h-10 rounded-full bg-[#f97343] text-white flex items-center justify-center font-bold text-xl">
-              4
-            </div>
-            <div className="border border-[#e5e1e1] rounded-lg p-6 h-full">
-              <h3 className="font-bold text-xl mb-3 text-[#111827]">Give with Confidence</h3>
-              <p className="text-[#3f4550]">
-                Be among the first to make an impact by joining our waitlist! Sign up with your email to secure your
-                spot and get exclusive early access to our platform. Once we launch, you'll be ready to start donating
-                or receiving essentials, helping to build a stronger, more connected community.
-              </p>
-            </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 items-center">
+        <div className="relative h-56 md:h-64 rounded-lg overflow-hidden order-last md:order-first">
+          <Image
+            src="/Step 4 image.svg"
+            alt="Give and receive support illustration"
+            fill
+            className="object-cover"
+            sizes="(max-width: 768px) 100vw, 50vw"
+            priority
+          />
+        </div>
+        <div className="flex flex-col space-y-4">
+          <div className="flex items-center space-x-3">
+            <span className="rounded-full bg-[#F973434D] text-[#f97343] font-bold w-10 h-10 flex items-center justify-center text-lg">
+          4
+            </span>
+            <h3 className="text-xl md:text-2xl font-semibold text-[#111827]">Receive Support & Contributions</h3>
+          </div>
+          <p className="text-[#3f4550]">
+            Receive financial contributions or physical items from donors directly,with all transactions handled securely.Update supporters on how their help has made a diffrence,completing the circle of support
+          </p>
+        </div>
           </div>
         </div>
       </section>
