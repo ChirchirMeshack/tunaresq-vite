@@ -5,27 +5,13 @@ import { Button } from "@/components/ui/button"
 import { HandHeart, Handshake, PackageOpen } from "lucide-react"
 import WaitlistForm from "@/components/waitlist-form"
 import EmailWaitlistForm from "@/components/EmailWaitlistForm"
+import { MainNav } from "@/components/MainNav"
 
 export default function Home() {
   return (
     <main className="min-h-screen bg-[#fffbf7]">
       {/* Header */}
-      <header className="container mx-auto px-4 py-6 flex justify-between items-center">
-        <div className="text-[#f97343] font-bold text-2xl">TunaResQ</div>
-        <div className="flex items-center gap-6">
-          <nav className="hidden md:flex gap-8">
-            <a href="#how-it-works" className="text-[#3f4550] hover:text-[#f97343]">
-              How It Works
-            </a>
-            <a href="#about" className="text-[#3f4550] hover:text-[#f97343]">
-              About Us
-            </a>
-          </nav>
-          <Button onClick={() => {
-        document.getElementById("waitlist")?.scrollIntoView({ behavior: "smooth" })
-      }} className="bg-[#f97343] hover:bg-[#cf3c07] text-white rounded-full px-6">Join The Waitlist</Button>
-        </div>
-      </header>
+   <MainNav />
 
       {/* Hero Section */}
       <section className="container mx-auto px-4 py-12 md:py-20">
