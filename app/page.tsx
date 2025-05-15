@@ -16,7 +16,7 @@ export default function Home() {
       {/* Hero Section */}
       <section className="container mx-auto px-4 py-12 md:py-20">
         <div className="max-w-3xl mx-auto text-center">
-          <h1 className="text-4xl md:text-5xl font-serif font-bold text-[#111827] mb-4">
+          <h1 className="text-4xl md:text-5xl font-serif font-bold text-[#111827] mt-5 mb-4">
             Connecting Hearts,
             <br />
             <span className="text-[#f97343]">Transforming Lives</span>
@@ -32,110 +32,65 @@ export default function Home() {
       </section>
 
       {/* Image Gallery */}
-      <section className="container mx-auto px-4 py-8">
-  <div className="flex justify-center items-center">
-    {/* Using different heights for the capsule images to match the Figma design */}
-    <div className="relative flex space-x-2"> {/* Replaced -space-x with space-x */}
-      {[1, 2, 3, 4, 5].map((i) => {
-        // Define the dimensions for each image
-        let containerClasses
-        let width
-        let height
-
-        switch (i) {
-          case 1:
-            containerClasses = "w-[80px] md:w-[120px] h-[160px] md:h-[240px]"
-            width = 200 // Example width
-            height = 340 // Example height
-            break
-          case 2:
-            containerClasses = "w-[90px] md:w-[130px] h-[180px] md:h-[280px]"
-            width = 206 // Example width
-            height = 400 // Example height
-            break
-          case 3:
-            containerClasses = "w-[100px] md:w-[150px] h-[200px] md:h-[320px]"
-            width = 250 // Example width
-            height = 460 // Example height
-            break
-          case 4:
-            containerClasses = "w-[90px] md:w-[130px] h-[180px] md:h-[280px]"
-            width = 205 // Example width
-            height = 400 // Example height
-            break
-          case 5:
-            containerClasses = "w-[80px] md:w-[120px] h-[160px] md:h-[240px]"
-            width = 200 // Example width
-            height = 340 // Example height
-            break
-          default:
-            containerClasses = "w-[80px] md:w-[120px] h-[160px] md:h-[240px]"
-            width = 200 // Example width
-            height = 340 // Example height
-        }
-
-        return (
-          <div
-            key={i}
-            className={`${containerClasses} rounded-[40px] overflow-hidden`}
-            style={{ zIndex: i }} // Apply z-index as inline style
-          >
-            <Image
-              src={`/images/gallery-${i}.jpg`}
-              alt={`Community member ${i}`}
-              width={width} // Use dynamic width
-              height={height} // Use dynamic height
-              className="w-full h-full object-cover"
-            />
-          </div>
-        )
-      })}
-    </div>
-  </div>
-</section>
+      <section className="container mx-auto px-4 py-8 flex justify-center">
+        <div className="w-full max-w-4xl">
+          <Image
+            src="/Hero image.svg"
+            alt="Hero illustration"
+            width={1200}
+            height={600}
+            className="w-full h-auto object-contain"
+            priority
+          />
+        </div>
+      </section>
 
       {/* Our Approach */}
       <section className="container mx-auto px-4 py-12 md:py-20">
         <div className="text-center mb-8">
           <span className="text-[#f97343] text-sm font-bold">Our Approach</span>
           <h2 className="text-3xl md:text-4xl font-serif font-bold text-[#111827] mt-2">
-            A Platform To Find and Give
-            <br />
-            Support in Times of Need
+        A Platform To Find and Give
+        <br />
+        Support in Times of Need
           </h2>
           <p className="text-[#3f4550] max-w-2xl mx-auto mt-4">
-            We're building a platform where Africans can find support for essential needs. We are creating a sustainable
-            cycle of giving and receiving.
+        We're building a platform where Africans can find support for essential needs. We are creating a sustainable
+        cycle of giving and receiving.
           </p>
         </div>
 
-        <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
           {[
-            {
-              title: "Fundraising Campaigns",
-              icon: <HandHeart />,
-              description:
-                "Create and support fundraising campaigns for medical bills, school fees, or any essential need.",
-            },
-            {
-              title: "Donate Items",
-              icon: <Handshake />,
-              description:
-                "Donate clothing, food, and essential items directly to people in need, creating a circular economy of giving.",
-            },
-            {
-              title: "Find Volunteer Opportunities",
-              icon: <PackageOpen />,
-              description: "Find meaningful volunteer opportunities with vetted NGOs and charities across Africa.",
-            },
+        {
+          title: "Fundraising Campaigns",
+          icon: <HandHeart />,
+          description:
+            "Create and support fundraising campaigns for medical bills, school fees, or any essential need.",
+        },
+        {
+          title: "Donate Items",
+          icon: <Handshake />,
+          description:
+            "Donate clothing, food, and essential items directly to people in need, creating a circular economy of giving.",
+        },
+        {
+          title: "Find Volunteer Opportunities",
+          icon: <PackageOpen />,
+          description: "Find meaningful volunteer opportunities with vetted NGOs and charities across Africa.",
+        },
           ].map((item, i) => (
-            <div key={i} className="text-center p-6 rounded-lg">
-              <div className="w-12 h-12 bg-[#fffbf7] rounded-full flex items-center justify-center mx-auto mb-4 border border-[#e5e1e1] text-[#f97343]">
-                {item.icon}
-              </div>
-              <h3 className="font-bold text-xl mb-2 text-[#111827]">{item.title}</h3>
-              <p className="text-[#3f4550]">{item.description}</p>
-            </div>
+        <div
+          key={i}
+          className="text-center p-6 rounded-2xl border border-[#e5e1e1] bg-white shadow-sm transition hover:shadow-md"
+          style={{ backgroundColor: "#fff" }}
+        >
+          <div className="w-12 h-12 bg-[#fffbf7] rounded-full flex items-center justify-center mx-auto mb-4 border border-[#e5e1e1] text-[#f97343]">
+            {item.icon}
+          </div>
+          <h3 className="font-bold text-xl mb-2 text-[#111827]">{item.title}</h3>
+          <p className="text-[#3f4550]">{item.description}</p>
+        </div>
           ))}
         </div>
       </section>
@@ -147,18 +102,70 @@ export default function Home() {
           <h2 className="text-3xl md:text-4xl font-serif font-bold text-[#111827] mt-2">For Your Essential Needs</h2>
         </div>
 
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-4 max-w-4xl mx-auto">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 max-w-4xl mx-auto">
           {[
-            "Medical Support",
-            "School Fees",
-            "Food & Clothing",
-            "Shelter and Safe Houses",
-            "Job Opportunities",
-            "Mental Health Support",
+        {
+          label: "Medical Support",
+          image: "/images/stethoscope.png",
+          alt: "Stethoscope icon",
+        },
+        {
+          label: "School Fees",
+          image: "/images/graduation-cap.png",
+          alt: "Graduation cap icon",
+        },
+        {
+          label: "Food & Clothing",
+          image: "/images/salad-bowl.png",
+          alt: "Salad bowl icon",
+        },
+        {
+          label: "Shelter and Safe Houses",
+          image: "/images/building.png",
+          alt: "Building icon",
+        },
+        {
+          label: "Job Opportunities",
+          image: "/images/job-offer.png",
+          alt: "Job offer icon",
+        },
+        {
+          label: "Mental Health Support",
+          icon: (
+            // Brain (Lucide)
+            <svg width="40" height="40" fill="none" stroke="#111827" strokeWidth="2" viewBox="0 0 24 24">
+              <path d="M12 5a3 3 0 1 0-5.997.125 4 4 0 0 0-2.526 5.77 4 4 0 0 0 .556 6.588A4 4 0 1 0 12 18Z"/>
+              <path d="M12 5a3 3 0 1 1 5.997.125 4 4 0 0 1 2.526 5.77 4 4 0 0 1-.556 6.588A4 4 0 1 1 12 18Z"/>
+              <path d="M15 13a4.5 4.5 0 0 1-3-4 4.5 4.5 0 0 1-3 4"/>
+              <path d="M17.599 6.5a3 3 0 0 0 .399-1.375"/>
+              <path d="M6.003 5.125A3 3 0 0 0 6.401 6.5"/>
+              <path d="M3.477 10.896a4 4 0 0 1 .585-.396"/>
+              <path d="M19.938 10.5a4 4 0 0 1 .585.396"/>
+              <path d="M6 18a4 4 0 0 1-1.967-.516"/>
+              <path d="M19.967 17.484A4 4 0 0 1 18 18"/>
+            </svg>
+          ),
+        },
           ].map((item, i) => (
-            <div key={i} className="p-4 text-center border border-[#e5e1e1] rounded-lg">
-              <p className="text-[#3f4550] font-medium">{item}</p>
-            </div>
+        <div
+          key={i}
+          className="p-4 text-center border border-[#e5e1e1] rounded-lg bg-[#fff] flex flex-col items-center"
+        >
+          <div className="mb-2 text-[#f97343] flex items-center justify-center h-14 w-14">
+            {item.image ? (
+          <Image
+            src={item.image}
+            alt={item.alt}
+            width={40}
+            height={40}
+            className="object-contain w-10 h-10 md:w-12 md:h-12"
+          />
+            ) : (
+          item.icon
+            )}
+          </div>
+          <p className="text-[#3f4550] font-medium">{item.label}</p>
+        </div>
           ))}
         </div>
       </section>
