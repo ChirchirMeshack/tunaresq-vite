@@ -6,6 +6,7 @@ import { HandHeart, Handshake, PackageOpen } from "lucide-react"
 import WaitlistForm from "@/components/waitlist-form"
 import EmailWaitlistForm from "@/components/EmailWaitlistForm"
 import { MainNav } from "@/components/MainNav"
+import Link from "next/link"
 
 export default function Home() {
   return (
@@ -180,13 +181,13 @@ export default function Home() {
           {/* Step 1 */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 mb-12 items-center">
         <div className="flex flex-col space-y-4">
+          <span className="rounded-full bg-[#F973434D] text-[#f97343] font-bold w-10 h-10 flex items-center justify-center text-lg">
+            1
+          </span>
           <div className="flex items-center space-x-3">
-            <span className="rounded-full bg-[#F973434D] text-[#f97343] font-bold w-10 h-10 flex items-center justify-center text-lg">
-          1
-            </span>
             <h3 className="text-xl md:text-2xl font-semibold text-[#111827]">Create Your Fundraiser or Item Request</h3>
           </div>
-          <p className="text-[#3f4550]">
+          <p className="text-[#3f4550] font-weight-400 text-size-16">
             Create a fundraising campaign or item request, sharing your story and what you need help with.
           </p>
         </div>
@@ -201,6 +202,9 @@ export default function Home() {
           />
         </div>
           </div>
+          <div className="my-8">
+              <hr className="border-t border-gray-300" />
+            </div> {/* Line break */}
 
           {/* Step 2 */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 mb-12 items-center">
@@ -215,10 +219,10 @@ export default function Home() {
           />
         </div>
         <div className="flex flex-col space-y-4">
+          <span className="rounded-full bg-[#F973434D] text-[#f97343] font-bold w-10 h-10 flex items-center justify-center text-lg">
+            2
+          </span>
           <div className="flex items-center space-x-3">
-            <span className="rounded-full bg-[#F973434D] text-[#f97343] font-bold w-10 h-10 flex items-center justify-center text-lg">
-          2
-            </span>
             <h3 className="text-xl md:text-2xl font-semibold text-[#111827]">Donate items or Contribute to fundraiser</h3>
           </div>
           <p className="text-[#3f4550]">
@@ -227,14 +231,17 @@ export default function Home() {
           </p>
         </div>
           </div>
+          <div className="my-8">
+              <hr className="border-t border-gray-300" />
+            </div> {/* Line break */}
 
           {/* Step 3 */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 mb-12 items-center">
         <div className="flex flex-col space-y-4">
+          <span className="rounded-full bg-[#F973434D] text-[#f97343] font-bold w-10 h-10 flex items-center justify-center text-lg">
+            3
+          </span>
           <div className="flex items-center space-x-3">
-            <span className="rounded-full bg-[#F973434D] text-[#f97343] font-bold w-10 h-10 flex items-center justify-center text-lg">
-          3
-            </span>
             <h3 className="text-xl md:text-2xl font-semibold text-[#111827]">Connect With Supporters</h3>
           </div>
           <p className="text-[#3f4550]">
@@ -253,6 +260,9 @@ export default function Home() {
           />
         </div>
           </div>
+          <div className="my-8">
+              <hr className="border-t border-gray-300" />
+            </div> {/* Line break */}
 
           {/* Step 4 */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 items-center">
@@ -267,10 +277,10 @@ export default function Home() {
           />
         </div>
         <div className="flex flex-col space-y-4">
+          <span className="rounded-full bg-[#F973434D] text-[#f97343] font-bold w-10 h-10 flex items-center justify-center text-lg">
+            4
+          </span>
           <div className="flex items-center space-x-3">
-            <span className="rounded-full bg-[#F973434D] text-[#f97343] font-bold w-10 h-10 flex items-center justify-center text-lg">
-          4
-            </span>
             <h3 className="text-xl md:text-2xl font-semibold text-[#111827]">Receive Support & Contributions</h3>
           </div>
           <p className="text-[#3f4550]">
@@ -299,15 +309,96 @@ export default function Home() {
       </section>
 
       {/* Footer */}
-      <footer className="bg-[#111827] text-white py-12">
-        <div className="container mx-auto px-4">
-          <div className="font-bold text-2xl mb-4">
-            <span className="text-white">TunaRes</span>
-            <span className="text-[#f97343]">Q</span>
+      <footer className="bg-[#111827] text-white py-12 pb-0 pr-0">
+        <div className="container mx-auto px-4 pr-0">
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between">
+            {/* Left: Logo, text, social links */}
+            <div className="flex-1">
+              <div className="font-bold text-2xl mb-4">
+                <Link href="/" className="flex space-x-2">
+                  <Image
+                    src="/Logo icon vector.svg"
+                    alt="TunaResQ Logo"
+                    width={25}
+                    height={25}
+                  />
+                  <span className="text-[#f97343]">TunaresQ</span>
+                </Link>
+              </div>
+              <p className="text-[#e5e1e1] max-w-md">
+                Building a circular giving economy to support Kenyans and Africans in their moments of need.
+              </p>
+              <div className="mt-6 flex space-x-6">
+                <a
+                  href="https://www.linkedin.com/company/tunaresq"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="LinkedIn"
+                  className="hover:text-[#f97343] transition"
+                >
+                  {/* Lucide LinkedIn icon */}
+                  <svg width="28" height="28" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <rect x="2" y="2" width="20" height="20" rx="4" strokeWidth="2"/>
+                    <path d="M7 8v8" strokeWidth="2" strokeLinecap="round"/>
+                    <circle cx="7" cy="6.5" r="1" strokeWidth="2"/>
+                    <path d="M11 12v4m0-4a2 2 0 1 1 4 0v4m0-4v-1a2 2 0 0 1 4 0v5" strokeWidth="2" strokeLinecap="round"/>
+                  </svg>
+                </a>
+                <a
+                  href="https://x.com/tunaresq"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="X (Twitter)"
+                  className="hover:text-[#f97343] transition"
+                >
+                  {/* Lucide X icon */}
+                  <svg width="28" height="28" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <rect x="2" y="2" width="20" height="20" rx="4" strokeWidth="2"/>
+                    <path d="M7 7l10 10M17 7L7 17" strokeWidth="2" strokeLinecap="round"/>
+                  </svg>
+                </a>
+                <a
+                  href="https://instagram.com/tunaresq"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="Instagram"
+                  className="hover:text-[#f97343] transition"
+                >
+                  {/* Lucide Instagram icon */}
+                  <svg width="28" height="28" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <rect x="2" y="2" width="20" height="20" rx="6" strokeWidth="2"/>
+                    <circle cx="12" cy="12" r="5" strokeWidth="2"/>
+                    <circle cx="17" cy="7" r="1.2" strokeWidth="2"/>
+                  </svg>
+                </a>
+                <a
+                  href="https://www.tiktok.com/@tunaresq"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="TikTok"
+                  className="hover:text-[#f97343] transition"
+                >
+                  {/* Lucide TikTok icon */}
+                  <svg width="28" height="28" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <rect x="2" y="2" width="20" height="20" rx="4" strokeWidth="2"/>
+                    <path d="M16 8.5V13a4 4 0 1 1-4-4" strokeWidth="2" strokeLinecap="round"/>
+                    <path d="M16 8.5c1.5 0 3 1 4 1" strokeWidth="2" strokeLinecap="round"/>
+                  </svg>
+                </a>
+              </div>
+            </div>
+            {/* Right: Group image */}
+            <div className="flex justify-end mt-8 md:mt-0 md:ml-8 md:flex-shrink-0">
+              <Image
+                src="/Group.svg"
+                alt="radial gradient"
+                width={180}
+                height={100}
+                className="w-40 h-auto md:w-56"
+                priority={false}
+              />
+            </div>
           </div>
-          <p className="text-[#e5e1e1] max-w-md">
-            Building a circular giving economy to support Kenyans and Africans in their moments of need.
-          </p>
         </div>
       </footer>
     </main>
