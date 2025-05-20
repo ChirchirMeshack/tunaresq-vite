@@ -4,7 +4,7 @@ import { yupResolver } from "@hookform/resolvers/yup"
 import * as yup from "yup"
 import { Button } from "@components/ui/button"
 import { Input } from "@components/ui/input"
-import { toast } from "@hooks/use-toast"
+import { enqueueSnackbar } from "notistack"
 
 // Define validation schema using Yup
 const schema = yup
@@ -40,19 +40,15 @@ export default function WaitlistForm() {
       console.log("Form submitted successfully with email:", data.email)
 
       // Show success toast
-      toast({
-        title: "Success!",
-        description: "You've been added to our waitlist. We'll notify you when we launch!",
-      })
+      enqueueSnackbar("You've been added to our waitlist. We'll notify you when we launch!",{
+        variant: "success"})
 
       // Reset form
       reset()
     } catch (error) {
       console.error("Error submitting form:", error)
-      toast({
-        title: "Something went wrong",
-        description: "Please try again later.",
-        variant: "destructive",
+      enqueueSnackbar("Something went wrong, Please try again later.",{
+        variant: "error",
       })
     } finally {
       setIsSubmitting(false)
