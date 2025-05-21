@@ -23,6 +23,7 @@ const DefaultWaitListFormValues: FormValues = {
 
 export default function WaitlistForm() {
   const [isSuccess, setIsSuccess] = useState(false)
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   // Initialize the form with react-hook-form
   const methods = useForm<FormValues>({
@@ -39,18 +40,33 @@ const {
 
   // Handle form submission
   const onSubmit = async (data: FormValues) => {
-
+    setErrorMessage(null);
     try {
-      // Log the form data to the console
-      console.log("Form submitted:", data)
+      const response = await fetch('https://tunaresq-be.tunaresq.co.ke/api/waitlist', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
+      }
+
+      const result = await response.json();
+      console.log("Form submitted successfully:", result);
 
       // Show success message
       setIsSuccess(true)
 
-      // Reset form after 
-        reset()
-    } catch (error) {
-      console.error("Error submitting form:", error)
+      // Reset form after submission
+      reset();
+    } catch (error: any) {
+      console.error("Error submitting form:", error);
+      setErrorMessage(error.message || "An error occurred. Please try again.");
+      setIsSuccess(false);
     }
   }
 
@@ -68,6 +84,11 @@ const {
       ) : (
         <Form {...methods}>
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+            {errorMessage && (
+              <div className="bg-red-50 border border-red-200 text-red-700 p-4 rounded-lg text-center">
+                {errorMessage}
+              </div>
+            )}
             <FormField
               control={control}
               name="fullName"

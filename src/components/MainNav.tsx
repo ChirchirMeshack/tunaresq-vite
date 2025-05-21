@@ -54,7 +54,9 @@ export function MainNav() {
    */
   const navItems: NavItem[] = [
     { href: "#how-it-works", label: "How It Works" },
+    { href: "#our-offerrings", label: "Our Offering" },
     { href: "#about", label: "About Us" },
+    
     // Add more navigation items as needed
   ];
 

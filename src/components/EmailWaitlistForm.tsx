@@ -34,23 +34,30 @@ export default function WaitlistForm() {
   const onSubmit = async (data: FormData) => {
     setIsSubmitting(true)
     try {
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1000))
+      const response = await fetch('https://tunaresq-be.tunaresq.co.ke/api/waitlist', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      });
 
-      // Log success message
-      console.log("Form submitted successfully with email:", data.email)
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
 
-      enqueueSnackbar("You've been added to our waitlist. We'll notify you when we launch!", { variant: "success" })
+      const result = await response.json();
 
-      // Reset form
-      reset()
-    } catch (error) {
-      console.error("Error submitting form:", error)
-      enqueueSnackbar("Please try again later.", { variant: 'error' });
+      console.log("Form submitted successfully:", result);
+      enqueueSnackbar("You've been added to our waitlist. We'll notify you when we launch!", { variant: "success" });
+      reset();
+    } catch (error: any) {
+      console.error("Error submitting form:", error);
+      enqueueSnackbar(error.message || "Please try again later.", { variant: 'error' });
     } finally {
-      setIsSubmitting(false)
+      setIsSubmitting(false);
     }
-  }
+  };
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col sm:flex-row gap-2 w-full">
