@@ -1,13 +1,14 @@
 import { Link } from "react-router-dom";
+import { Linkedin, Twitter, Instagram } from "lucide-react"
 
 const LandingFooter = () => {
   return (
     <footer className="bg-[#111827] text-white py-12 pb-0 pr-0">
-        <div className="container mx-auto px-4 pr-0">
+        <div className="container mx-auto mx-4 pr-0">
           <div className="flex flex-col md:flex-row md:items-center md:justify-between">
             {/* Left: Logo, text, social links */}
             <div className="flex-1">
-              <div className="font-bold text-2xl mb-4">
+              <div className="font-bold text-2xl mb-4 px-4">
                 <Link to="/" className="flex space-x-2">
                   <img
                     src="/Logo icon vector.svg"
@@ -18,10 +19,10 @@ const LandingFooter = () => {
                   <span className="text-[#f97343]">TunaresQ</span>
                 </Link>
               </div>
-              <p className="text-[#e5e1e1] max-w-md">
+              <p className="text-[#e5e1e1] max-w-md px-4">
                 Building a circular giving economy to support Kenyans and Africans in their moments of need.
               </p>
-              <div className="mt-6 flex space-x-6">
+              <div className="mt-6 flex space-x-6 px-4">
                 <a
                   href="https://www.linkedin.com/company/tunaresq"
                   target="_blank"
@@ -29,13 +30,7 @@ const LandingFooter = () => {
                   aria-label="LinkedIn"
                   className="hover:text-[#f97343] transition"
                 >
-                  {/* Lucide LinkedIn icon */}
-                  <svg width="28" height="28" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <rect x="2" y="2" width="20" height="20" rx="4" strokeWidth="2"/>
-                    <path d="M7 8v8" strokeWidth="2" strokeLinecap="round"/>
-                    <circle cx="7" cy="6.5" r="1" strokeWidth="2"/>
-                    <path d="M11 12v4m0-4a2 2 0 1 1 4 0v4m0-4v-1a2 2 0 0 1 4 0v5" strokeWidth="2" strokeLinecap="round"/>
-                  </svg>
+                  <Linkedin size={28} strokeWidth={2} />
                 </a>
                 <a
                   href="https://x.com/tunaresq"
@@ -44,11 +39,7 @@ const LandingFooter = () => {
                   aria-label="X (Twitter)"
                   className="hover:text-[#f97343] transition"
                 >
-                  {/* Lucide X icon */}
-                  <svg width="28" height="28" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <rect x="2" y="2" width="20" height="20" rx="4" strokeWidth="2"/>
-                    <path d="M7 7l10 10M17 7L7 17" strokeWidth="2" strokeLinecap="round"/>
-                  </svg>
+                  <Twitter size={28} strokeWidth={2} />
                 </a>
                 <a
                   href="https://instagram.com/tunaresq"
@@ -57,12 +48,7 @@ const LandingFooter = () => {
                   aria-label="Instagram"
                   className="hover:text-[#f97343] transition"
                 >
-                  {/* Lucide Instagram icon */}
-                  <svg width="28" height="28" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <rect x="2" y="2" width="20" height="20" rx="6" strokeWidth="2"/>
-                    <circle cx="12" cy="12" r="5" strokeWidth="2"/>
-                    <circle cx="17" cy="7" r="1.2" strokeWidth="2"/>
-                  </svg>
+                  <Instagram size={28} strokeWidth={2} />
                 </a>
                 <a
                   href="https://www.tiktok.com/@tunaresq"
@@ -71,11 +57,14 @@ const LandingFooter = () => {
                   aria-label="TikTok"
                   className="hover:text-[#f97343] transition"
                 >
-                  {/* Lucide TikTok icon */}
-                  <svg width="28" height="28" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <rect x="2" y="2" width="20" height="20" rx="4" strokeWidth="2"/>
-                    <path d="M16 8.5V13a4 4 0 1 1-4-4" strokeWidth="2" strokeLinecap="round"/>
-                    <path d="M16 8.5c1.5 0 3 1 4 1" strokeWidth="2" strokeLinecap="round"/>
+                  {/* TikTok SVG icon */}
+                  <svg width="28" height="28" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <g>
+                      <path
+                        d="M34.5 6c0 4.97 4.03 9 9 9v6.75c-3.41 0-6.61-1.09-9.19-2.94V32c0 6.63-5.37 12-12 12s-12-5.37-12-12 5.37-12 12-12c.41 0 .81.02 1.21.06V26.1c-.4-.07-.8-.1-1.21-.1-3.31 0-6 2.69-6 6s2.69 6 6 6 6-2.69 6-6V3h6.19C34.5 3 34.5 6 34.5 6Z"
+                        fill="currentColor"
+                      />
+                    </g>
                   </svg>
                 </a>
               </div>

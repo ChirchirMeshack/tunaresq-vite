@@ -71,8 +71,14 @@
   .animate-accordion-up {
     animation: accordion-up 0.2s ease-out;
   }
+    /* Custom Background Images */
+.bg-hero-mobile {
+  background-image: url('/Hero image-mobile.svg');
 }
-
+.bg-hero-desktop {
+  background-image: url('/Hero image.svg');
+}
+}
 @theme inline {
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);

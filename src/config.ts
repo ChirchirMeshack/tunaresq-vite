@@ -1,4 +1,4 @@
-export const SERVER_API_KEY = import.meta.env.VITE_SERVER_API_KEY;
+export const BASE_URL = import.meta.env.VITE_BASE_URL;
 
 // paths
 export const PATHS = {

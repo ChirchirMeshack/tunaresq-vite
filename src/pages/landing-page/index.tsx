@@ -6,41 +6,39 @@ export default function Home() {
 
   return (
     <>
-
+      
       {/* Hero Section */}
       <section className="container mx-auto px-4 py-12 md:py-20">
         <div className="max-w-3xl mx-auto text-center">
           <h1 className="text-4xl md:text-5xl font-serif font-bold text-[#111827] mt-5 mb-4">
-            Connecting Hearts,
-            <br />
-            <span className="text-[#f97343]">Transforming Lives</span>
+        Connecting Hearts,
+        <br />
+        <span className="text-[#f97343]">Transforming Lives</span>
           </h1>
-          <p className="text-[#3f4550] mb-8 max-w-2xl mx-auto">
-            TunaResQ connects those in need with those who can help, creating a circular giving economy for Africans to
-            support each other with fundraising, donations and volunteering.
+          <p className="text-[#3f4550] mb-2 max-w-2xl mx-auto">
+        TunaresQ connects those in need with those who can help, creating a circular giving economy for Africans to
+        support each other with fundraising, donations and volunteering.
           </p>
-          <div className="max-w-md mx-auto">
-            <EmailWaitlistForm />
+          <div className="flex flex-col items-center justify-center">
+        <p className="text-[#3f4550] mb-8 max-w-2xl font-bold pr-0 lg:pl-18 text-center">
+          Join our waitlist to get early access to what we’re building at TunaresQ!
+        </p>
+        <div className="w-full max-w-md">
+          <EmailWaitlistForm />
+        </div>
           </div>
         </div>
       </section>
 
       {/* Image Gallery */}
-      <section className="container mx-auto px-4 py-8 flex justify-center">
-        <div className="w-full max-w-4xl">
-          <img
-            src="/Hero image.svg"
-            alt="Hero illustration"
-            width={1200}
-            height={600}
-            className="w-full h-auto object-contain"
-            // priority
-          />
+           <section className="container flex justify-center">
+        <div className="w-full max-w-4xl bg-hero-mobile bg-hero-desktop bg-cover bg-center h-96">
+          {/* You can add content here if needed */}
         </div>
       </section>
 
       {/* Our Approach */}
-      <section className="container mx-auto px-4 py-12 md:py-20">
+      <section id="our-offerings" className="container mx-auto px-4 py-12 md:py-20">
         <div className="text-center mb-8">
           <span className="text-[#f97343] text-sm font-bold">Our Approach</span>
           <h2 className="text-3xl md:text-4xl font-serif font-bold text-[#111827] mt-2">
@@ -90,7 +88,7 @@ export default function Home() {
       </section>
 
       {/* Essential Needs */}
-      <section className="container mx-auto px-4 py-12 md:py-20">
+      <section id="about" className="container mx-auto px-4 py-12 md:py-20">
         <div className="text-center mb-12">
           <span className="text-[#f97343] text-sm font-bold">A Safe Space to Find Help</span>
           <h2 className="text-3xl md:text-4xl font-serif font-bold text-[#111827] mt-2">For Your Essential Needs</h2>
@@ -165,14 +163,14 @@ export default function Home() {
       </section>
 
       {/* How TunaresQ Works */}
-      <section className="w-full py-12 md:py-24 bg-white">
+      <section id="how-it-works" className="w-full py-2 md:py-6 bg-white">
         <div className="container px-4 md:px-6 mx-auto">
           <h2 className="text-3xl md:text-4xl font-serif font-bold text-[#111827] text-center mb-12">
-        How TunaResQ Works
+        How TunaresQ Works
           </h2>
 
           {/* Step 1 */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 mb-12 items-center">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-2 lg:gap-4 mb-12 items-center">
         <div className="flex flex-col space-y-4">
           <span className="rounded-full bg-[#F973434D] text-[#f97343] font-bold w-10 h-10 flex items-center justify-center text-lg">
             1
@@ -184,7 +182,7 @@ export default function Home() {
             Create a fundraising campaign or item request, sharing your story and what you need help with.
           </p>
         </div>
-        <div className="relative h-56 md:h-64 rounded-lg overflow-hidden">
+        <div className=" relative rounded-lg overflow-hidden mx-auto">
           <img
             src="/Step 1 image.svg"
             alt="Create profile illustration"
@@ -200,8 +198,8 @@ export default function Home() {
             </div> {/* Line break */}
 
           {/* Step 2 */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 mb-12 items-center">
-        <div className="relative h-56 md:h-64 rounded-lg overflow-hidden order-last md:order-first">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-2 lg:gap-4 mb-12 items-center">
+        <div className="relative rounded-lg overflow-hidden order-last md:order-first mx-auto">
           <img
             src="/Step 2 image.svg"
             alt="Browse stories illustration"
@@ -229,7 +227,7 @@ export default function Home() {
             </div> {/* Line break */}
 
           {/* Step 3 */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 mb-12 items-center">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-2 mb-12 items-center">
         <div className="flex flex-col space-y-4">
           <span className="rounded-full bg-[#F973434D] text-[#f97343] font-bold w-10 h-10 flex items-center justify-center text-lg">
             3
@@ -242,7 +240,7 @@ export default function Home() {
             We will help you amplify your request and mobilize help.
           </p>
         </div>
-        <div className="relative h-56 md:h-64 rounded-lg overflow-hidden">
+        <div className="relative rounded-lg overflow-hidden mx-auto">
           <img
             src="/Step 3 image.svg"
             alt="Connect with supporters illustration"
@@ -258,8 +256,8 @@ export default function Home() {
             </div> {/* Line break */}
 
           {/* Step 4 */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 items-center">
-        <div className="relative h-56 md:h-64 rounded-lg overflow-hidden order-last md:order-first">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-4 items-center">
+        <div className="relative rounded-lg overflow-hidden order-last md:order-first mx-auto">
           <img
             src="/Step 4 image.svg"
             alt="Give and receive support illustration"
@@ -301,7 +299,7 @@ export default function Home() {
         </div>
       </section> */}
 
-<section className="py-16 relative bg-[#111827]/70">
+<section id="waitlist" className="py-16 relative bg-[#111827]/70">
       <div className="absolute inset-0 bg-[url('/images/waitlist-background.jpg')] bg-cover bg-center opacity-70"></div>
       
       <div className="container mx-auto px-4 relative z-10">

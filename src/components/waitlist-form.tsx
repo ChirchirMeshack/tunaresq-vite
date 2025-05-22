@@ -5,10 +5,11 @@ import * as yup from 'yup';
 import { Button } from "@components/ui/button"
 import { Input } from "@components/ui/input"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@components/ui/form"
+import { BASE_URL } from "config";
 
 // Define the form schema with validation rules
 const formSchema = yup.object().shape({
-    fullName: yup.string().required('Full Name is required'),
+    name: yup.string().required('Full name is required').default(''),
     email: yup.string().email('Invalid email address').required('Email is required'),
   });
 
@@ -17,12 +18,13 @@ type FormValues = yup.InferType<typeof formSchema>
 
 // Define the default form values
 const DefaultWaitListFormValues: FormValues = {
-    fullName: "",
+    name: "",
     email: "",
 };
 
 export default function WaitlistForm() {
   const [isSuccess, setIsSuccess] = useState(false)
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   // Initialize the form with react-hook-form
   const methods = useForm<FormValues>({
@@ -39,18 +41,33 @@ const {
 
   // Handle form submission
   const onSubmit = async (data: FormValues) => {
-
+    setErrorMessage(null);
     try {
-      // Log the form data to the console
-      console.log("Form submitted:", data)
+      const response = await fetch(`${BASE_URL}/waitlist`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
+      }
+
+      const result = await response.json();
+      console.log("Form submitted successfully:", result);
 
       // Show success message
       setIsSuccess(true)
 
-      // Reset form after 
-        reset()
-    } catch (error) {
-      console.error("Error submitting form:", error)
+      // Reset form after submission
+      reset();
+    } catch (error: any) {
+      console.error("Error submitting form:", error);
+      setErrorMessage(error.message || "An error occurred. Please try again.");
+      setIsSuccess(false);
     }
   }
 
@@ -68,9 +85,14 @@ const {
       ) : (
         <Form {...methods}>
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+            {errorMessage && (
+              <div className="bg-red-50 border border-red-200 text-red-700 p-4 rounded-lg text-center">
+                {errorMessage}
+              </div>
+            )}
             <FormField
               control={control}
-              name="fullName"
+              name="name"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel className="text-sm font-medium text-[#3f4550]">Full Name *</FormLabel>

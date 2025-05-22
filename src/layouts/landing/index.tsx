@@ -1,12 +1,12 @@
 import { Outlet} from "react-router-dom";
-import LandingFooter from "../layouts/landing/footer";
+import LandingFooter from "./footer";
 // import { MainNav } from "@components/MainNav"
-import Header from "../layouts/landing/header";
+import Header from "./header";
 
 const LandingLayout = () => {
   // const { pathname } = useLocation();
   return (
-    <main className="min-h-screen bg-[#fffbf7]">
+    <>
       {/* Header */}
       <Header /> 
    {/* <MainNav /> */}
@@ -17,7 +17,7 @@ const LandingLayout = () => {
       {/* footer */}
 
       <LandingFooter />
-    </main>
+    </>
   );
 };
 

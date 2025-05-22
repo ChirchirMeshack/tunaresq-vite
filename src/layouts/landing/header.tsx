@@ -1,254 +1,163 @@
-import { NavLink } from "react-router-dom";
-import clsx from "clsx";
-// import TheBandLogo from "@components/logo";
+import { NavLink, Link, useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
-import { cn } from "@lib/utils"
-import { Button } from "@components/ui/button"
-import { Link, useLocation } from "react-router-dom"
-
+import clsx from "clsx";
+import { Button } from "@components/ui/button";
+import { MenuIcon } from "lucide-react";
 import Drawer from "react-modern-drawer";
 import "react-modern-drawer/dist/index.css";
-import { MenuIcon } from "lucide-react";
+import { cn } from "@lib/utils";
 
 interface NavItemsWrapperProps {
   updateDrawer?: () => void;
 }
 
-  /**
-   * Navigation items configuration
-   * Centralized array of navigation links
-   */
-  const NavItems: {
-  href: string
-  label: string
-}[] = [
-    { href: "#how-it-works", label: "How It Works" },
-    { href: "#about", label: "About Us" },
-    // Add more navigation items as needed
-  ];
+/**
+ * List of navigation items used across the navbar.
+ * These links scroll to sections within the landing page.
+ */
+const NavItems = [
+  { href: "#how-it-works", label: "How It Works" },
+  { href: "#our-offerings", label: "Our Offerings" },
+  { href: "#about", label: "About Us" },
+  // Extendable for additional nav links
+];
+
+/**
+ * Wrapper for navigation links.
+ * Used inside both desktop and mobile menus.
+ */
 export const NavItemsWrapper = ({ updateDrawer }: NavItemsWrapperProps) => {
   const user = {
-    name: "John Doe",
+    name: "John Doe", // Replace with actual user context if available
   };
+
   return (
-    <>
-      {" "}
-      <section className="flex flex-col lg:flex-row justify-between lg:items-center gap-3 lg:gap-[1rem] xl:gap-[2rem]">
-        {NavItems.map((item, idx) => (
-          <NavLink
-            key={idx}
-            to={item.href}
-            className={({ isActive }) =>
-              clsx(
-                "text-base font-medium p-2",
-                isActive && " border-b-3 border-primary"
-              )
-            }
-            onClick={() => updateDrawer && updateDrawer()}
-            end
-          >
-            {item.label}
-          </NavLink>
-        ))}
-        {/* <Button
-          color="primary"
-          radius="full"
-          className=" border-2 text-black px-6"
-          variant="bordered"
-          as={Link}
-          href="/contact-us"
+    <section className="flex flex-col lg:flex-row justify-between lg:items-center gap-3 lg:gap-[1rem] xl:gap-[2rem] mx-0">
+      {NavItems.map((item, idx) => (
+        <NavLink
+          key={idx}
+          to={item.href}
+          className={({ isActive }) =>
+            clsx(
+              "text-base font-medium p-2",
+              isActive && "border-b-3 border-primary"
+            )
+          }
           onClick={() => updateDrawer && updateDrawer()}
+          end
         >
-          Contact Us
-        </Button> */}
-        {user ? (
+          {item.label}
+        </NavLink>
+      ))}
+
+      {/* CTA Button for mobile*/}
+     
           <Button
-            color="primary"
-            className="px-2 text-white"
-            // variant="solid"
-            onClick={() => console.log('href={PATHS.dashboard.index')}
+            onClick={() =>
+              document.getElementById("waitlist")?.scrollIntoView({ behavior: "smooth" })
+            }
+            className="bg-[#f97343] hover:bg-[#cf3c07] text-white rounded-full px-6 text-sm"
           >
-            DASHBOARD
+            Join The Waitlist
           </Button>
-        ) : (
-          <Button
-            color="primary"
-            className="px-2 text-black rounded-full"
-            variant="outline"
-            onClick={() => console.log('href={PATHS.login()')}
-          >
-            Log In
-          </Button>
-        )}
-      </section>
-    </>
+      
+    </section>
   );
 };
 
+/**
+ * Main landing page navbar.
+ * Includes scroll-based style change, desktop & mobile responsiveness.
+ */
 const LandingNavbar = () => {
   const [shouldShowSidebar, setShowSidebar] = useState<boolean>(false);
+  const [isScrolled, setIsScrolled] = useState(false);
 
-  const updateDrawer = () => setShowSidebar((prev) => !prev);
-  // Get current pathname for active link highlighting
   const { pathname } = useLocation();
-  // const navigate = useNavigate();
-
-  // State management
-  const [isScrolled, setIsScrolled] = useState(false)
 
   /**
-   * Scroll handler effect
-   * Updates header background based on scroll position
+   * Toggle the drawer (mobile sidebar)
+   */
+  const updateDrawer = () => setShowSidebar((prev) => !prev);
+
+  /**
+   * Add scroll event listener to modify navbar styling
+   * when the user scrolls down the page.
    */
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 10)
-    }
+      setIsScrolled(window.scrollY > 10);
+    };
 
-    window.addEventListener("scroll", handleScroll)
-    return () => window.removeEventListener("scroll", handleScroll)
-  }, [])
-
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   return (
     <header
       className={cn(
-        "fixed top-0 left-0 right-0 z-50 transition-all duration-300",
-        isScrolled ? "bg-[#fffbf7]/80 backdrop-blur-md shadow-sm" : "bg-transparent", // Use your background color
+        "fixed top-0 left-0 right-0 z-50 transition-all duration-300 w-auto mx-4",
+        isScrolled
+          ? "bg-[#fffbf7]/80 backdrop-blur-md shadow-sm"
+          : "bg-transparent"
       )}
     >
-      {/* Main Navigation Container */}
       <div className="container flex h-16 items-center justify-between">
-        {/* Brand Logo */}
+        {/* Logo and Brand Name */}
         <Link to="/" className="flex items-center space-x-2">
           <img
-            src="/Logo icon vector.svg" // Path to your logo
+            src="/Logo icon vector.svg" // Logo path (unchanged)
             alt="TunaResQ Logo"
-            width={25}   // Adjust size as needed
-            height={25}  // Adjust size as needed
+            width={25}
+            height={25}
           />
-          <span className="font-bold text-2xl text-[#f97343]">TunaResQ</span>
+          <span className="font-bold text-2xl text-[#f97343]">TunaresQ</span>
         </Link>
 
-        {/* Desktop Navigation Links */}
+        {/* Desktop Navigation */}
         <nav className="hidden md:flex items-center space-x-6">
           {NavItems.map((item) => (
-            <Link
-              key={item.href}
-              to={item.href}
-              className={cn(
-                "text-sm font-medium transition-colors hover:text-[#f97343]", // Use your hover color
-                pathname === item.href ? "text-[#111827]" : "text-[#3f4550]", // Use your text colors
-              )}
+            <a
+              key={item.label}
+              href={item.href}
+              onClick={(e) => {
+                  e.preventDefault();
+                  const targetId = item.href.substring(1);
+                  const targetElement = document.getElementById(targetId);
+                  if (targetElement) {
+                    targetElement.scrollIntoView({ 
+                      behavior: "smooth",
+                      block: "start"
+                    });
+                  }
+                }}
+              className=
+                "text-sm font-medium transition-colors hover:text-[#f97343]"
             >
               {item.label}
-            </Link>
+            </a>
           ))}
-        </nav>
-
-        {/* Desktop Action Buttons */}
+        </nav> 
+          
+        {/* Desktop CTA Button */}
         <div className="hidden md:flex items-center space-x-4">
-          {/*<ModeToggle />*/} {/* Keep or remove dark mode toggle */}
           <Button
-            onClick={() => {
+            onClick={() =>
               document.getElementById("waitlist")?.scrollIntoView({ behavior: "smooth" })
-            }}
-            className="bg-[#f97343] hover:bg-[#cf3c07] text-white rounded-full px-6 text-sm" // Adjusted font size
+            }
+            className="bg-[#f97343] hover:bg-[#cf3c07] text-white rounded-full px-6 text-sm"
           >
             Join The Waitlist
           </Button>
         </div>
 
-        {/* Mobile Menu Controls */}
-        {/* <div className="flex md:hidden items-center space-x-4">
-          {/*<ModeToggle />*/} {/* Keep or remove dark mode toggle *}
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            aria-label="Toggle Menu"
-          >
-            {/* Hamburger Icon *}
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              className={cn(isMobileMenuOpen ? "hidden" : "block")}
-            >
-              <line x1="3" y1="12" x2="21" y2="12" />
-              <line x1="3" y1="6" x2="21" y2="6" />
-              <line x1="3" y1="18" x2="21" y2="18" />
-            </svg>
-            {/* Close Icon *}
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              className={cn(isMobileMenuOpen ? "block" : "hidden")}
-            >
-              <line x1="18" y1="6" x2="6" y2="18" />
-              <line x1="6" y1="6" x2="18" y2="18" />
-            </svg>
-          </Button>
-        </div> */}
-        
-        {/* Hamburger icon for small screens */}
+        {/* Mobile Menu Icon */}
         <section className="lg:hidden cursor-pointer flex items-center">
-          <MenuIcon
-            className="text-primary"
-            fontSize={40}
-            onClick={updateDrawer}
-          />
+          <MenuIcon className="text-primary" fontSize={40} onClick={updateDrawer} />
         </section>
       </div>
 
-      {/* Mobile Navigation Menu */}
-      {/* <div
-        className={cn(
-          "md:hidden overflow-hidden transition-all duration-300",
-          isMobileMenuOpen ? "max-h-96" : "max-h-0",
-        )}
-      >
-        <div className="container py-4 flex flex-col space-y-4 bg-[#fffbf7]/95 backdrop-blur-md"> {/* Use your background color */}
-          {/* Mobile Navigation Links *}
-          {navItems.map((item) => (
-            <Link
-              key={item.href}
-              to={item.href}
-              className={cn(
-                "text-sm font-medium transition-colors hover:text-[#f97343] py-2", // Use your hover color
-                pathname === item.href ? "text-[#111827]" : "text-[#3f4550]", // Use your text colors
-              )}
-              onClick={() => setIsMobileMenuOpen(false)}
-            >
-              {item.label}
-            </Link>
-          ))}
-          {/* Mobile Action Buttons *}
-          <div className="flex flex-col space-y-2 pt-2">
-            <Button
-              onClick={() => {
-                document.getElementById("waitlist")?.scrollIntoView({ behavior: "smooth" })
-              }}
-              className="bg-[#f97343] hover:bg-[#cf3c07] text-white rounded-full px-6 text-sm" // Adjusted font size
-            >
-              Join The Waitlist
-            </Button>
-          </div>
-        </div>
-      </div> */}
+      {/* Mobile Drawer Navigation */}
       <Drawer
         onClose={() => setShowSidebar(false)}
         direction="left"
@@ -260,17 +169,6 @@ const LandingNavbar = () => {
         </section>
       </Drawer>
     </header>
-    //   <section className="container flex justify-between items-center gap-[1rem]">
-    //     {/* <TheBandLogo /> */}
-    //     <Subtitle className="font-semibold text-black text-[2rem]">
-    //       Confomap
-    //     </Subtitle>
-
-    //     <section className="hidden lg:flex lg:items-center">
-    //       <NavItemsWrapper />
-    //     </section>
-
-    //   </section>
   );
 };
 
