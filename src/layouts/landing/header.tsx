@@ -1,4 +1,4 @@
-import { NavLink, Link, useLocation } from "react-router-dom";
+import { NavLink, Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import clsx from "clsx";
 import { Button } from "@components/ui/button";
@@ -27,9 +27,6 @@ const NavItems = [
  * Used inside both desktop and mobile menus.
  */
 export const NavItemsWrapper = ({ updateDrawer }: NavItemsWrapperProps) => {
-  const user = {
-    name: "John Doe", // Replace with actual user context if available
-  };
 
   return (
     <section className="flex flex-col lg:flex-row justify-between lg:items-center gap-3 lg:gap-[1rem] xl:gap-[2rem] mx-0">
@@ -73,7 +70,6 @@ const LandingNavbar = () => {
   const [shouldShowSidebar, setShowSidebar] = useState<boolean>(false);
   const [isScrolled, setIsScrolled] = useState(false);
 
-  const { pathname } = useLocation();
 
   /**
    * Toggle the drawer (mobile sidebar)
