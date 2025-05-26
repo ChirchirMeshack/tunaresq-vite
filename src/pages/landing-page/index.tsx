@@ -10,17 +10,17 @@ export default function Home() {
       {/* Hero Section */}
       <section className="container mx-auto px-4 py-12 md:py-20">
         <div className="max-w-3xl mx-auto text-center">
-          <h1 className="text-4xl md:text-5xl font-serif font-bold text-[#111827] mt-5 mb-4">
+        <h1 className="text-4xl md:text-[64px] font-playfair font-bold text-[#111827] mt-5 mb-4 md:leading-[72px]">
         Connecting Hearts,
         <br />
         <span className="text-[#f97343]">Transforming Lives</span>
           </h1>
-          <p className="text-[#3f4550] mb-2 max-w-2xl mx-auto">
+          <p className="text-[#3f4550] mb-2  mx-auto font-workSans md:text-xl">
         TunaresQ connects those in need with those who can help, creating a circular giving economy for Africans to
         support each other with fundraising, donations and volunteering.
           </p>
           <div className="flex flex-col items-center justify-center">
-        <p className="text-[#3f4550] mb-8 max-w-2xl font-bold pr-0 lg:pl-18 text-center">
+        <p className="text-[#3f4550] mb-8  font-bold pr-0 lg:pl-18 text-center font-workSans md:text-xl">
           Join our waitlist to get early access to what we’re building at TunaresQ!
         </p>
         <div className="w-full max-w-md">
@@ -40,13 +40,13 @@ export default function Home() {
       {/* Our Approach */}
       <section id="our-offerings" className="container mx-auto px-4 py-12 md:py-20">
         <div className="text-center mb-8">
-          <span className="text-[#f97343] text-sm font-bold">Our Approach</span>
-          <h2 className="text-3xl md:text-4xl font-serif font-bold text-[#111827] mt-2">
+          <span className="text-[#f97343] text-sm font-bold font-workSans">Our Approach</span>
+          <h2 className="text-3xl md:text-4xl font-playfair font-bold text-[#111827] mt-2">
         A Platform To Find and Give
         <br />
         Support in Times of Need
           </h2>
-          <p className="text-[#3f4550] max-w-2xl mx-auto mt-4">
+          <p className="text-[#3f4550] max-w-2xl mx-auto mt-4 font-workSans md:text-lg">
         We're building a platform where Africans can find support for essential needs. We are creating a sustainable
         cycle of giving and receiving.
           </p>
@@ -80,8 +80,8 @@ export default function Home() {
           <div className="w-12 h-12 bg-[#fffbf7] rounded-full flex items-center justify-center mx-auto mb-4 border border-[#e5e1e1] text-[#f97343]">
             {item.icon}
           </div>
-          <h3 className="font-bold text-xl mb-2 text-[#111827]">{item.title}</h3>
-          <p className="text-[#3f4550]">{item.description}</p>
+          <h3 className="font-bold font-playfair text-[24px] mb-2 text-[#111827]">{item.title}</h3>
+          <p className="text-[#3f4550] font-workSans text-xl">{item.description}</p>
         </div>
           ))}
         </div>
@@ -90,10 +90,9 @@ export default function Home() {
       {/* Essential Needs */}
       <section id="about" className="container mx-auto px-4 py-12 md:py-20">
         <div className="text-center mb-12">
-          <span className="text-[#f97343] text-sm font-bold">A Safe Space to Find Help</span>
-          <h2 className="text-3xl md:text-4xl font-serif font-bold text-[#111827] mt-2">For Your Essential Needs</h2>
+          <span className="text-[#f97343] text-sm font-bold font-workSans">A Safe Space to Find Help</span>
+          <h2 className="text-3xl md:text-4xl font-bold text-[#111827] mt-2 font-playfair">For Your Essential Needs</h2>
         </div>
-
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 max-w-4xl mx-auto">
           {[
         {
@@ -156,7 +155,7 @@ export default function Home() {
           item.icon
             )}
           </div>
-          <p className="text-[#3f4550] font-medium">{item.label}</p>
+          <p className="text-[#3f4550] font-medium font-workSans">{item.label}</p>
         </div>
           ))}
         </div>
@@ -165,7 +164,7 @@ export default function Home() {
       {/* How TunaresQ Works */}
       <section id="how-it-works" className="w-full py-2 md:py-6 bg-white">
         <div className="container px-4 md:px-6 mx-auto">
-          <h2 className="text-3xl md:text-4xl font-serif font-bold text-[#111827] text-center mb-12">
+          <h2 className="text-3xl md:text-4xl font-playfair font-bold text-[#111827] text-center mb-12">
         How TunaresQ Works
           </h2>
 
@@ -176,9 +175,9 @@ export default function Home() {
             1
           </span>
           <div className="flex items-center space-x-3">
-            <h3 className="text-xl md:text-2xl font-semibold text-[#111827]">Create Your Fundraiser or Item Request</h3>
+            <h3 className="text-xl md:text-2xl font-semibold font-playfair text-[#111827]">Create Your Fundraiser or Item Request</h3>
           </div>
-          <p className="text-[#3f4550] font-weight-400 text-size-16">
+          <p className="text-[#3f4550] font-weight-400 text-size-16 font-workSans">
             Create a fundraising campaign or item request, sharing your story and what you need help with.
           </p>
         </div>
@@ -214,9 +213,9 @@ export default function Home() {
             2
           </span>
           <div className="flex items-center space-x-3">
-            <h3 className="text-xl md:text-2xl font-semibold text-[#111827]">Donate items or Contribute to fundraiser</h3>
+            <h3 className="text-xl md:text-2xl font-semibold font-playfair text-[#111827]">Donate items or Contribute to fundraiser</h3>
           </div>
-          <p className="text-[#3f4550]">
+          <p className="text-[#3f4550] font-workSans">
             As a donor,you can browse verified campaigns and choose to give through financial
             contributions or by donating physical items.
           </p>
@@ -233,9 +232,9 @@ export default function Home() {
             3
           </span>
           <div className="flex items-center space-x-3">
-            <h3 className="text-xl md:text-2xl font-semibold text-[#111827]">Connect With Supporters</h3>
+            <h3 className="text-xl md:text-2xl font-semibold font-playfair text-[#111827]">Connect With Supporters</h3>
           </div>
-          <p className="text-[#3f4550]">
+          <p className="text-[#3f4550] font-workSans">
             Create a fundraising campaign or item request, sharing your story and what you need help with.
             We will help you amplify your request and mobilize help.
           </p>
@@ -272,9 +271,9 @@ export default function Home() {
             4
           </span>
           <div className="flex items-center space-x-3">
-            <h3 className="text-xl md:text-2xl font-semibold text-[#111827]">Receive Support & Contributions</h3>
+            <h3 className="text-xl md:text-2xl font-semibold font-playfair text-[#111827]">Receive Support & Contributions</h3>
           </div>
-          <p className="text-[#3f4550]">
+          <p className="text-[#3f4550] font-workSans">
             Receive financial contributions or physical items from donors directly,with all transactions handled securely.Update supporters on how their help has made a diffrence,completing the circle of support
           </p>
         </div>

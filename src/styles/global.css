@@ -1,14 +1,17 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Work+Sans:ital,wght@0,100..900;1,100..900&display=swap');
 /* Import Tailwind's base styles */
 @import "tailwindcss";
 
 @custom-variant dark (&:is(.dark *));
 @plugin "tailwindcss-animate";
 
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Work+Sans:ital,wght@0,100..900;1,100..900&display=swap');
+
 
 /* Define your custom theme variables */
 @theme {
   /* Colors */
+  --font-playfair: 'Playfair Display', serif;
+  --font-workSans: 'Work Sans', sans-serif;
   --color-border: hsl(var(--border));
   --color-input: hsl(var(--input));
   --color-ring: hsl(var(--ring));
@@ -78,7 +81,7 @@
   background-image: url('/Hero image-mobile.svg');
 }
 .bg-hero-desktop {
-  background-image: url('/Hero image.svg');
+  background-image: url('/Hero-image.svg');
 }
 }
 @theme inline {
