@@ -27,9 +27,8 @@ const NavItems = [
  * Used inside both desktop and mobile menus.
  */
 export const NavItemsWrapper = ({ updateDrawer }: NavItemsWrapperProps) => {
-
   return (
-    <section className="flex flex-col lg:flex-row justify-between lg:items-center gap-3 lg:gap-[1rem] xl:gap-[2rem] mx-0">
+    <section className="flex flex-col lg:flex-row justify-between lg:items-center gap-3 lg:gap-[1rem] xl:gap-[2rem] mx-auto">
       {NavItems.map((item, idx) => (
         <NavLink
           key={idx}
@@ -40,7 +39,21 @@ export const NavItemsWrapper = ({ updateDrawer }: NavItemsWrapperProps) => {
               isActive && "border-b-3 border-primary"
             )
           }
-          onClick={() => updateDrawer && updateDrawer()}
+          onClick={(e) => {
+            e.preventDefault();
+            const targetId = item.href.substring(1);
+            const targetElement = document.getElementById(targetId);
+            if (targetElement) {
+              targetElement.scrollIntoView({ 
+                behavior: "smooth",
+                block: "start"
+              });
+              // Close the drawer after clicking
+              if (updateDrawer) {
+                updateDrawer();
+              }
+            }
+          }}
           end
         >
           {item.label}
@@ -48,16 +61,18 @@ export const NavItemsWrapper = ({ updateDrawer }: NavItemsWrapperProps) => {
       ))}
 
       {/* CTA Button for mobile*/}
-     
-          <Button
-            onClick={() =>
-              document.getElementById("waitlist")?.scrollIntoView({ behavior: "smooth" })
-            }
-            className="bg-[#f97343] hover:bg-[#cf3c07] text-white rounded-full px-6 text-sm"
-          >
-            Join The Waitlist
-          </Button>
-      
+      <Button
+        onClick={() => {
+          document.getElementById("waitlist")?.scrollIntoView({ behavior: "smooth" });
+          // Close the drawer after clicking
+          if (updateDrawer) {
+            updateDrawer();
+          }
+        }}
+        className="bg-[#f97343] hover:bg-[#cf3c07] text-white rounded-full px-6 text-sm"
+      >
+        Join The Waitlist
+      </Button>
     </section>
   );
 };
@@ -92,13 +107,13 @@ const LandingNavbar = () => {
   return (
     <header
       className={cn(
-        "fixed top-0 left-0 right-0 z-50 transition-all duration-300 w-auto mx-4",
+        "fixed top-0 left-0 right-0 z-50 transition-all duration-300 w-auto mx-0 px-4",
         isScrolled
           ? "bg-[#fffbf7]/80 backdrop-blur-md shadow-sm"
           : "bg-transparent"
       )}
     >
-      <div className="container flex h-16 items-center justify-between">
+      <div className="container flex h-16 items-center justify-between ">
         {/* Logo and Brand Name */}
         <Link to="/" className="flex items-center space-x-2">
           <img

@@ -6,4 +6,8 @@ import tsconfigPaths from "vite-tsconfig-paths";
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [tailwindcss(), react(), tsconfigPaths()],
+  fontFamily: {
+    playfair: ['"Playfair Display"', 'serif'],
+    workSans: ["Work Sans", 'sans-serif'],
+  },
 })

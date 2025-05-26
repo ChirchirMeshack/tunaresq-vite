@@ -23,3 +23,10 @@ dist-ssr
 *.sln
 *.sw?
 *.env
+
+#Build files
+*.firebase
+*tsconfig.node.tsbuildinfo
+*tsconfig.tsbuildinfo
+*vite.config.d.ts
+*vite.config.js
