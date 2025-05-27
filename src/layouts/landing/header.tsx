@@ -21,7 +21,6 @@ const NavItems = [
   { href: "#about", label: "About Us" },
   // Extendable for additional nav links
 ];
-
 /**
  * Wrapper for navigation links.
  * Used inside both desktop and mobile menus.
