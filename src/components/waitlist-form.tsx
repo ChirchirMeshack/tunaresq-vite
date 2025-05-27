@@ -73,7 +73,7 @@ const {
 
   return (
     <div className="bg-[#fff8f2] rounded-xl p-8 max-w-md mx-auto">
-      <h2 className="text-2xl md:text-3xl  font-bold text-[#111827] mb-4 text-center font-playfair">Join Our Waitlist</h2>
+      <h2 className="text-2xl md:text-3xl font-bold text-[#111827] mb-4 text-center font-playfair">Join Our Waitlist</h2>
       <p className="text-[#3f4550] mb-6 text-center font-inter">
         Be the first to know when we launch and get early access to our platform. Join our waitlist to stay updated.
       </p>
