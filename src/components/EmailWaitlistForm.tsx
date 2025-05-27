@@ -99,7 +99,7 @@ export default function WaitlistForm() {
                     <FormControl>
                       <Input 
                         placeholder="Enter your name" 
-                        className="rounded-full border-[#e5e1e1] pr-4 w-full opacity-70 text-sm" 
+                        className="rounded-full border-[#79767D] pr-4 w-full opacity-70 text-sm" 
                         {...field} 
                       />
                     </FormControl>
@@ -112,12 +112,12 @@ export default function WaitlistForm() {
                 control={control}
                 name="email"
                 render={({ field }) => (
-                  <FormItem className="w-full md:w-48">
+                  <FormItem className="w-full md:w-56">
                     <FormControl>
                       <Input
                         type="email"
                         placeholder="Enter your email address"
-                        className="rounded-full border-[#e5e1e1] w-full px-4 py-3 opacity-70 text-sm"
+                        className="rounded-full border-[#79767D] w-full px-4 py-3 opacity-70 text-sm"
                         {...field}
                       />
                     </FormControl>
@@ -129,10 +129,10 @@ export default function WaitlistForm() {
 
             <Button
               type="submit"
-              className="bg-[#f97343] hover:bg-[#cf3c07] text-white rounded-full px-6 mt-2 md:mt-0"
+              className="bg-[#f97343] hover:bg-[#cf3c07] text-white rounded-full px-6 mt-2 md:mt-0 mx-auto"
               disabled={isSubmitting}
             >
-              {isSubmitting ? "SUBMITTING..." : "JOIN THE WAITLIST"}
+              {isSubmitting ? "Submitting..." : "Join The Waitlist"}
             </Button>
           </form>
         </Form>

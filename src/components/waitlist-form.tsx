@@ -74,12 +74,12 @@ const {
   return (
     <div className="bg-[#fff8f2] rounded-xl p-8 max-w-md mx-auto">
       <h2 className="text-2xl md:text-3xl  font-bold text-[#111827] mb-4 text-center font-playfair">Join Our Waitlist</h2>
-      <p className="text-[#3f4550] mb-6 text-center font-workSans">
+      <p className="text-[#3f4550] mb-6 text-center font-inter">
         Be the first to know when we launch and get early access to our platform. Join our waitlist to stay updated.
       </p>
 
       {isSuccess ? (
-        <div className="bg-green-50 font-workSans border border-green-200 text-green-700 p-4 rounded-lg text-center">
+        <div className="bg-green-50 font-inter border border-green-200 text-green-700 p-4 rounded-lg text-center">
           Thank you for joining our waitlist! We'll be in touch soon.
         </div>
       ) : (
@@ -95,7 +95,7 @@ const {
               name="name"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-sm font-medium text-[#3f4550] font-workSans">Full Name *</FormLabel>
+                  <FormLabel className="text-sm font-medium text-[#3f4550] font-inter">Full Name *</FormLabel>
                   <FormControl>
                     <Input placeholder="Enter your name" className="rounded-lg border-[#e5e1e1]" {...field} />
                   </FormControl>
@@ -109,7 +109,7 @@ const {
               name="email"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-sm font-medium text-[#3f4550] font-workSans">Email Address *</FormLabel>
+                  <FormLabel className="text-sm font-medium text-[#3f4550] font-inter">Email Address *</FormLabel>
                   <FormControl>
                     <Input
                       type="email"
@@ -128,7 +128,7 @@ const {
               className="w-full bg-[#f97343] hover:bg-[#cf3c07] text-white rounded-full"
               disabled={isSubmitting}
             >
-              {isSubmitting ? "SUBMITTING..." : "JOIN THE WAITLIST"}
+              {isSubmitting ? "Submitting..." : "Join The Waitlist"}
             </Button>
           </form>
         </Form>

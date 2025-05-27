@@ -36,7 +36,7 @@ export const NavItemsWrapper = ({ updateDrawer }: NavItemsWrapperProps) => {
           className={({ isActive }) =>
             clsx(
               "text-base font-medium p-2",
-              isActive && "border-b-3 border-primary"
+              isActive && "border-b-1 border-primary"
             )
           }
           onClick={(e) => {
@@ -107,26 +107,27 @@ const LandingNavbar = () => {
   return (
     <header
       className={cn(
-        "fixed top-0 left-0 right-0 z-50 transition-all duration-300 w-auto mx-0 px-4",
+        " fixed top-0 left-0 right-0 z-50 transition-all duration-300 w-auto",
         isScrolled
           ? "bg-[#fffbf7]/80 backdrop-blur-md shadow-sm"
           : "bg-transparent"
       )}
     >
-      <div className="container flex h-16 items-center justify-between ">
-        {/* Logo and Brand Name */}
-        <Link to="/" className="flex items-center space-x-2">
+      <div className="mx-auto px-4 md:px-12 lg:px-24 flex py-3 md:py-5 items-center justify-between">
+        {/* Logo and Brand Name */} 
+        <Link to="/" className="">
           <img
-            src="/Logo icon vector.svg" // Logo path (unchanged)
-            alt="TunaResQ Logo"
-            width={25}
-            height={25}
+            src="/TunaresQ logo.svg" // Logo path (unchanged)
+            alt="TunaresQ Logo"
+            width={96}
+            height={96}
+            className="w-1/2 md:w-3/4"
           />
-          <span className="font-bold text-2xl text-[#f97343]">TunaresQ</span>
+          
         </Link>
 
         {/* Desktop Navigation */}
-        <nav className="hidden md:flex items-center space-x-6">
+        <nav className="hidden lg:flex items-center space-x-6">
           {NavItems.map((item) => (
             <a
               key={item.label}
@@ -148,10 +149,11 @@ const LandingNavbar = () => {
               {item.label}
             </a>
           ))}
-        </nav> 
+        </nav>
+        
           
         {/* Desktop CTA Button */}
-        <div className="hidden md:flex items-center space-x-4">
+        <div className="hidden lg:flex items-center space-x-4">
           <Button
             onClick={() =>
               document.getElementById("waitlist")?.scrollIntoView({ behavior: "smooth" })
@@ -179,7 +181,9 @@ const LandingNavbar = () => {
           <NavItemsWrapper updateDrawer={updateDrawer} />
         </section>
       </Drawer>
+      <hr className="shadow-md border-1"/>
     </header>
+    
   );
 };
 
