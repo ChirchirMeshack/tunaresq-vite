@@ -71,7 +71,7 @@ export default function WaitlistForm() {
   };
 
   return (
-    <div className="max-w-md mx-auto">
+    <div className="mx-auto">
       {/* <h2 className="text-2xl md:text-3xl font-serif font-bold text-[#111827] mb-4 text-center">Join Our Waitlist</h2>
       <p className="text-[#3f4550] mb-6 text-center">
         Be the first to know when we launch and get early access to our platform. Join our waitlist to stay updated.

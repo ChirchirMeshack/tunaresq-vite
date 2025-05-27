@@ -16,7 +16,7 @@ interface NavItemsWrapperProps {
  * These links scroll to sections within the landing page.
  */
 const NavItems = [
-  { href: "#how-it-works", label: "How It Works" },
+  { href: "#how-it-works", label: "How TunaresQ Works" },
   { href: "#our-offerings", label: "Our Offerings" },
   { href: "#about", label: "About Us" },
   // Extendable for additional nav links
@@ -35,7 +35,7 @@ export const NavItemsWrapper = ({ updateDrawer }: NavItemsWrapperProps) => {
           to={item.href}
           className={({ isActive }) =>
             clsx(
-              "text-base font-medium p-2",
+              "text-base font-medium p-2 ",
               isActive && "border-b-1 border-primary"
             )
           }
@@ -127,7 +127,7 @@ const LandingNavbar = () => {
         </Link>
 
         {/* Desktop Navigation */}
-        <nav className="hidden lg:flex items-center space-x-6">
+        <nav className="hidden lg:flex md:pr-24 text-[#111827] space-x-6">
           {NavItems.map((item) => (
             <a
               key={item.label}

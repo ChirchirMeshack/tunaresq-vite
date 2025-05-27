@@ -21,10 +21,10 @@ export default function Home() {
           </p>
           <div className="flex flex-col items-center justify-center text-sm">
            
-        <p className="text-[#3f4550] mb-4 mt-4 font-semibold pr-0 lg:pl-18 text-center font-inter md:text-xl">
+        <p className="text-[#3f4550] mb-8 mt-4 font-semibold pr-0 text-center font-inter md:text-lg">
           Join our waitlist to get early access to what we’re building at TunaresQ!
         </p>
-        <div className="w-3/4">
+        <div>
           <EmailWaitlistForm />
         </div>
           </div>
