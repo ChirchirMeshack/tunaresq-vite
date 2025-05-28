@@ -1,37 +1,22 @@
 import { useState } from "react"
 import { useForm } from "react-hook-form"
 import { yupResolver } from "@hookform/resolvers/yup"
-import * as yup from "yup"
 import { Button } from "@components/ui/button"
 import { Form } from "@components/ui/form"
 import { BASE_URL } from "config"
 import axiosInstance from "@lib/axios"
-import { FormValues } from "@pages/landing-page/waitlist-form-validation"
 import { handleErrors } from "@lib/utils"
+import { FormValues, formSchema, DefaultWaitListFormValues } from "@pages/landing-page/waitlist-form-validation";
 import { TextField } from "./form"
+import { enqueueSnackbar } from "notistack"
 
-// Define validation schema using Yup
-const schema = yup
-  .object({
-    email: yup.string().email("Please enter a valid email address").required("Email is required"),
-    name: yup.string().required("Full name is required").default(''),
-  })
-
-// Define the form data type
-type FormData = yup.InferType<typeof schema>
-
-// Define default form values
-const DefaultFormValues: FormData = {
-  email: "",
-  name: "",
-}
 
 export default function WaitlistForm() {
   const [isSuccess, setIsSuccess] = useState(false)
 
-  const methods = useForm<FormData>({
-    resolver: yupResolver(schema),
-    defaultValues: DefaultFormValues,
+  const methods = useForm<FormValues>({
+    resolver: yupResolver(formSchema),
+    defaultValues: DefaultWaitListFormValues,
   })
 
   const {
@@ -52,7 +37,14 @@ export default function WaitlistForm() {
       reset();
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
-      handleErrors(error.message || "An error occurred. Please try again.");
+      if (error.status === 429) {
+       enqueueSnackbar(`Too many requests. Please try again later.`, { variant: "warning" });
+      } else if (error.status === 409) {
+       enqueueSnackbar(`Looks like you've already signed up to the waitlist, check your email for confirmation.`, { variant: "info" });
+       reset();
+      } else {
+        handleErrors(error.message || "An error occurred. Please try again.");
+      }
       setIsSuccess(false);
     }
   }
