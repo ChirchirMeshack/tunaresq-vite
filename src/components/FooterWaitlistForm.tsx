@@ -8,6 +8,7 @@ import axiosInstance from "@lib/axios";
 import { handleErrors } from "@lib/utils";
 import { FormValues, formSchema, DefaultWaitListFormValues } from "@pages/landing-page/waitlist-form-validation";
 import { TextField } from "./form";
+import { enqueueSnackbar } from "notistack";
 
 
 export default function WaitlistForm() {
@@ -37,7 +38,14 @@ const {
       reset();
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
-      handleErrors(error.message || "An error occurred. Please try again.");
+      if (error.status === 429) {
+       enqueueSnackbar(`Too many requests. Please try again later.`, { variant: "warning" });
+      } else if (error.status === 409) {
+       enqueueSnackbar(`Looks like you've already signed up to the waitlist, check your email for confirmation.`, { variant: "info" });
+       reset();
+      } else {
+        handleErrors(error.message || "An error occurred. Please try again.");
+      }
       setIsSuccess(false);
     }
   }
