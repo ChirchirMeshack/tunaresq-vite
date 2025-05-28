@@ -1,6 +1,6 @@
 import { HandHeart, Handshake, PackageOpen } from "lucide-react"
-import WaitlistForm from "@components/waitlist-form"
-import EmailWaitlistForm from "@components/EmailWaitlistForm"
+import WaitlistForm from "@components/FooterWaitlistForm"
+import EmailWaitlistForm from "@components/HeroWaitlistForm"
 
 export default function Home() {
 
