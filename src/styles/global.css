@@ -81,8 +81,8 @@
   background-image: url('/Hero image mobile.svg');
 }
 .bg-hero-desktop {
-  background-image: url('/Hero image.webp');
-  /* background-image: url('/Hero image.svg'); */
+  /* background-image: url('/Hero image.webp'); */
+  background-image: url('/Hero image.svg');
 }
 }
 @theme inline {
