@@ -28,23 +28,35 @@ export default function WaitlistForm() {
   // Handle form submission
   const onSubmit = async (formData: FormValues) => {
     try {
-      await axiosInstance.post(`${BASE_URL}/waitlist`, formData);
+      const response = await axiosInstance.post(`${BASE_URL}/waitlist`, formData);
+      
+      // Extract message from response
+      const { message } = response.data;
 
-      // Show success message
-      setIsSuccess(true)
-      enqueueSnackbar('Thank you for joining our waitlist!', { variant: "success" });
+      // Show success message with backend response
+      setIsSuccess(true);
+      enqueueSnackbar(message || 'Thank you for joining our waitlist!', { 
+        variant: "success"
+      });
 
       // Reset form after submission
       reset();
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
+      // Extract error message from response if available
+      const errorMessage = error.response?.data?.message || error.message || "An error occurred. Please try again.";
+
       if (error.status === 429) {
-       enqueueSnackbar(`Too many requests. Please try again later.`, { variant: "warning" });
+        enqueueSnackbar(`Too many requests. Please try again later.`, { 
+          variant: "warning"
+        });
       } else if (error.status === 409) {
-       enqueueSnackbar(`Looks like you've already signed up to the waitlist, check your email for confirmation.`, { variant: "info" });
-       reset();
+        enqueueSnackbar(`Looks like you've already signed up to the waitlist, check your email for confirmation.`, { 
+          variant: "info"
+        });
+        reset();
       } else {
-        handleErrors(error.message || "An error occurred. Please try again.");
+        handleErrors(errorMessage);
       }
       setIsSuccess(false);
     }
