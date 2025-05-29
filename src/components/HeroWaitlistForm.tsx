@@ -32,6 +32,7 @@ export default function WaitlistForm() {
 
       // Show success message
       setIsSuccess(true)
+      enqueueSnackbar('Thank you for joining our waitlist!', { variant: "success" });
 
       // Reset form after submission
       reset();
