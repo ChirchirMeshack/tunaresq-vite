@@ -13,6 +13,7 @@ import { enqueueSnackbar } from "notistack"
 
 export default function WaitlistForm() {
   const [isSuccess, setIsSuccess] = useState(false)
+  const [successMessage, setSuccessMessage] = useState<string>("")
 
   const methods = useForm<FormValues>({
     resolver: yupResolver(formSchema),
@@ -35,6 +36,7 @@ export default function WaitlistForm() {
 
       // Show success message with backend response
       setIsSuccess(true);
+      setSuccessMessage(message || 'Thank you for joining our waitlist!');
       enqueueSnackbar(message || 'Thank you for joining our waitlist!', { 
         variant: "success"
       });
@@ -59,6 +61,7 @@ export default function WaitlistForm() {
         handleErrors(errorMessage);
       }
       setIsSuccess(false);
+      setSuccessMessage("");
     }
   }
 
@@ -70,8 +73,8 @@ export default function WaitlistForm() {
       </p> */}
 
       {isSuccess ? (
-        <div className="bg-green-50 border border-green-200 text-green-700 p-4 rounded-lg text-center">
-          Thank you for joining our waitlist! We'll be in touch soon.
+        <div className="bg-green-50 border border-green-200 text-green-700 p-4 rounded-lg text-center font-inter text-sm">
+          {successMessage}
         </div>
       ) : (
         <Form {...methods}>
