@@ -6,16 +6,31 @@ import { Label } from "@components/ui/label"; // Adjust the import path as neede
 
 import { cn } from "@lib/utils"; // Assuming you have a utility for className merging
 
+/**
+ * TextFieldProps Interface
+ * Defines the props for the TextField component
+ */
 interface TextFieldProps
 	extends React.InputHTMLAttributes<HTMLInputElement> {
-	name: string;
-	label: string;
-	hideLabel?: boolean; // used to show or hide label
-	secured?: boolean; // used for password
+	name: string;              // Field name for form control
+	label: string;             // Label text for the input
+	hideLabel?: boolean;       // Option to hide the label
+	secured?: boolean;         // Option for password field
 	confirmPasswordHandler?: (ev: ChangeEvent<HTMLInputElement>) => void; // Not used in this example, but kept for similarity
-	description?: string; // Optional description text below the input
+	description?: string;      // Optional description text below the input
 }
 
+/**
+ * TextField Component
+ * A reusable form input component that integrates with React Hook Form
+ * 
+ * Features:
+ * - Form validation integration
+ * - Error message display
+ * - Optional description text
+ * - Customizable styling
+ * - Label visibility control
+ */
 const TextField = ({
 	name,
 	label,
@@ -31,27 +46,33 @@ const TextField = ({
 			name={name}
 			control={control}
 			render={({ field, fieldState: { error } }) => (
-				<div className="grid w-full items-center gap-1.5">
+				<div className="grid w-full items-center gap-1.5 min-h-[80px]">
+                    {/* Label - Conditionally rendered based on hideLabel prop */}
                     {!hideLabel && (
 						<Label htmlFor={name}>{label}</Label>
 					)}
 					
+                    {/* Input Field */}
 					<Input
 						id={name}
 						{...field}
 						className={cn(className, error && "border-destructive")} // Apply error styling
 						{...props}
 					/>
-					{description && !error && (
-						<p className="text-sm text-muted-foreground">
-							{description}
-						</p>
-					)}
-					{error && (
-						<p className="text-sm font-medium text-destructive">
-							{error.message}
-						</p>
-					)}
+
+                    {/* Description or Error Message Container */}
+                    <div className="min-h-[20px]">
+                        {description && !error && (
+                            <p className="text-sm text-muted-foreground">
+                                {description}
+                            </p>
+                        )}
+                        {error && (
+                            <p className="text-sm font-medium text-destructive">
+                                {error.message}
+                            </p>
+                        )}
+                    </div>
 				</div>
 			)}
 		/>
