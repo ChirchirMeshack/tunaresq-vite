@@ -46,7 +46,7 @@ const TextField = ({
 			name={name}
 			control={control}
 			render={({ field, fieldState: { error } }) => (
-				<div className="grid w-full items-center gap-1.5 min-h-[80px]">
+				<div className="grid w-full items-center gap-1.5 md:min-h-[80px]">
                     {/* Label - Conditionally rendered based on hideLabel prop */}
                     {!hideLabel && (
 						<Label htmlFor={name}>{label}</Label>
@@ -61,7 +61,7 @@ const TextField = ({
 					/>
 
                     {/* Description or Error Message Container */}
-                    <div className="min-h-[20px]">
+                    <div className="md:min-h-[20px]">
                         {description && !error && (
                             <p className="text-sm text-muted-foreground">
                                 {description}
