@@ -49,13 +49,11 @@ jobs:
             echo ${{ secrets.PROJECT_PATH }}
             echo ${{ secrets.TEMP_DIR }}
 
-            if [ -d "\$PROJECT_PATH" ]; then
+           
+            if [ -d "\${{ secrets.PROJECT_PATH }}" ]; then
 
-            echo $PROJECT_PATH
-            echo $BACKUP_DIR
-
-              sudo rm -rf \$BACKUP_DIR/*
-              sudo cp -r \$PROJECT_PATH/* \$BACKUP_DIR/
+              sudo rm -rf \${{ secrets.TEMP_DIR }}/*
+              sudo cp -r \${{ secrets.PROJECT_PATH }}/* \${{ secrets.BACKUP_DIR }}/
             fi
 
             sudo rm -rf \$PROJECT_PATH/*
