@@ -18,10 +18,10 @@ jobs:
           node-version: '18'
 
       - name: Install Dependencies
-        run: npm install -g pnpm
+        run: npm install
 
       - name: Build React App
-        run: pnpm run build
+        run: npm run build
 
       - name: Setup SSH Access
         run: |
