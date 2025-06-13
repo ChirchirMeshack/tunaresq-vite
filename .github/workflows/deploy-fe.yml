@@ -46,7 +46,16 @@ jobs:
             sudo mkdir -p \$PROJECT_PATH
             sudo mkdir -p \$BACKUP_DIR
 
+            echo before if
+            echo $BACKUP_DIR
+            echo $BACKUP_DIR
+
             if [ -d "\$PROJECT_PATH" ]; then
+
+            echo after if
+            echo $BACKUP_DIR
+            echo $BACKUP_DIR
+
               sudo rm -rf \$BACKUP_DIR/*
               sudo cp -r \$PROJECT_PATH/* \$BACKUP_DIR/
             fi
