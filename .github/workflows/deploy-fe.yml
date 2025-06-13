@@ -32,7 +32,7 @@ jobs:
 
       - name: Upload Build to Server Temp Directory
         run: |
-          scp -r build ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:${{ secrets.TEMP_DIR }}
+          scp -r dist ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:${{ secrets.TEMP_DIR }}
 
       - name: Finalize Deployment on Server
         run: |
