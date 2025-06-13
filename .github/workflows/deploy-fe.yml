@@ -18,7 +18,7 @@ jobs:
           node-version: '18'
 
       - name: Install Dependencies
-        run: pnpm install
+        run: npm install -g pnpm
 
       - name: Build React App
         run: pnpm run build
