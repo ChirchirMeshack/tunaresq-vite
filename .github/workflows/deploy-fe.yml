@@ -1,0 +1,59 @@
+name: Deploy React Frontend to Server
+
+on:
+  push:
+    branches: [vite-version]
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Install Dependencies
+        run: pnpm install
+
+      - name: Build React App
+        run: pnpm run build
+
+      - name: Setup SSH Access
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
+
+      - name: Upload Build to Server Temp Directory
+        run: |
+          scp -r build ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:${{ secrets.TEMP_DIR }}
+
+      - name: Finalize Deployment on Server
+        run: |
+          ssh -i ~/.ssh/id_rsa ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << EOF
+            set -xe
+
+            PROJECT_PATH="${{ secrets.PROJECT_PATH }}"
+            TEMP_DIR="${{ secrets.TEMP_DIR }}"
+            BACKUP_DIR="${{ secrets.BACKUP_DIR }}"
+
+            sudo mkdir -p \$PROJECT_PATH
+            sudo mkdir -p \$BACKUP_DIR
+
+            if [ -d "\$PROJECT_PATH" ]; then
+              sudo rm -rf \$BACKUP_DIR/*
+              sudo cp -r \$PROJECT_PATH/* \$BACKUP_DIR/
+            fi
+
+            sudo rm -rf \$PROJECT_PATH/*
+            sudo cp -r \$TEMP_DIR/* \$PROJECT_PATH/
+            sudo rm -rf \$TEMP_DIR
+
+            echo "✅ Frontend deployed successfully"
+          EOF
