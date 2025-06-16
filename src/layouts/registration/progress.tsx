@@ -16,6 +16,7 @@ interface ProgressStepsProps {
  * 
  * A visual progress tracker that displays steps in a registration or onboarding process.
  * Each step is represented by a circle with a number or checkmark, connected by lines.
+ * Responsive design that adapts to different screen sizes.
  * 
  * @param steps - Array of steps to display (defaults to defaultSteps)
  * @param currentStep - Current active step
@@ -23,32 +24,32 @@ interface ProgressStepsProps {
  */
 export default function ProgressSteps({ steps = defaultSteps, currentStep }: ProgressStepsProps) {
   return (
-    <div className="w-full max-w-4xl mx-auto">
-      <div className="flex items-center justify-between">
+    <div className="w-full max-w-4xl mx-auto px-4 sm:px-6 m-7">
+      <div className="flex items-center justify-between overflow-x-auto pb-4">
         {steps.map((step, index) => (
-          <div key={step.id} className="flex items-center w-full">
+          <div key={step.id} className="flex items-center w-full min-w-[80px] sm:min-w-[100px]">
             {/* Step Circle */}
             <div className="flex flex-col items-center">
               <div
                 className={cn(
-                  "w-10 h-10 rounded-full flex items-center justify-center border-2 transition-colors",
+                  "w-8 h-8 sm:w-10 sm:h-10 rounded-full flex items-center justify-center border-2 transition-colors",
                   step.completed || step.id === currentStep
-                    ? " bg-green-700 border-green-700 text-white"
+                    ? "bg-green-700 border-green-700 text-white"
                     : "bg-white border-gray-300 text-gray-500",
                 )}
               >
                 {step.completed ? (
-                  <Check className="w-5 h-5" />
+                  <Check className="w-4 h-4 sm:w-5 sm:h-5" />
                 ) : (
-                  <span className="text-sm font-medium">{step.id}</span>
+                  <span className="text-xs sm:text-sm font-medium">{step.id}</span>
                 )}
               </div>
 
               {/* Step Label */}
-              <div className="mt-2 text-center">
+              <div className="mt-1 sm:mt-2 text-center">
                 <div
                   className={cn(
-                    "text-sm font-inter transition-colors",
+                    "text-xs sm:text-sm font-inter transition-colors",
                     step.completed || step.id === currentStep ? "text-green-600" : "text-gray-500",
                     step.completed || step.id === currentStep ? "font-bold" : "font-medium",
                   )}
@@ -66,10 +67,10 @@ export default function ProgressSteps({ steps = defaultSteps, currentStep }: Pro
             {index < steps.length - 1 && (
               <div
                 className={cn(
-                  "h-0.5 mx-4 transition-colors",
+                  "h-0.5 mx-2 sm:mx-4 transition-colors",
                   step.completed ? "bg-green-500" : "bg-gray-300"
                 )}
-                style={{ minWidth: 40, flex: 1 }}
+                style={{ minWidth: 20, flex: 1 }}
               />
             )}
           </div>

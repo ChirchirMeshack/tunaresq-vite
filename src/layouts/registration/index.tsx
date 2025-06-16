@@ -3,14 +3,17 @@ import Progress from "./progress";
 import Header from "./header";
 
 const RegistrationLayout = () => {
-  // const { pathname } = useLocation();
+  const handleLogout = () => {
+    // TODO: Implement logout logic
+  };
+
   return (
     <>
       {/* Header */}
-      <Header /> 
+      <Header isLoggedIn={false} logout={handleLogout} /> 
 
       {/* Progress Indicator */}
-      <Progress />
+      <Progress currentStep={1} />
 
       {/* content */}
         <Outlet />
