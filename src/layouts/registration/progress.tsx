@@ -7,8 +7,8 @@ import { Step, defaultSteps } from "../../lib/progressUtils"
  */
 interface ProgressStepsProps {
   steps?: Step[]           // Array of steps to display
-  currentStep: number     // Current active step
-  onStepComplete?: (stepId: number) => void  // Optional callback for step completion
+  currentStep: string     // Current active step
+  onStepComplete?: (stepId: string) => void  // Optional callback for step completion
 }
 
 /**
@@ -41,7 +41,7 @@ export default function ProgressSteps({ steps = defaultSteps, currentStep }: Pro
                 {step.completed ? (
                   <Check className="w-4 h-4 sm:w-5 sm:h-5" />
                 ) : (
-                  <span className="text-xs sm:text-sm font-medium">{step.id}</span>
+                  <span className="text-xs sm:text-sm font-medium">{index + 1}</span>
                 )}
               </div>
 

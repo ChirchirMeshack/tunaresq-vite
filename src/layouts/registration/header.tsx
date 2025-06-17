@@ -1,13 +1,14 @@
+import { PATHS } from "config";
 import { User, LogOut } from "lucide-react"
 import { Link } from "react-router-dom";
 
-interface HeaderProps {
-     isLoggedIn: boolean;
-     logout: () => void;
-}
 
-const Header = ({ isLoggedIn, logout }: HeaderProps) => {
+const Header = () => {
 	// const { isLoggedIn, logout } = useAuth();
+	const isLoggedIn = false;
+	const handleLogout = () => {
+		alert("Logout");
+	}
 
 	return (
 		<header className="flex justify-between items-center p-4 border-b
@@ -26,12 +27,12 @@ const Header = ({ isLoggedIn, logout }: HeaderProps) => {
 			</div>
 			<nav>
 				{isLoggedIn ? (
-					<button onClick={logout} className="text-gray-700 hover:text-gray-900 flex items-center space-x-2">
+					<button onClick={handleLogout} className="text-gray-700 hover:text-gray-900 flex items-center space-x-2">
 						 <LogOut className="w-4 h-4" />
                         <span className="font-bold font-inter">Log out</span>
 					</button>
 				) : (
-					<Link to="/login" className="text-gray-700 hover:text-gray-900 flex items-center space-x-2">
+					<Link to={PATHS.login()} className="text-gray-700 hover:text-gray-900 flex items-center space-x-2">
 						<User className="w-4 h-4" />
                         <span className="font-bold font-inter">Log in</span>
 					</Link>

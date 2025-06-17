@@ -1,114 +1,94 @@
 /**
  * @interface Step
  * @description Defines the structure for a single step in a progress tracker.
- * @property {number} id - A unique identifier for the step.
- * @property {string} title - The title or name of the step, displayed in the progress tracker.
- * @property {boolean} completed - Indicates whether the step has been completed. True if completed, false otherwise.
+ * @property {string} id - A unique, lowercase identifier for the step.
+ * @property {string} title - The human-friendly display title of the step.
+ * @property {boolean} completed - Whether the step is complete.
  */
 export interface Step {
-  id: number;
+  id: string;
+  no: number;
   title: string;
   completed: boolean;
 }
 
 /**
+ * @interface CurrentStepProps
+ * @description Tracks the current step using the `id` field (string).
+ */
+export interface CurrentStepProps {
+  currentStep: string;
+  onStepComplete?: (stepId: string) => void;
+}
+
+/**
  * @function handleStepComplete
- * @description Updates the completion status of a specific step in a progress array and optionally triggers a callback for the next step.
- * @param {number} currentStep - The ID of the step to be marked as completed.
- * @param {Step[]} steps - An array of Step objects representing the entire progress flow.
- * @param {(stepId: number) => void} [onStepComplete] - An optional callback function that is called with the ID of the next step after the current one is completed.
- * @returns {Step[]} A new array of Step objects with the `currentStep` marked as completed.
+ * @description Marks a step as completed and optionally moves to the next one.
+ * @param {string} currentStepId - The id of the step to mark as complete.
+ * @param {Step[]} steps - All step objects.
+ * @param {(stepId: string) => void} [onStepComplete] - Callback fired with the next step id.
+ * @returns {Step[]} Updated steps.
  */
 export function handleStepComplete(
-  currentStep: number,
+  currentStepId: string,
   steps: Step[],
-  onStepComplete?: (stepId: number) => void
+  onStepComplete?: (stepId: string) => void
 ): Step[] {
-  // Update the steps array: mark the current step as completed.
   const updatedSteps = steps.map((step) => ({
     ...step,
-    completed: step.id === currentStep ? true : step.completed,
+    completed: step.id === currentStepId ? true : step.completed,
   }));
 
-  // Determine the ID of the next step.
-  const nextStep = currentStep + 1;
+  const currentStep = steps.find((step) => step.id === currentStepId);
+  const nextStepNo = currentStep ? currentStep.no + 1 : undefined;
+  const nextStep = steps.find((step) => step.no === nextStepNo);
 
-  // If a callback function is provided, call it with the next step's ID.
-  if (onStepComplete) {
-    onStepComplete(nextStep);
+  if (onStepComplete && nextStep) {
+    onStepComplete(nextStep.id);
   }
 
-  // Return the newly updated steps array.
   return updatedSteps;
 }
 
-// Define the initial array of steps for the progress tracker.
-// Each step includes a unique ID, a title, and a completion status.
-export const initialSteps: Step[] = [
-  {
-    id: 1,
-    title: "Welcome",
-    completed: true,
-  },
-  {
-    id: 2,
-    title: "Select Beneficiary",
-    completed: false,
-  },
-  {
-    id: 3,
-    title: "Create Account",
-    completed: false,
-  },
-  {
-    id: 4,
-    title: "Fundraiser Details",
-    completed: false,
-  },
-  {
-    id: 5,
-    title: "Payment Details",
-    completed: false,
-  },
-  {
-    id: 6,
-    title: "Launch Fundraise",
-    completed: false,
-  },
-];
-
 /**
- * Default steps configuration for the progress tracker
+ * @constant defaultSteps
+ * @description The default sequence of registration steps.
  */
 export const defaultSteps: Step[] = [
   {
-    id: 1,
+    id: "welcome",
+    no: 1,
     title: "Welcome",
     completed: true,
   },
   {
-    id: 2,
+    id: "select-beneficiary",
+    no: 2,
     title: "Select Beneficiary",
     completed: false,
   },
   {
-    id: 3,
+    id: "create-account",
+    no: 3,
     title: "Create Account",
     completed: false,
   },
   {
-    id: 4,
+    id: "fundraiser-details",
+    no: 4,
     title: "Fundraiser Details",
     completed: false,
   },
   {
-    id: 5,
+    id: "payment-details",
+    no: 5,
     title: "Payment Details",
     completed: false,
   },
   {
-    id: 6,
-    title: "Launch Fundraise",
+    id: "launch-fundraiser",
+    no: 6,
+    title: "Launch Fundraiser",
     completed: false,
   },
-]; 
+];

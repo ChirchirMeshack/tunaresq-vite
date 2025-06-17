@@ -1,24 +1,17 @@
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "./ui/dialog";
 import { Button } from "./ui/button";
-import { useNavigate } from "react-router-dom";
 
-const WelcomeDialog = () => {
-	const navigate = useNavigate();
+interface WelcomeDialogProps {
+	onCreateFundraiser: () => void;
+	skipToSignUp: () => void;
+	isOpen: boolean;
+	handleClose: () => void;
+}
 
-	// const handleClose = () => {
-	// 	navigate("/");
-	// };
-
-	const handleCreateFundraiser = () => {
-		navigate("/register/fundraiser-type");
-	};
-
-	const handleSignUp = () => {
-		navigate("/signUp");
-	};
+const WelcomeDialog = ({ onCreateFundraiser, skipToSignUp, isOpen, handleClose }: WelcomeDialogProps) => {
 
 	return (
-		<Dialog open={true} >
+		<Dialog open={isOpen} onOpenChange={handleClose}>
 			<DialogContent className="w-full max-w-md p-6">
 				<DialogHeader className="text-center">
 					<DialogTitle className="text-2xl font-bold mb-4">
@@ -36,13 +29,13 @@ const WelcomeDialog = () => {
 				</DialogHeader>
 				<div className="flex flex-col space-y-4 mt-6">
 					<Button 
-						onClick={handleCreateFundraiser}
+						onClick={onCreateFundraiser}
 						className="bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 px-4 rounded"
 					>
 						Let's create your fundraiser
 					</Button>
 					<Button 
-						onClick={handleSignUp}
+						onClick={skipToSignUp}
 						variant="outline" 
 						className="text-gray-700 border-gray-300 hover:bg-gray-100 font-bold py-2 px-4 rounded"
 					>

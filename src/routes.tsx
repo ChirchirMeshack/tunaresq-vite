@@ -4,8 +4,9 @@ import NotFoundPage from "@pages/not-found";
 import HomePage from "@pages/landing-page";
 import LandingLayout from "@layouts/landing";
 import RegistrationLayout from "@layouts/registration";
-import WelcomePage from "@pages/welcome-page";
-import FundraiserTypePage from "@pages/fundraiserType-page";
+import WelcomePage from "@components/workflows/welcome-page";
+import FundraiserTypePage from "@components/workflows/fundraiserType-page";
+import RegistrationPage from "@pages/registration-page";
 
 const Router = () => {
 	const routes = useRoutes([
@@ -23,25 +24,35 @@ const Router = () => {
 
 		//Registration Flow
 		{
-			path: "/register",
+			path: "/auth",
 			element: <RegistrationLayout />,
 			children: [
 				{
 					index: true,
-					element: <WelcomePage />,
+					element: <RegistrationPage />,
 				},
 			],
 		},
-		{
-			path: "/register/fundraiser-type",
-			element: <RegistrationLayout />,
-			children: [
-				{
-					index: true,
-					element: <FundraiserTypePage />,
-				},
-			],
-		},
+		// {
+		// 	path: "/register",
+		// 	element: <RegistrationLayout />,
+		// 	children: [
+		// 		{
+		// 			index: true,
+		// 			element: <WelcomePage />,
+		// 		},
+		// 	],
+		// },
+		// {
+		// 	path: "/register/fundraiser-type",
+		// 	element: <RegistrationLayout />,
+		// 	children: [
+		// 		{
+		// 			index: true,
+		// 			element: <FundraiserTypePage />,
+		// 		},
+		// 	],
+		// },
 
 		// not found page
 		{

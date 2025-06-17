@@ -4,8 +4,9 @@ const FundraiserTypePage = () => {
 	const [selectedFundraiserType, setSelectedFundraiserType] = useState("");
 
 	return (
-			<div className="flex flex-col min-h-screen bg-gray-50 md:w-full">
-				<main className="flex-grow flex items-center justify-center p-4 sm:p-6">
+		<>
+			<div className="flex flex-col min-h-screen  md:w-full">
+				<section className="flex-grow flex items-center justify-center p-4 sm:p-6">
 					<div className="bg-white p-6 sm:p-8 rounded-lg shadow-md w-full max-w-2xl">
 						<h2 className="text-xl sm:text-2xl font-bold mb-4 sm:mb-6 text-gray-800">
 							Who are you fundraising for?
@@ -171,8 +172,9 @@ const FundraiserTypePage = () => {
 							</button>
 						</div>
 					</div>
-				</main>
+				</section>
 			</div>
+			</>
 	);
 };
 

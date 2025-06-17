@@ -1,22 +1,50 @@
 import { Outlet} from "react-router-dom";
 import Progress from "./progress";
 import Header from "./header";
+import { defaultSteps } from "@lib/progressUtils";
+import { useState } from "react";
 
 const RegistrationLayout = () => {
-  const handleLogout = () => {
-    // TODO: Implement logout logic
+  const [steps, setSteps] = useState(defaultSteps);
+  const [currentStep, setCurrentStep] = useState<string>('welcome');
+
+  const handleStepComplete = (currentStepId: string) => {
+    const updatedSteps = steps.map((step) => ({
+      ...step,
+      completed: step.id === currentStepId ? true : step.completed,
+    }));
+
+    const currentStepObj = steps.find((step) => step.id === currentStepId);
+    const nextStepNo = currentStepObj ? currentStepObj.no + 1 : undefined;
+    const nextStep = steps.find((step) => step.no === nextStepNo);
+
+    if (nextStep) {
+      setCurrentStep(nextStep.id);
+    }
+
+    setSteps(updatedSteps);
+  };
+
+  const layoutContext = {
+    steps,
+    currentStep,
+    handleStepComplete,
   };
 
   return (
     <>
       {/* Header */}
-      <Header isLoggedIn={false} logout={handleLogout} /> 
+      <Header /> 
 
       {/* Progress Indicator */}
-      <Progress currentStep={2} />
+      <Progress 
+        currentStep={currentStep} 
+        steps={steps} 
+        onStepComplete={handleStepComplete}
+      />
 
       {/* content */}
-        <Outlet />
+        <Outlet context={layoutContext} />
     </>
   );
 };
