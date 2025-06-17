@@ -13,7 +13,7 @@ const RegistrationLayout = () => {
       <Header isLoggedIn={false} logout={handleLogout} /> 
 
       {/* Progress Indicator */}
-      <Progress currentStep={1} />
+      <Progress currentStep={2} />
 
       {/* content */}
         <Outlet />

@@ -5,6 +5,7 @@ import HomePage from "@pages/landing-page";
 import LandingLayout from "@layouts/landing";
 import RegistrationLayout from "@layouts/registration";
 import WelcomePage from "@pages/welcome-page";
+import FundraiserTypePage from "@pages/fundraiserType-page";
 
 const Router = () => {
 	const routes = useRoutes([
@@ -28,6 +29,16 @@ const Router = () => {
 				{
 					index: true,
 					element: <WelcomePage />,
+				},
+			],
+		},
+		{
+			path: "/register/fundraiser-type",
+			element: <RegistrationLayout />,
+			children: [
+				{
+					index: true,
+					element: <FundraiserTypePage />,
 				},
 			],
 		},
