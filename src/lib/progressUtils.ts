@@ -34,17 +34,21 @@ export function handleStepComplete(
   steps: Step[],
   onStepComplete?: (stepId: string) => void
 ): Step[] {
+  // First, mark the current step as completed
   const updatedSteps = steps.map((step) => ({
     ...step,
     completed: step.id === currentStepId ? true : step.completed,
   }));
 
+  // Find the current step object
   const currentStep = steps.find((step) => step.id === currentStepId);
-  const nextStepNo = currentStep ? currentStep.no + 1 : undefined;
-  const nextStep = steps.find((step) => step.no === nextStepNo);
-
-  if (onStepComplete && nextStep) {
-    onStepComplete(nextStep.id);
+  
+  // If we have a current step, find the next step by its number
+  if (currentStep) {
+    const nextStep = steps.find((step) => step.no === currentStep.no + 1);
+    if (nextStep && onStepComplete) {
+      onStepComplete(nextStep.id);
+    }
   }
 
   return updatedSteps;

@@ -94,16 +94,16 @@ const FundraiserTypePage = () => {
 
 							{/* For a Charity or Nonprofit */}
 							<label
-								className={`flex items-center p-3 sm:p-4 rounded-lg border cursor-pointer ${selectedFundraiserType === "charity" ? "border-green-500 bg-green-50" : "border-gray-300"}`}
-								htmlFor="charity"
+								className={`flex items-center p-3 sm:p-4 rounded-lg border cursor-pointer ${selectedFundraiserType === "organization" ? "border-green-500 bg-green-50" : "border-gray-300"}`}
+								htmlFor="organization"
 							>
 								<input
 									type="radio"
-									id="charity"
+									id="organization"
 									name="fundraiserType"
-									value="charity"
-									checked={selectedFundraiserType === "charity"}
-									onChange={() => setSelectedFundraiserType("charity")}
+									value="organization"
+									checked={selectedFundraiserType === "organization"}
+									onChange={() => setSelectedFundraiserType("organization")}
 									className="form-radio h-4 w-4 sm:h-5 sm:w-5 text-green-600"
 								/>
 								<div className="ml-3 sm:ml-4 flex-grow">

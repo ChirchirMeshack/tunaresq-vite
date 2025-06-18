@@ -15,11 +15,11 @@ const RegistrationLayout = () => {
     }));
 
     const currentStepObj = steps.find((step) => step.id === currentStepId);
-    const nextStepNo = currentStepObj ? currentStepObj.no + 1 : undefined;
-    const nextStep = steps.find((step) => step.no === nextStepNo);
-
-    if (nextStep) {
-      setCurrentStep(nextStep.id);
+    if (currentStepObj) {
+      const nextStep = steps.find((step) => step.no === currentStepObj.no + 1);
+      if (nextStep) {
+        setCurrentStep(nextStep.id);
+      }
     }
 
     setSteps(updatedSteps);

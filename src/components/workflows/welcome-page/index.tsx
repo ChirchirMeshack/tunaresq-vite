@@ -21,7 +21,7 @@ const WelcomePage = () => {
 	};
 
 	return (
-		<div className="flex flex-col min-h-screen bg-gray-50 md:w-full">
+		<div className="flex flex-col min-h-screen md:w-full">
 			<main className="flex-grow flex items-center justify-center p-4">
 				{!showFundraiserType ? (
 					<WelcomeDialog 
