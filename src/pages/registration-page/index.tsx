@@ -1,7 +1,6 @@
-import { useState, useEffect } from 'react';
 import { useOutletContext } from 'react-router-dom'
 import FundraiserTypePage from '@components/workflows/fundraiserType-page';
-import WelcomeDialog from '@components/WelcomeDialog';
+import WelcomeCard from '@components/WelcomeCard';
 import { Step } from '@lib/progressUtils';
 
 type LayoutContextType = {
@@ -12,27 +11,25 @@ type LayoutContextType = {
 
 function RegistrationPage() {
   const { currentStep, handleStepComplete } = useOutletContext<LayoutContextType>();
-  const [showWelcomeDialog, setShowWelcomeDialog] = useState(true);
-
-  // Update welcome dialog visibility based on current step
-  useEffect(() => {
-    setShowWelcomeDialog(currentStep === 'welcome');
-  }, [currentStep]);
 
   const handleCreateFundraiser = () => {
-    setShowWelcomeDialog(false);
     handleStepComplete('welcome'); // First complete the welcome step
   };
 
   const handleSkipToSignUp = () => {
-    setShowWelcomeDialog(false);
-    handleStepComplete('welcome'); // First complete the welcome step
+    handleStepComplete('welcome'); // Complete welcome
+    handleStepComplete('select-beneficiary'); // Immediately complete select-beneficiary
   };
 
   const renderCurrentStep = () => {
     switch (currentStep) {
       case 'welcome':
-        return null; // Welcome step is handled by the dialog
+        return (
+          <WelcomeCard
+            onCreateFundraiser={handleCreateFundraiser}
+            skipToSignUp={handleSkipToSignUp}
+          />
+        );
       case 'select-beneficiary':
         return <FundraiserTypePage />;
       case 'create-account':
@@ -49,21 +46,13 @@ function RegistrationPage() {
   };
 
   return (
-    <>
-      <WelcomeDialog
-        onCreateFundraiser={handleCreateFundraiser}
-        skipToSignUp={handleSkipToSignUp}
-        isOpen={showWelcomeDialog}
-        handleClose={() => setShowWelcomeDialog(false)}
-      />
-      <div className="flex flex-col min-h-screen bg-gray-50">
-        <div className="w-full max-w-4xl mx-auto px-4 py-6">
-        </div>
-        <main className="flex-grow flex items-center justify-center p-4 sm:p-6">
-          {renderCurrentStep()}
-        </main>
+    <div className="flex flex-col min-h-screen">
+      <div className="w-full max-w-4xl mx-auto px-4 py-6">
       </div>
-    </>
+      <main className=" flex items-center justify-center p-4 sm:p-6">
+        {renderCurrentStep()}
+      </main>
+    </div>
   );
 }
 

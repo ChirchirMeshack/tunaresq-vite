@@ -1,18 +1,12 @@
 import { useState } from 'react';
-import WelcomeDialog from "../../WelcomeDialog";
+import WelcomeCard from "../../WelcomeCard";
 import FundraiserTypePage from "../fundraiserType-page";
 
 const WelcomePage = () => {
 	const [showFundraiserType, setShowFundraiserType] = useState(false);
-	const [isDialogOpen, setIsDialogOpen] = useState(true);
 
 	const handleCreateFundraiser = () => {
 		setShowFundraiserType(true);
-		setIsDialogOpen(false);
-	};
-
-	const handleClose = () => {
-		setIsDialogOpen(false);
 	};
 
 	const handleSkipToSignUp = () => {
@@ -24,11 +18,9 @@ const WelcomePage = () => {
 		<div className="flex flex-col min-h-screen md:w-full">
 			<main className="flex-grow flex items-center justify-center p-4">
 				{!showFundraiserType ? (
-					<WelcomeDialog 
+					<WelcomeCard
 						onCreateFundraiser={handleCreateFundraiser}
 						skipToSignUp={handleSkipToSignUp}
-						isOpen={isDialogOpen}
-						handleClose={handleClose}
 					/>
 				) : (
 					<FundraiserTypePage />
