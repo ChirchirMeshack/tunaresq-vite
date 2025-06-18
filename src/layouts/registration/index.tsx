@@ -29,6 +29,7 @@ const RegistrationLayout = () => {
     steps,
     currentStep,
     handleStepComplete,
+    setCurrentStep,
   };
 
   return (
