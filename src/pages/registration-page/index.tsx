@@ -1,6 +1,8 @@
 import { useOutletContext } from 'react-router-dom'
 import FundraiserTypePage from '@components/workflows/fundraiserType-page';
+import SignupForm from '@components/workflows/Signup-page';
 import WelcomeCard from '@components/WelcomeCard';
+
 import { Step } from '@lib/progressUtils';
 
 type LayoutContextType = {
@@ -33,7 +35,7 @@ function RegistrationPage() {
       case 'select-beneficiary':
         return <FundraiserTypePage />;
       case 'create-account':
-        return <p>Signup Component</p>;
+        return <SignupForm />;
       case 'fundraiser-details':
         return <p>Fundraiser Details Component</p>;
       case 'payment-details':
