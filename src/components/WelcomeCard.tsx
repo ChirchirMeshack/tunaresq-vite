@@ -8,7 +8,7 @@ interface WelcomeCardProps {
 
 const WelcomeCard = ({ onCreateFundraiser, skipToSignUp }: WelcomeCardProps) => {
 	return (
-		<Card className="w-full max-w-md mx-auto">
+		<Card className="w-full max-w-2xl mx-auto text-center">
 			<CardHeader>
 				<CardTitle>Welcome to TunaresQ</CardTitle>
 				<CardDescription>
@@ -22,19 +22,21 @@ const WelcomeCard = ({ onCreateFundraiser, skipToSignUp }: WelcomeCardProps) => 
 				</CardDescription>
 			</CardHeader>
 			<CardContent>
-				<Button
-					onClick={onCreateFundraiser}
-					className="bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 px-4 rounded"
-				>
-					Let's create your fundraiser
-				</Button>
-				<Button
-					onClick={skipToSignUp}
-					variant="outline"
-					className="text-gray-700 border-gray-300 hover:bg-gray-100 font-bold py-2 px-4 rounded"
-				>
-					Or sign up to support other fundraisers
-				</Button>
+				<div className="flex flex-col items-center gap-4">
+					<Button
+						onClick={onCreateFundraiser}
+						className="bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 px-4 rounded w-[350px]"
+					>
+						Let's create your fundraiser
+					</Button>
+					<Button
+						onClick={skipToSignUp}
+						variant="outline"
+						className="text-gray-700 border-gray-300 hover:bg-gray-100 font-bold py-2 px-4 rounded w-[350px]"
+					>
+						Or sign up to support other fundraisers
+					</Button>
+				</div>
 			</CardContent>
 		</Card>
 	);

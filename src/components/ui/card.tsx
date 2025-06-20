@@ -3,12 +3,12 @@ import { cn } from "@lib/utils";
 
 function Card({ className, ...props }: React.ComponentProps<"div">) {
   return (
-    <div className={cn("bg-white rounded-xl shadow p-6 border", className)} {...props} />
+    <div className={cn("bg-white rounded-xl shadow p-6 border md:w-[1000px]", className)} {...props} />
   );
 }
 
 function CardHeader({ className, ...props }: React.ComponentProps<"div">) {
-  return <div className={cn("mb-4 text-center", className)} {...props} />;
+  return <div className={cn("mb-4 ", className)} {...props} />;
 }
 
 function CardTitle({ className, ...props }: React.ComponentProps<"h2">) {

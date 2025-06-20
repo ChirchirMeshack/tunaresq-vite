@@ -1,22 +1,12 @@
-"use server"
+// "use server"
 
+import { SignUpFormData } from "@components/workflows/Signup-page/validation";
 import { createUser, socialLogin } from "../src/lib/auth"
 
-export async function signupAction(formData: FormData) {
+export async function signupAction(formData: SignUpFormData) {
   try {
-    const firstName = formData.get("firstName") as string
-    const lastName = formData.get("lastName") as string
-    const email = formData.get("email") as string
-    const password = formData.get("password") as string
-    const confirmPassword = formData.get("confirmPassword") as string
+    const {firstName, lastName, email, password} = formData;
 
-    // Validate passwords match
-    if (password !== confirmPassword) {
-      return {
-        success: false,
-        error: "Passwords do not match",
-      }
-    }
 
     const result = await createUser(email, password, firstName, lastName)
 

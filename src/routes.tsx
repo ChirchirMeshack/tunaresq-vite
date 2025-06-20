@@ -1,4 +1,4 @@
-import { useRoutes } from "react-router-dom";
+import { Navigate, useRoutes } from "react-router-dom";
 import NotFoundPage from "@pages/not-found";
 
 import HomePage from "@pages/landing-page";
@@ -24,11 +24,15 @@ const Router = () => {
 
 		//Registration Flow
 		{
-			path: "/auth",
+			path: "auth",
 			element: <RegistrationLayout />,
 			children: [
 				{
 					index: true,
+					element: <Navigate to="/auth/register" replace />,
+				},
+				{
+					path: "register",
 					element: <RegistrationPage />,
 				},
 			],

@@ -5,7 +5,7 @@ import { Step } from '@lib/progressUtils';
 import { Button } from "@components/ui/button";
 
 const FundraiserTypePage = () => {
-	const [selectedFundraiserType, setSelectedFundraiserType] = useState("");
+	const [selectedFundraiserType, setSelectedFundraiserType] = useState<string | null>(null);
 	const { handleStepComplete, setCurrentStep } = useOutletContext<{ steps: Step[]; currentStep: string; handleStepComplete: (stepId: string) => void; setCurrentStep: (stepId: string) => void }>();
 
 	const handleBack = () => {
@@ -18,7 +18,7 @@ const FundraiserTypePage = () => {
 
 	return (
 		<>
-			<div className="flex flex-col min-h-screen md:w-full">
+			<div className="flex flex-col max-w-3xl">
 				<section className="flex-grow flex items-center justify-center p-4 sm:p-6">
 					<div className="bg-white p-6 sm:p-8 rounded-lg shadow-lg w-full max-w-2xl border border-gray-200">
 						<h2 className="text-xl sm:text-2xl font-bold mb-4 sm:mb-6 text-gray-800">
@@ -141,6 +141,8 @@ const FundraiserTypePage = () => {
 					<Button
 						onClick={handleContinue}
 						className="flex-1 max-w-xs rounded-lg bg-orange-500 hover:bg-orange-600 text-white font-medium px-4 sm:px-6 py-2 flex items-center justify-center gap-2"
+						disabled={!selectedFundraiserType}
+						// Disable button if no type is selected
 					>
 						Continue
 						<svg

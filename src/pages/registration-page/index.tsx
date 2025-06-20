@@ -48,9 +48,9 @@ function RegistrationPage() {
   };
 
   return (
-    <div className="flex flex-col min-h-screen">
-      <div className="w-full max-w-4xl mx-auto px-4 py-6">
-      </div>
+    <div className="flex flex-col">
+      {/* <div className="w-full max-w-4xl mx-auto px-4 py-6">
+      </div> */}
       <main className=" flex items-center justify-center p-4 sm:p-6">
         {renderCurrentStep()}
       </main>

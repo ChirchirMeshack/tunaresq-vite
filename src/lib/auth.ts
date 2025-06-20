@@ -1,27 +1,12 @@
-"use server"
-
 // Simulate user creation
-export async function createUser(email: string, password: string, firstName: string, lastName: string) {
+export async function createUser(email: string, _password: string, firstName: string, lastName: string) {
   // Simulate API delay
   await new Promise((resolve) => setTimeout(resolve, 1000))
 
-  // Simulate validation
-  if (!email || !password || !firstName || !lastName) {
-    throw new Error("All fields are required")
-  }
-
-  if (password.length < 6) {
-    throw new Error("Password must be at least 6 characters")
-  }
-
-  // Simulate email already exists
-  if (email === "test@example.com") {
-    throw new Error("Email already exists")
-  }
 
   // Simulate successful user creation
   console.log("User created:", { email, firstName, lastName })
-  return { success: true, message: "Account created successfully!" }
+  return { success: true, message: "Account created successfully!", user: { email, firstName, lastName } }
 }
 
 // Simulate social login

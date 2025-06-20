@@ -1,34 +1,58 @@
-"use client"
 
-import { useState, useTransition } from "react"
+import { useState } from "react"
 import { Button } from "@components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@components/ui/card"
-import { Input } from "@components/ui/input"
-import { Label } from "@components/ui/label"
 import { Separator } from "@components/ui/separator"
 import { Eye, EyeOff, Loader2 } from "lucide-react"
 import { signupAction, handleSocialLogin } from "../../../../actions/auth-actions"
+import { useOutletContext } from 'react-router-dom';
+import { Step } from '@lib/progressUtils';
+import EmailVerification from "../verification-page/EmailVerification"
+import { RHFTextField as TextField } from "@components/form/RHFTextField"
+import { yupResolver } from "@hookform/resolvers/yup"
+import { useForm } from "react-hook-form"
+import { SignUpFormData, SignUpFormSchema, DefaultSignUpFormValues } from "./validation"
+import { Form } from "@components/ui/form"
+import { Input } from "@components/ui/input"
+import { Label } from "@components/ui/label"
 
 export default function SignupForm() {
-  const [showPassword, setShowPassword] = useState(false)
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false)
+	const [showPassword, setShowPassword] = useState<boolean>(false);
+	const updateShowPasswordState = () => setShowPassword((prev) => !prev);
   const [message, setMessage] = useState<{ type: "success" | "error"; text: string } | null>(null)
-  const [isPending, startTransition] = useTransition()
   const [socialLoading, setSocialLoading] = useState<string | null>(null)
+  const { setCurrentStep } = useOutletContext<{ steps: Step[]; currentStep: string; handleStepComplete: (stepId: string) => void; setCurrentStep: (stepId: string) => void }>();
+  const [showEmailVerification, setShowEmailVerification] = useState(false);
 
-  const handleSubmit = async (formData: FormData) => {
-    startTransition(async () => {
+	const handleBack = () => {
+		setCurrentStep('select-beneficiary');
+	};
+
+  const methods = useForm<SignUpFormData>({
+		resolver: yupResolver(SignUpFormSchema),
+		defaultValues: DefaultSignUpFormValues,
+	});
+
+	const {
+		handleSubmit,
+    register,
+    reset,
+	} = methods;
+
+  const handleSignupWithCredentials = async (formData: SignUpFormData) => {
+      console.log(formData)
       const result = await signupAction(formData)
 
       if (result.success) {
+		    setShowEmailVerification(true);
+
         setMessage({ type: "success", text: result.message || "Account created successfully!" })
         // Reset form
-        const form = document.getElementById("signup-form") as HTMLFormElement
-        form?.reset()
+        reset()
+        setShowEmailVerification(true)
       } else {
         setMessage({ type: "error", text: result.error || "Something went wrong" })
       }
-    })
   }
 
   const handleSocialSignup = async (provider: "google" | "facebook" | "twitter") => {
@@ -46,11 +70,19 @@ export default function SignupForm() {
     }
   }
 
+  if (showEmailVerification) {
+    return <EmailVerification />;
+  }
+
+  console.log(methods.formState.errors)
   return (
-    <div className="min-h-screen bg-gray-50 p-2 sm:p-4 lg:p-8 flex items-center justify-center">
+    <Form {...methods}>
+    <div className=" md:w-full">
+    <section >
+    <div className="p-2 sm:p-4 lg:p-8 flex items-center justify-center">
       <Card className="w-full max-w-sm sm:max-w-md md:max-w-lg lg:max-w-xl mx-auto p-4 sm:p-6 lg:p-8">
         <CardHeader className="space-y-1">
-          <CardTitle className="text-2xl font-semibold">Create Account</CardTitle>
+          <CardTitle className="text-2xl font-semibold ">Create Account</CardTitle>
           <CardDescription>Create an account to manage your fundraiser</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4 px-2 sm:px-4">
@@ -98,7 +130,7 @@ export default function SignupForm() {
                   />
                 </svg>
               )}
-              <span className="whitespace-nowrap">Google</span>
+              <span className="whitespace-nowrap">Sign in with Google</span>
             </Button>
 
             <Button
@@ -118,7 +150,7 @@ export default function SignupForm() {
                   />
                 </svg>
               )}
-              <span className="whitespace-nowrap">Facebook</span>
+              <span className="whitespace-nowrap">Sign in with Facebook</span>
             </Button>
 
             <Button
@@ -138,7 +170,7 @@ export default function SignupForm() {
                   />
                 </svg>
               )}
-              <span className="whitespace-nowrap">X</span>
+              <span className="whitespace-nowrap">Sign in with X</span>
             </Button>
           </div>
 
@@ -152,67 +184,83 @@ export default function SignupForm() {
           </div>
 
           {/* Form Fields */}
-          <form id="signup-form" action={handleSubmit} className="space-y-3 sm:space-y-4">
+          <form onSubmit={handleSubmit(handleSignupWithCredentials)} className="space-y-3 sm:space-y-4">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="firstName">First Name</Label>
-                <Input
-                  id="firstName"
-                  name="firstName"
-                  placeholder="Enter your first name"
-                  type="text"
-                  className="text-sm sm:text-base"
-                  required
-                  disabled={isPending}
-                />
+                <TextField name="firstName" label="First Name" placeholder="Enter your first name"/>
+                <TextField name="lastName" label="Last Name" placeholder="Enter your last name"/>
               </div>
-              <div className="space-y-2">
-                <Label htmlFor="lastName">Last Name</Label>
-                <Input
-                  id="lastName"
-                  name="lastName"
-                  placeholder="Enter your last name"
-                  type="text"
-                  className="text-sm sm:text-base"
-                  required
-                  disabled={isPending}
-                />
-              </div>
-            </div>
 
             <div className="space-y-2">
-              <Label htmlFor="email">Email Address</Label>
-              <Input
-                id="email"
-                name="email"
-                placeholder="Enter a valid email address"
-                type="email"
-                className="text-sm sm:text-base"
-                required
-                disabled={isPending}
-              />
-            </div>
-
-            <div className="space-y-2">
+                <TextField name="email" label="Email Address" placeholder="Enter a valid email address"/>
+                
+                {/* <TextField
+					className="focus:outline-none"
+					name="password"
+					label="Password"
+					type={showPassword ? "text" : "password"} placeholder="Enter your password"
+          endContent={
+						<Button
+							size="icon"
+          type="button"
+              className="rounded-full"
+							onClick={updateShowPasswordState}
+						>
+              {showPassword ? (
+							<EyeOff
+								className="text-[#8f8f8f]"
+								fontSize={24}
+							/>
+              ):(
+							<Eye
+								className="text-[#8f8f8f]"
+								fontSize={24}
+							/>
+              )}
+						</Button>}
+					/>
+          <TextField
+					className="focus:outline-none"
+					name="confirmPassword"
+					label="Confirm Your Password"
+					type={showPassword ? "text" : "password"} placeholder="Confirm your password"
+          endContent={
+						<Button
+          type="button"
+							size="icon"
+              className="rounded-full"
+							onClick={updateShowPasswordState}
+						>
+              {showPassword ? (
+							<EyeOff
+								className="text-[#8f8f8f]"
+								fontSize={24}
+							/>
+              ):(
+							<Eye
+								className="text-[#8f8f8f]"
+								fontSize={24}
+							/>
+              )}
+						</Button>}
+					/>*/}
+              </div> 
+<div className="space-y-2">
               <Label htmlFor="password">Enter Your Password</Label>
               <div className="relative">
                 <Input
-                  id="password"
-                  name="password"
+                  {...register('password')}
                   placeholder="Enter your password"
                   type={showPassword ? "text" : "password"}
                   className="text-sm sm:text-base pr-10"
                   required
                   minLength={6}
-                  disabled={isPending}
                 />
                 <Button
                   type="button"
                   variant="ghost"
                   size="sm"
                   className="absolute right-0 top-0 h-full px-2 sm:px-3 py-2 hover:bg-transparent"
-                  onClick={() => setShowPassword(!showPassword)}
-                  disabled={isPending}
+                  onClick={updateShowPasswordState}
                 >
                   {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                 </Button>
@@ -223,35 +271,80 @@ export default function SignupForm() {
               <Label htmlFor="confirmPassword">Confirm Your Password</Label>
               <div className="relative">
                 <Input
-                  id="confirmPassword"
-                  name="confirmPassword"
+                  {...register("confirmPassword")}
                   placeholder="Confirm your password"
-                  type={showConfirmPassword ? "text" : "password"}
+                  type={showPassword ? "text" : "password"}
                   className="text-sm sm:text-base pr-10"
                   required
                   minLength={6}
-                  disabled={isPending}
                 />
                 <Button
                   type="button"
                   variant="ghost"
                   size="sm"
                   className="absolute right-0 top-0 h-full px-2 sm:px-3 py-2 hover:bg-transparent"
-                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                  disabled={isPending}
+                  onClick={updateShowPasswordState}
                 >
-                  {showConfirmPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                  {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                 </Button>
               </div>
             </div>
-
             
+
           </form>
 
-          
         </CardContent>
+        
       </Card>
+     
     </div>
+    </section>
+     <div className="w-full max-w-2xl mx-auto px-2 sm:px-4 pb-6 flex flex-row justify-between gap-3 sm:gap-4 mt-8">
+					<Button
+          type="button"
+						onClick={handleBack}
+						variant="outline"
+						className="flex-1 max-w-xs rounded-lg border-gray-300 text-gray-700 hover:bg-gray-100 font-medium px-4 sm:px-6 py-2 flex items-center justify-center gap-2"
+					>
+						<svg
+							xmlns="http://www.w3.org/2000/svg"
+							fill="none"
+							viewBox="0 0 24 24"
+							strokeWidth={1.5}
+							stroke="currentColor"
+							className="size-4 sm:size-5 mr-1 sm:mr-2"
+						>
+							<path
+								strokeLinecap="round"
+								strokeLinejoin="round"
+								d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18"
+							/>
+						</svg>
+						Back
+					</Button>
+					<Button
+            type="submit"
+						className="flex-1 max-w-xs rounded-lg bg-orange-500 hover:bg-orange-600 text-white font-medium px-4 sm:px-6 py-2 flex items-center justify-center gap-2"
+					>
+						Continue
+						<svg
+							xmlns="http://www.w3.org/2000/svg"
+							fill="none"
+							viewBox="0 0 24 24"
+							strokeWidth={1.5}
+							stroke="currentColor"
+							className="size-4 sm:size-5 ml-1 sm:ml-2"
+						>
+							<path
+								strokeLinecap="round"
+								strokeLinejoin="round"
+								d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3"
+							/>
+						</svg>
+					</Button>
+				</div>
+    </div>
+    </Form>
   )
 }
 
