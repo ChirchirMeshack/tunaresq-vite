@@ -25,7 +25,7 @@ interface ProgressStepsProps {
 export default function ProgressSteps({ steps = defaultSteps, currentStep }: ProgressStepsProps) {
   return (
     <div className="w-full max-w-4xl mx-auto px-4 sm:px-6 m-7">
-      <div className="flex items-center justify-between overflow-x-auto pb-4">
+      <div className="flex items-center justify-between overflow-x-auto pb-4 hide-scrollbar-mobile">
         {steps.map((step, index) => (
           <div key={step.id} className="flex items-center w-full min-w-[80px] sm:min-w-[100px]">
             {/* Step Circle */}

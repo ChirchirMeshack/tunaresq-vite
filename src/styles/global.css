@@ -199,3 +199,13 @@
     @apply bg-background text-foreground;
   }
 }
+
+@media (max-width: 640px) {
+  .hide-scrollbar-mobile {
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE 10+ */
+  }
+  .hide-scrollbar-mobile::-webkit-scrollbar {
+    display: none; /* Chrome/Safari/Webkit */
+  }
+}
