@@ -1,6 +1,6 @@
 "use server"
 
-import { createUser, socialLogin } from "@/lib/auth"
+import { createUser, socialLogin } from "../src/lib/auth"
 
 export async function signupAction(formData: FormData) {
   try {

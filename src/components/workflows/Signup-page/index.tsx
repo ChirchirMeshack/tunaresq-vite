@@ -1,13 +1,13 @@
 "use client"
 
 import { useState, useTransition } from "react"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Separator } from "@/components/ui/separator"
+import { Button } from "@components/ui/button"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@components/ui/card"
+import { Input } from "@components/ui/input"
+import { Label } from "@components/ui/label"
+import { Separator } from "@components/ui/separator"
 import { Eye, EyeOff, Loader2 } from "lucide-react"
-import { signupAction, handleSocialLogin } from "@/actions/auth-actions"
+import { signupAction, handleSocialLogin } from "../../../../actions/auth-actions"
 
 export default function SignupForm() {
   const [showPassword, setShowPassword] = useState(false)
