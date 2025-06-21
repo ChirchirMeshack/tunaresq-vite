@@ -16,11 +16,12 @@ const verificationSchema = yup.object({
 
 type VerificationFormData = yup.InferType<typeof verificationSchema>;
 
-const EmailVerification: React.FC = () => {
-const { setCurrentStep } = useOutletContext<{ steps: Step[]; currentStep: string; handleStepComplete: (stepId: string) => void; setCurrentStep: (stepId: string) => void }>();
-const handleBack = () => {
-  setCurrentStep('create-account');
-};
+interface EmailVerificationProps {
+  onBack: () => void;
+}
+
+const EmailVerification: React.FC<EmailVerificationProps> = ({ onBack }) => {
+  const { handleStepComplete } = useOutletContext<{ steps: Step[]; currentStep: string; handleStepComplete: (stepId: string) => void; setCurrentStep: (stepId: string) => void }>();
   const [isSuccess, setIsSuccess] = React.useState(false);
   
   const form = useForm<VerificationFormData>({
@@ -31,6 +32,10 @@ const handleBack = () => {
 
   const onSubmit = () => {
     setIsSuccess(true);
+  };
+
+  const handleContinue = () => {
+    handleStepComplete('create-account');
   };
 
   // Success page
@@ -55,7 +60,7 @@ const handleBack = () => {
             <CardDescription className="mb-6">
               Your account has been verified successfully. Let's<br/>continue setting up your fundraiser.
             </CardDescription>
-            <Button size="lg" className="w-full max-w-xs bg-[#F97342] hover:bg-[#F97342]/90">
+            <Button size="lg" className="w-full max-w-xs bg-[#F97342] hover:bg-[#F97342]/90" onClick={handleContinue}>
                 Continue to Fundraiser Details <span style={{marginLeft: 8}}>&rarr;</span>
             </Button>
           </CardContent>
@@ -88,7 +93,7 @@ const handleBack = () => {
                 }}
               />
               <div className="flex gap-4 mt-4">
-                <Button type="button" variant="outline" size="lg" className="flex-1" onClick={handleBack}>
+                <Button type="button" variant="outline" size="lg" className="flex-1" onClick={onBack}>
                   <span className="text-xl">&larr;</span> Back
                 </Button>
                 <Button type="submit" size="lg" className="flex-1" disabled={isSubmitting}>

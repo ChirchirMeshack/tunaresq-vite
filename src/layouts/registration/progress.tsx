@@ -23,30 +23,40 @@ interface ProgressStepsProps {
  * @param onStepComplete - Optional callback function when a step is completed
  */
 export default function ProgressSteps({ steps = defaultSteps, currentStep }: ProgressStepsProps) {
+  const currentStepIndex = steps.findIndex((step) => step.id === currentStep)
+  const currentStepDetails = steps[currentStepIndex]
+
   return (
     <div className="w-full max-w-4xl mx-auto px-4 sm:px-6 m-7">
       <div className="flex items-center justify-between overflow-x-auto pb-4 hide-scrollbar-mobile">
         {steps.map((step, index) => (
-          <div key={step.id} className="flex items-center w-full min-w-[80px] sm:min-w-[100px]">
+          <div key={step.id} className="flex items-center w-full min-w-[60px] sm:min-w-[100px]">
             {/* Step Circle */}
             <div className="flex flex-col items-center">
               <div
                 className={cn(
-                  "w-8 h-8 sm:w-10 sm:h-10 rounded-full flex items-center justify-center border-2 transition-colors",
+                  "w-6 h-6 sm:w-10 sm:h-10 rounded-full flex items-center justify-center border-2 transition-colors",
+                  // Mobile styles
+                  "bg-white",
+                  step.completed ? "border-green-500 text-green-500" :
+                  step.id === currentStep ? "border-green-500" :
+                  "border-gray-300",
+
+                  // Desktop overrides
                   step.completed || step.id === currentStep
-                    ? "bg-green-700 border-green-700 text-white"
-                    : "bg-white border-gray-300 text-gray-500",
+                    ? "sm:bg-green-700 sm:border-green-700 sm:text-white"
+                    : "sm:bg-white sm:border-gray-300 sm:text-gray-500",
                 )}
               >
                 {step.completed ? (
                   <Check className="w-4 h-4 sm:w-5 sm:h-5" />
                 ) : (
-                  <span className="text-xs sm:text-sm font-medium">{index + 1}</span>
+                  <span className="text-xs sm:text-sm font-medium hidden sm:inline">{index + 1}</span>
                 )}
               </div>
 
               {/* Step Label */}
-              <div className="mt-1 sm:mt-2 text-center">
+              <div className="mt-1 sm:mt-2 text-center hidden sm:block">
                 <div
                   className={cn(
                     "text-xs sm:text-sm font-inter transition-colors",
@@ -75,6 +85,11 @@ export default function ProgressSteps({ steps = defaultSteps, currentStep }: Pro
             )}
           </div>
         ))}
+      </div>
+      <div className="sm:hidden text-center mb-4">
+        <p className="text-sm font-medium text-gray-700">
+          Step {currentStepIndex + 1} of {steps.length}: {currentStepDetails?.title}
+        </p>
       </div>
     </div>
   )

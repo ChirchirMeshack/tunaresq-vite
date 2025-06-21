@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Building2, User, Users } from 'lucide-react';
+import { Building2, User, Users, ArrowLeft, ArrowRight } from 'lucide-react';
 import { useOutletContext } from 'react-router-dom';
 import { Step } from '@lib/progressUtils';
 import { Button } from "@components/ui/button";
@@ -116,49 +116,23 @@ const FundraiserTypePage = () => {
 					</div>
 				</section>
 				{/* Buttons outside the card */}
-				<div className="w-full max-w-2xl mx-auto px-2 sm:px-4 pb-6 flex flex-row justify-between gap-3 sm:gap-4">
+				<div className="w-full max-w-3xl mx-auto px-2 sm:px-4 pb-6 flex flex-row justify-between gap-3 sm:gap-4">
 					<Button
 						onClick={handleBack}
 						variant="outline"
-						className="flex-1 max-w-xs rounded-lg border-gray-300 text-gray-700 hover:bg-gray-100 font-medium px-4 sm:px-6 py-2 flex items-center justify-center gap-2"
+						className="w-[120px] md:w-[150px] rounded-lg border-gray-300 text-gray-700 hover:bg-gray-100 font-medium px-4 sm:px-6 py-2 flex items-center justify-center gap-2"
 					>
-						<svg
-							xmlns="http://www.w3.org/2000/svg"
-							fill="none"
-							viewBox="0 0 24 24"
-							strokeWidth={1.5}
-							stroke="currentColor"
-							className="size-4 sm:size-5 mr-1 sm:mr-2"
-						>
-							<path
-								strokeLinecap="round"
-								strokeLinejoin="round"
-								d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18"
-							/>
-						</svg>
+						<ArrowLeft className="size-4 sm:size-5" />
 						Back
 					</Button>
 					<Button
 						onClick={handleContinue}
-						className="flex-1 max-w-xs rounded-lg bg-orange-500 hover:bg-orange-600 text-white font-medium px-4 sm:px-6 py-2 flex items-center justify-center gap-2"
+						className="w-[120px] md:w-[150px] rounded-lg bg-orange-500 hover:bg-orange-600 text-white font-medium px-4 sm:px-6 py-2 flex items-center justify-center gap-2"
 						disabled={!selectedFundraiserType}
 						// Disable button if no type is selected
 					>
 						Continue
-						<svg
-							xmlns="http://www.w3.org/2000/svg"
-							fill="none"
-							viewBox="0 0 24 24"
-							strokeWidth={1.5}
-							stroke="currentColor"
-							className="size-4 sm:size-5 ml-1 sm:ml-2"
-						>
-							<path
-								strokeLinecap="round"
-								strokeLinejoin="round"
-								d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3"
-							/>
-						</svg>
+						<ArrowRight className="size-4 sm:size-5" />
 					</Button>
 				</div>
 			</div>

@@ -1,9 +1,8 @@
-
 import { useState } from "react"
 import { Button } from "@components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@components/ui/card"
 import { Separator } from "@components/ui/separator"
-import { Eye, EyeOff, Loader2 } from "lucide-react"
+import { Loader2, ArrowLeft, ArrowRight } from "lucide-react"
 import { signupAction, handleSocialLogin } from "../../../../actions/auth-actions"
 import { useOutletContext } from 'react-router-dom';
 import { Step } from '@lib/progressUtils';
@@ -37,6 +36,7 @@ export default function SignupForm() {
 		handleSubmit,
     register,
     reset,
+    formState: { errors },
 	} = methods;
 
   const handleSignupWithCredentials = async (formData: SignUpFormData) => {
@@ -49,7 +49,6 @@ export default function SignupForm() {
         setMessage({ type: "success", text: result.message || "Account created successfully!" })
         // Reset form
         reset()
-        setShowEmailVerification(true)
       } else {
         setMessage({ type: "error", text: result.error || "Something went wrong" })
       }
@@ -71,13 +70,13 @@ export default function SignupForm() {
   }
 
   if (showEmailVerification) {
-    return <EmailVerification />;
+    return <EmailVerification onBack={() => setShowEmailVerification(false)} />;
   }
 
   console.log(methods.formState.errors)
   return (
     <Form {...methods}>
-    <div className=" md:w-full">
+    <div className=" md:w-full ">
     <section >
     <div className="p-2 sm:p-4 lg:p-8 flex items-center justify-center">
       <Card className="w-full max-w-sm sm:max-w-md md:max-w-lg lg:max-w-xl mx-auto p-4 sm:p-6 lg:p-8">
@@ -184,7 +183,11 @@ export default function SignupForm() {
           </div>
 
           {/* Form Fields */}
-          <form onSubmit={handleSubmit(handleSignupWithCredentials)} className="space-y-3 sm:space-y-4">
+          <form
+           onSubmit={handleSubmit(handleSignupWithCredentials)} 
+           className="space-y-3 sm:space-y-4"
+           id="signup-form"
+           >
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                 <TextField name="firstName" label="First Name" placeholder="Enter your first name"/>
                 <TextField name="lastName" label="Last Name" placeholder="Enter your last name"/>
@@ -262,9 +265,10 @@ export default function SignupForm() {
                   className="absolute right-0 top-0 h-full px-2 sm:px-3 py-2 hover:bg-transparent"
                   onClick={updateShowPasswordState}
                 >
-                  {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                  {/* {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />} */}
                 </Button>
               </div>
+              {errors.password && <p className="text-red-500 text-xs mt-1">{errors.password.message}</p>}
             </div>
 
             <div className="space-y-2">
@@ -285,9 +289,10 @@ export default function SignupForm() {
                   className="absolute right-0 top-0 h-full px-2 sm:px-3 py-2 hover:bg-transparent"
                   onClick={updateShowPasswordState}
                 >
-                  {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                  {/* {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />} */}
                 </Button>
               </div>
+              {errors.confirmPassword && <p className="text-red-500 text-xs mt-1">{errors.confirmPassword.message}</p>}
             </div>
             
 
@@ -299,48 +304,23 @@ export default function SignupForm() {
      
     </div>
     </section>
-     <div className="w-full max-w-2xl mx-auto px-2 sm:px-4 pb-6 flex flex-row justify-between gap-3 sm:gap-4 mt-8">
+     <div className="w-full max-w-sm sm:max-w-md md:max-w-lg lg:max-w-xl mx-auto px-2 sm:px-4 pb-6 flex flex-row justify-between gap-3 sm:gap-4 mt-8">
 					<Button
           type="button"
 						onClick={handleBack}
 						variant="outline"
-						className="flex-1 max-w-xs rounded-lg border-gray-300 text-gray-700 hover:bg-gray-100 font-medium px-4 sm:px-6 py-2 flex items-center justify-center gap-2"
+						className="w-[120px] md:w-[150px] rounded-lg border-gray-300 text-gray-700 hover:bg-gray-100 font-medium px-4 sm:px-6 py-2 flex items-center justify-center gap-2"
 					>
-						<svg
-							xmlns="http://www.w3.org/2000/svg"
-							fill="none"
-							viewBox="0 0 24 24"
-							strokeWidth={1.5}
-							stroke="currentColor"
-							className="size-4 sm:size-5 mr-1 sm:mr-2"
-						>
-							<path
-								strokeLinecap="round"
-								strokeLinejoin="round"
-								d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18"
-							/>
-						</svg>
+						<ArrowLeft className="size-4 sm:size-5" />
 						Back
 					</Button>
 					<Button
             type="submit"
-						className="flex-1 max-w-xs rounded-lg bg-orange-500 hover:bg-orange-600 text-white font-medium px-4 sm:px-6 py-2 flex items-center justify-center gap-2"
+            form="signup-form"
+						className="w-[120px] md:w-[150px] rounded-lg bg-orange-500 hover:bg-orange-600 text-white font-medium px-4 sm:px-6 py-2 flex items-center justify-center gap-2"
 					>
 						Continue
-						<svg
-							xmlns="http://www.w3.org/2000/svg"
-							fill="none"
-							viewBox="0 0 24 24"
-							strokeWidth={1.5}
-							stroke="currentColor"
-							className="size-4 sm:size-5 ml-1 sm:ml-2"
-						>
-							<path
-								strokeLinecap="round"
-								strokeLinejoin="round"
-								d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3"
-							/>
-						</svg>
+						<ArrowRight className="size-4 sm:size-5" />
 					</Button>
 				</div>
     </div>
