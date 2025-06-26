@@ -79,7 +79,7 @@ export default function SignupForm() {
     <div className=" md:w-full ">
     <section >
     <div className="p-2 sm:p-4 lg:p-8 flex items-center justify-center">
-      <Card className="w-full max-w-sm sm:max-w-md md:max-w-lg lg:max-w-xl mx-auto p-4 sm:p-6 lg:p-8">
+      <Card className="w-full max-w-3xl mx-auto p-4 sm:p-6 lg:p-8">
         <CardHeader className="space-y-1">
           <CardTitle className="text-2xl font-semibold ">Create Account</CardTitle>
           <CardDescription>Create an account to manage your fundraiser</CardDescription>

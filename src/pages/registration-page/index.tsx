@@ -4,6 +4,7 @@ import SignupForm from '@components/workflows/Signup-page';
 import WelcomeCard from '@components/WelcomeCard';
 
 import { Step } from '@lib/progressUtils';
+import FundraiserDetailsPage from '@components/workflows/FundariserForms';
 
 type LayoutContextType = {
   steps: Step[];
@@ -37,7 +38,7 @@ function RegistrationPage() {
       case 'create-account':
         return <SignupForm />;
       case 'fundraiser-details':
-        return <p>Fundraiser Details Component</p>;
+        return <FundraiserDetailsPage />;
       case 'payment-details':
         return <p>Payment Details Component</p>;
       case 'launch-fundraiser':

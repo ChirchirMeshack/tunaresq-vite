@@ -8,7 +8,7 @@ interface WelcomeCardProps {
 
 const WelcomeCard = ({ onCreateFundraiser, skipToSignUp }: WelcomeCardProps) => {
 	return (
-		<Card className="w-full max-w-2xl mx-auto text-center">
+		<Card className="w-full max-w-3xl mx-auto text-center">
 			<CardHeader>
 				<CardTitle>Welcome to TunaresQ</CardTitle>
 				<CardDescription>

@@ -37,15 +37,18 @@ const RegistrationLayout = () => {
       {/* Header */}
       <Header /> 
 
-      {/* Progress Indicator */}
-      <Progress 
-        currentStep={currentStep} 
-        steps={steps} 
-        onStepComplete={handleStepComplete}
-      />
+      {/* Main registration container with matching horizontal padding */}
+      <div className="px-4 md:px-12 lg:px-24">
+        {/* Progress Indicator */}
+        <Progress 
+          currentStep={currentStep} 
+          steps={steps} 
+          onStepComplete={handleStepComplete}
+        />
 
-      {/* content */}
+        {/* content */}
         <Outlet context={layoutContext} />
+      </div>
     </>
   );
 };

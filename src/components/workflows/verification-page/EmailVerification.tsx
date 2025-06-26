@@ -42,7 +42,7 @@ const EmailVerification: React.FC<EmailVerificationProps> = ({ onBack }) => {
   if (isSuccess) {
     return (
       <div className="flex justify-center items-center min-h-[60vh]">
-        <Card className="max-w-lg w-full text-center p-8">
+        <Card className="max-w-3xl w-full text-center p-8 mx-auto">
           <CardContent className="items-center">
             <div style={{
               width: 96,
@@ -71,7 +71,7 @@ const EmailVerification: React.FC<EmailVerificationProps> = ({ onBack }) => {
 
   return (
     <div className="flex justify-center items-center min-h-[60vh]">
-      <Card className="max-w-xl w-full p-8">
+      <Card className="max-w-3xl w-full p-8 mx-auto">
         <CardHeader>
           <CardTitle>Verify your email address</CardTitle>
           <CardDescription>
