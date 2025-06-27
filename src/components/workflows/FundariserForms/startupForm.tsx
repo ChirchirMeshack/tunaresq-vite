@@ -2,12 +2,13 @@ import { FormProvider, useForm, UseFormReturn, FieldErrors } from 'react-hook-fo
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@components/ui/card';
 import { RHFTextField } from '@components/form/RHFTextField';
 import { Button } from '@components/ui/button';
-import { ArrowLeft, ArrowRight, ImagePlus, ChevronDown, ChevronUp } from 'lucide-react';
+import { ArrowLeft, ArrowRight, ImagePlus} from 'lucide-react';
 import { useOutletContext } from 'react-router-dom';
 import { Step } from '@lib/progressUtils';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useState } from 'react';
+import { AccordionCard } from './AccordionCard';
 
 const INDUSTRY_OPTIONS = [
   'Technology', 'Healthcare', 'Finance', 'Education', 'Retail', 'Manufacturing', 'Other'
@@ -137,71 +138,67 @@ const StartupFundraiserForm = () => {
           <CardContent className="space-y-4">
             {/* Accordions for mobile, expanded by default on desktop */}
             <div className="block md:hidden">
-              <button type="button" className="w-full text-left font-semibold py-2 border rounded-lg flex items-center justify-between gap-2" onClick={() => setStartupOpen(v => !v)}>
-              <span>Startup details</span>
-                {startupOpen ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
-              </button>
-              {startupOpen && (
-                <div className="py-2 space-y-4">
-                  <RHFTextField name="startupName" label="Startup Name" placeholder="Enter Your Startup's Name" />
-                  <RHFTextField name="startupLocation" label="Startup location" placeholder="City, county, country" />
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div>
-                      <label htmlFor="industry" className="block text-sm font-medium mb-1">Industry</label>
-                      <select
-                        id="industry"
-                        {...methods.register('industry')}
-                        className={`w-full border rounded-md p-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary ${errors.industry ? 'border-red-500' : ''}`}
-                        defaultValue=""
-                      >
-                        <option value="" disabled>Select Industry</option>
-                        {INDUSTRY_OPTIONS.map(opt => <option key={opt} value={opt}>{opt}</option>)}
-                      </select>
-                      {errors.industry && <p className="text-xs text-red-500 mt-1">{errors.industry.message as string}</p>}
-                    </div>
-                    <div>
-                      <label htmlFor="startupStage" className="block text-sm font-medium mb-1">Startup stage</label>
-                      <select
-                        id="startupStage"
-                        {...methods.register('startupStage')}
-                        className={`w-full border rounded-md p-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary ${errors.startupStage ? 'border-red-500' : ''}`}
-                        defaultValue=""
-                      >
-                        <option value="" disabled>Select stage</option>
-                        {STAGE_OPTIONS.map(opt => <option key={opt} value={opt}>{opt}</option>)}
-                      </select>
-                      {errors.startupStage && <p className="text-xs text-red-500 mt-1">{errors.startupStage.message as string}</p>}
-                    </div>
-                  </div>
+              <AccordionCard
+                open={startupOpen}
+                onClick={() => setStartupOpen(v => !v)}
+                title="Startup details"
+              >
+                <RHFTextField name="startupName" label="Startup Name" placeholder="Enter Your Startup's Name" />
+                <RHFTextField name="startupLocation" label="Startup location" placeholder="City, county, country" />
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
-                    <label htmlFor="teamSize" className="block text-sm font-medium mb-1">Team size</label>
+                    <label htmlFor="industry" className="block text-sm font-medium mb-1">Industry</label>
                     <select
-                      id="teamSize"
-                      {...methods.register('teamSize')}
-                      className={`w-full border rounded-md p-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary ${errors.teamSize ? 'border-red-500' : ''}`}
+                      id="industry"
+                      {...methods.register('industry')}
+                      className={`w-full border rounded-md p-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary ${errors.industry ? 'border-red-500' : ''}`}
                       defaultValue=""
                     >
-                      <option value="" disabled>Select team size</option>
-                      {TEAM_SIZE_OPTIONS.map(opt => <option key={opt} value={opt}>{opt}</option>)}
+                      <option value="" disabled>Select Industry</option>
+                      {INDUSTRY_OPTIONS.map(opt => <option key={opt} value={opt}>{opt}</option>)}
                     </select>
-                    {errors.teamSize && <p className="text-xs text-red-500 mt-1">{errors.teamSize.message as string}</p>}
+                    {errors.industry && <p className="text-xs text-red-500 mt-1">{errors.industry.message as string}</p>}
                   </div>
-                  <RHFTextField name="businessDescription" label="Business description (max 100 words)" placeholder="Describe what your startup does, the problem you're solving, and your target market" />
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <RHFTextField name="website" label="Enter your website (Optional)" placeholder="Example, www.yourstartup.com" />
-                    <RHFTextField name="social" label="Enter your social media handle (Optional)" placeholder="Enter your startup's social media handle" />
+                  <div>
+                    <label htmlFor="startupStage" className="block text-sm font-medium mb-1">Startup stage</label>
+                    <select
+                      id="startupStage"
+                      {...methods.register('startupStage')}
+                      className={`w-full border rounded-md p-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary ${errors.startupStage ? 'border-red-500' : ''}`}
+                      defaultValue=""
+                    >
+                      <option value="" disabled>Select stage</option>
+                      {STAGE_OPTIONS.map(opt => <option key={opt} value={opt}>{opt}</option>)}
+                    </select>
+                    {errors.startupStage && <p className="text-xs text-red-500 mt-1">{errors.startupStage.message as string}</p>}
                   </div>
                 </div>
-              )}
-              <button type="button" className="w-full text-left font-semibold py-2 border rounded-lg flex items-center justify-between gap-2 mt-4" onClick={() => setFundraiserOpen(v => !v)}>
-                <span>Fundraising details</span>
-                {fundraiserOpen ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
-              </button>
-              {fundraiserOpen && (
-                <div className="py-2 space-y-4">
-                  <FundraiserDetailsSection methods={methods} errors={errors} />
+                <div>
+                  <label htmlFor="teamSize" className="block text-sm font-medium mb-1">Team size</label>
+                  <select
+                    id="teamSize"
+                    {...methods.register('teamSize')}
+                    className={`w-full border rounded-md p-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary ${errors.teamSize ? 'border-red-500' : ''}`}
+                    defaultValue=""
+                  >
+                    <option value="" disabled>Select team size</option>
+                    {TEAM_SIZE_OPTIONS.map(opt => <option key={opt} value={opt}>{opt}</option>)}
+                  </select>
+                  {errors.teamSize && <p className="text-xs text-red-500 mt-1">{errors.teamSize.message as string}</p>}
                 </div>
-              )}
+                <RHFTextField name="businessDescription" label="Business description (max 100 words)" placeholder="Describe what your startup does, the problem you're solving, and your target market" />
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <RHFTextField name="website" label="Enter your website (Optional)" placeholder="Example, www.yourstartup.com" />
+                  <RHFTextField name="social" label="Enter your social media handle (Optional)" placeholder="Enter your startup's social media handle" />
+                </div>
+              </AccordionCard>
+              <AccordionCard
+                open={fundraiserOpen}
+                onClick={() => setFundraiserOpen(v => !v)}
+                title="Fundraising details"
+              >
+                <FundraiserDetailsSection methods={methods} errors={errors} />
+              </AccordionCard>
             </div>
             {/* Desktop layout: all fields visible */}
             <div className="hidden md:block space-y-4">

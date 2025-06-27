@@ -22,17 +22,17 @@ const WelcomeCard = ({ onCreateFundraiser, skipToSignUp }: WelcomeCardProps) => 
 				</CardDescription>
 			</CardHeader>
 			<CardContent>
-				<div className="flex flex-col items-center gap-4">
+				<div className="flex flex-col items-center gap-4 w-full">
 					<Button
 						onClick={onCreateFundraiser}
-						className="bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 px-4 rounded w-[350px]"
+						className="bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 px-4 rounded w-full max-w-xs sm:max-w-sm md:max-w-md"
 					>
 						Let's create your fundraiser
 					</Button>
 					<Button
 						onClick={skipToSignUp}
 						variant="outline"
-						className="text-gray-700 border-gray-300 hover:bg-gray-100 font-bold py-2 px-4 rounded w-[350px]"
+						className="text-gray-700 border-gray-300 hover:bg-gray-100 font-bold py-2 px-4 rounded w-full max-w-xs sm:max-w-sm md:max-w-md"
 					>
 						Or sign up to support other fundraisers
 					</Button>

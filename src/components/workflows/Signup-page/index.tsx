@@ -192,7 +192,6 @@ export default function SignupForm() {
                 <TextField name="firstName" label="First Name" placeholder="Enter your first name"/>
                 <TextField name="lastName" label="Last Name" placeholder="Enter your last name"/>
               </div>
-
             <div className="space-y-2">
                 <TextField name="email" label="Email Address" placeholder="Enter a valid email address"/>
                 
@@ -304,7 +303,7 @@ export default function SignupForm() {
      
     </div>
     </section>
-     <div className="w-full max-w-sm sm:max-w-md md:max-w-lg lg:max-w-xl mx-auto px-2 sm:px-4 pb-6 flex flex-row justify-between gap-3 sm:gap-4 mt-8">
+     <div className="w-full max-w-3xl sm:max-w-md md:max-w-3xl lg:max-w-3xl mx-auto px-2 sm:px-4 pb-6 flex flex-row justify-between gap-3 sm:gap-4 mt-2">
 					<Button
           type="button"
 						onClick={handleBack}

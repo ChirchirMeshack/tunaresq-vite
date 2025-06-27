@@ -2,12 +2,13 @@ import { FormProvider, useForm, UseFormReturn, FieldErrors } from 'react-hook-fo
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@components/ui/card';
 import { RHFTextField } from '@components/form/RHFTextField';
 import { Button } from '@components/ui/button';
-import { ArrowLeft, ArrowRight, ImagePlus, ChevronDown, ChevronUp } from 'lucide-react';
+import { ArrowLeft, ArrowRight, ImagePlus } from 'lucide-react';
 import { useOutletContext } from 'react-router-dom';
 import { Step } from '@lib/progressUtils';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useState } from 'react';
+import { AccordionCard } from './AccordionCard';
 
 const FundraiserDetailsSection = ({
   methods,
@@ -121,28 +122,24 @@ const OrganizationFundraiserForm = () => {
           <CardContent className="space-y-4">
             {/* Accordions for mobile, expanded by default on desktop */}
             <div className="block md:hidden">
-              <button type="button" className="w-full text-left font-semibold py-2 border rounded-lg flex items-center justify-between gap-2" onClick={() => setOrgOpen(v => !v)}>
-                <span>Organisation details</span>
-                {orgOpen ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
-              </button>
-              {orgOpen && (
-                <div className="py-2 space-y-4">
-                  <RHFTextField name="organizationName" label="Organisation name" placeholder="Enter your organisation's name" />
-                  <RHFTextField name="registrationNumber" label="Registration number" placeholder="Non-profit/charity organization registration number" />
-                  <RHFTextField name="mission" label="Organization's mission  (max 50 words)" placeholder="Describe what your non-profit organization's mission and what problem you're solving" />
-                  <RHFTextField name="website" label="Enter your website (Optional)" placeholder="Example, my.organization.com" />
-                  <RHFTextField name="social" label="Enter your social media handle (Optional)" placeholder="Enter your main social media handle for your organization" />
-                </div>
-              )}
-              <button type="button" className="w-full text-left font-semibold py-2 border rounded-lg flex items-center justify-between gap-2 mt-4" onClick={() => setFundraiserOpen(v => !v)}>
-                <span>Fundraiser details</span>
-                {fundraiserOpen ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
-              </button>
-              {fundraiserOpen && (
-                <div className="py-2 space-y-4">
-                  <FundraiserDetailsSection methods={methods} errors={errors} />
-                </div>
-              )}
+              <AccordionCard
+                open={orgOpen}
+                onClick={() => setOrgOpen(v => !v)}
+                title="Organisation details"
+              >
+                <RHFTextField name="organizationName" label="Organisation name" placeholder="Enter your organisation's name" />
+                <RHFTextField name="registrationNumber" label="Registration number" placeholder="Non-profit/charity organization registration number" />
+                <RHFTextField name="mission" label="Organization's mission  (max 50 words)" placeholder="Describe what your non-profit organization's mission and what problem you're solving" />
+                <RHFTextField name="website" label="Enter your website (Optional)" placeholder="Example, my.organization.com" />
+                <RHFTextField name="social" label="Enter your social media handle (Optional)" placeholder="Enter your main social media handle for your organization" />
+              </AccordionCard>
+              <AccordionCard
+                open={fundraiserOpen}
+                onClick={() => setFundraiserOpen(v => !v)}
+                title="Fundraiser details"
+              >
+                <FundraiserDetailsSection methods={methods} errors={errors} />
+              </AccordionCard>
             </div>
             {/* Desktop layout: all fields visible */}
             <div className="hidden md:block space-y-4">

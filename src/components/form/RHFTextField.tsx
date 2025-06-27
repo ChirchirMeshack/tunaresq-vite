@@ -68,18 +68,16 @@ const TextField = ({
 					)}
 
                     {/* Description or Error Message Container */}
-                    <div className="md:min-h-[20px]">
-                        {description && !error && (
-                            <p className="text-sm text-muted-foreground">
-                                {description}
-                            </p>
-                        )}
-                        {error && (
-                            <p className="text-sm font-medium text-destructive">
-                                {error.message}
-                            </p>
-                        )}
-                    </div>
+                    {description && !error && (
+                        <p className="text-sm text-muted-foreground">
+                            {description}
+                        </p>
+                    )}
+                    {error && (
+                        <p className="text-sm font-medium text-destructive">
+                            {error.message}
+                        </p>
+                    )}
 				</div>
 			)}
 		/>
@@ -121,20 +119,17 @@ export const RHFTextField = ({
 					)}
               </div>
 
-
                     {/* Description or Error Message Container */}
-                    <div className="md:min-h-[20px]">
-                        {description && !error && (
-                            <p className="text-sm text-muted-foreground">
-                                {description}
-                            </p>
-                        )}
-                        {error && (
-                            <p className="text-sm font-medium text-destructive">
-                                {error.message}
-                            </p>
-                        )}
-                    </div>
+                    {description && !error && (
+                        <p className="text-sm text-muted-foreground">
+                            {description}
+                        </p>
+                    )}
+                    {error && (
+                        <p className="text-sm font-medium text-destructive">
+                            {error.message}
+                        </p>
+                    )}
 				</div>
 			)}
 		/>
