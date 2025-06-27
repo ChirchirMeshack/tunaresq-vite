@@ -1,15 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { USER as User } from "types/user";
 
-interface DashboardStats {
-  teams: number;
-  projects: number;
-}
-
 
 export type AuthCtx = {
   user: User | null;
-  dashboardStats: DashboardStats;
   loginWithGoogle: () => Promise<{ message: string; type: string }>;
   loginWithFacebook: () => Promise<{ message: string; type: string }>;
   loginWithTwitter: () => Promise<{ message: string; type: string }>;
@@ -29,23 +23,20 @@ export enum AuthActionsTypes {
   REGISTER = "REGISTER",
   LOGOUT = "LOGOUT",
   UPDATEUSER = "UPDATEUSER",
-  UPDATEDASHBOARDSTATS = "UPDATEDASHBOARDSTATS",
 }
 
 export type AuthState = {
   user: null | User;
-  dashboardStats: DashboardStats;
-  isAdmin: boolean;
 };
 
 export type AuthActions =
   | {
       type: AuthActionsTypes.LOGIN;
-      payload: { user: User; isAdmin: boolean };
+      payload: { user: User; };
     }
   | {
       type: AuthActionsTypes.REGISTER;
-      payload: { user: User; isAdmin: boolean };
+      payload: { user: User; };
     }
   | {
       type: AuthActionsTypes.UPDATEUSER;
@@ -54,8 +45,4 @@ export type AuthActions =
   | {
       type: AuthActionsTypes.LOGOUT;
       payload: null;
-    }
-  | {
-      type: AuthActionsTypes.UPDATEDASHBOARDSTATS;
-      payload: DashboardStats;
     };

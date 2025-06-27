@@ -27,11 +27,6 @@ export const AuthContext = createContext<AuthCtx | null>(null);
 
 const defaultAuthState: AuthState = {
   user: null,
-  isAdmin: false,
-  dashboardStats: {
-    teams: 0,
-    projects: 0,
-  },
 };
 
 
@@ -43,14 +38,12 @@ const authReducer = (state: AuthState, action: AuthActions) => {
       return {
         ...state,
         user: payload.user,
-        isAdmin: payload.isAdmin,
       };
 
     case AuthActionsTypes.REGISTER:
       return {
         ...state,
         user: payload.user,
-        isAdmin: payload.isAdmin,
       };
 
     case AuthActionsTypes.UPDATEUSER:
@@ -58,9 +51,6 @@ const authReducer = (state: AuthState, action: AuthActions) => {
 
     case AuthActionsTypes.LOGOUT:
       return { ...state, user: null };
-
-    case AuthActionsTypes.UPDATEDASHBOARDSTATS:
-      return { ...state, dashboardStats: payload };
 
     default:
       return state;
@@ -79,14 +69,9 @@ export const AuthCtxProvider = ({ children }: PropsWithChildren) => {
   //       const loginResp = await getLoggedInUserData(user.uid);
 
   //       if (loginResp !== "User details not found") {
-  //         const statsData = await getUserStats(loginResp.id);
-  //         dispatch({
-  //           type: AuthActionsTypes.UPDATEDASHBOARDSTATS,
-  //           payload: statsData,
-  //         });
   //         dispatch({
   //           type: AuthActionsTypes.LOGIN,
-  //           payload: { user: loginResp, isAdmin: loginResp.role === "Admin" },
+  //           payload: { user: loginResp },
   //         });
   //       }
   //     } else {
@@ -122,7 +107,7 @@ export const AuthCtxProvider = ({ children }: PropsWithChildren) => {
       } else {
         dispatch({
           type: AuthActionsTypes.LOGIN,
-          payload: { user: loginResp, isAdmin: true },
+          payload: { user: loginResp },
         });
       }
       return { message: "Login Successful", type: "success" };
@@ -153,7 +138,7 @@ export const AuthCtxProvider = ({ children }: PropsWithChildren) => {
       } else {
         dispatch({
           type: AuthActionsTypes.LOGIN,
-          payload: { user: loginResp, isAdmin: true },
+          payload: { user: loginResp },
         });
       }
       return { message: "Login Successful", type: "success" };
@@ -184,7 +169,7 @@ export const AuthCtxProvider = ({ children }: PropsWithChildren) => {
       } else {
         dispatch({
           type: AuthActionsTypes.LOGIN,
-          payload: { user: loginResp, isAdmin: true },
+          payload: { user: loginResp },
         });
       }
       return { message: "Login Successful", type: "success" };
@@ -208,15 +193,6 @@ export const AuthCtxProvider = ({ children }: PropsWithChildren) => {
         };
       }
       // const loginResp = await getLoggedInUserData(user.uid);
-      // const isAdmin = loginResp.role === "Admin";
-      const statsData = {
-        teams: 0,
-        projects: 0,
-      }
-      dispatch({
-        type: AuthActionsTypes.UPDATEDASHBOARDSTATS,
-        payload: statsData,
-      });
       dispatch({
         type: AuthActionsTypes.LOGIN,
         payload: { user: {
@@ -230,7 +206,7 @@ export const AuthCtxProvider = ({ children }: PropsWithChildren) => {
           country_code: "",
           mobile_number: "",
           updatedAt: new Date()
-        }, isAdmin: true },
+        } },
       });
 
       return { message: "Login Successful", type: "success" };
@@ -268,7 +244,7 @@ export const AuthCtxProvider = ({ children }: PropsWithChildren) => {
         }
         dispatch({
           type: AuthActionsTypes.REGISTER,
-          payload: { user: response.user as User, isAdmin: true },
+          payload: { user: response.user as User },
         });
         return { message: "Sign Up Successful", type: "success" };
       } catch (error: any) {
@@ -340,14 +316,12 @@ export const AuthCtxProvider = ({ children }: PropsWithChildren) => {
   const authCtxValue = useMemo(
     () => ({
       user: authState.user,
-      isAdmin: authState.isAdmin,
       loginWithFacebook,
       loginWithGoogle,
       loginWithTwitter,
       credentialsLogin,
       credentialsSignUp,
       logout,
-      dashboardStats: authState.dashboardStats,
     }),
     [authState, loginWithFacebook, loginWithGoogle, loginWithTwitter, credentialsLogin, credentialsSignUp, logout]
   );
