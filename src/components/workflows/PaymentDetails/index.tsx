@@ -71,14 +71,14 @@ const ArrowRightIcon = () => (
 
 const PaymentDetails = ({ onBack = () => {}, onContinue = () => {}, onPaymentChange = () => {}, className = "" }) => {
   const [activeTab, setActiveTab] = useState("mobile")
-  const [selectedPayment, setSelectedPayment] = useState("mpesa-safaricom")
+  const [selectedPayment, setSelectedPayment] = useState("mpesa")
   const [selectedCardPayment, setSelectedCardPayment] = useState("mastercard")
   const [formData, setFormData] = useState<Record<string, string>>({})
 
   const [expandedMethods, setExpandedMethods] = useState<Record<string, boolean>>({
-    "mpesa-safaricom": true,
-    "mpesa-airtel": false,
-    "mpesa-equitel": false,
+    "mpesa": true,
+    "airtel": false,
+    "equitel": false,
     "airtel-money": false,
   })
 
@@ -132,7 +132,7 @@ const PaymentDetails = ({ onBack = () => {}, onContinue = () => {}, onPaymentCha
 
   const paymentMethods = [
     {
-      id: "mpesa-safaricom",
+      id: "mpesa",
       name: "M-Pesa Safaricom",
       description: "Receive funds directly to your M-pesa phone number",
       icon: <MobileIcon />,
@@ -142,8 +142,8 @@ const PaymentDetails = ({ onBack = () => {}, onContinue = () => {}, onPaymentCha
       fields: ["Enter your M-pesa phone number"],
     },
     {
-      id: "mpesa-airtel",
-      name: "M-pesa Airtel",
+      id: "airtel",
+      name: "Airtel",
       description: "Receive funds directly to your Airtel number",
       icon: <ShoppingCartIcon />,
       iconColor: "text-blue-600",
@@ -152,8 +152,8 @@ const PaymentDetails = ({ onBack = () => {}, onContinue = () => {}, onPaymentCha
       fields: ["Enter the M-pesa Airtel number"],
     },
     {
-      id: "mpesa-equitel",
-      name: "M-pesa Equitel",
+      id: "equitel",
+      name: "Equitel",
       description: "Receive funds directly to your Equitel number",
       icon: <DocumentIcon />,
       iconColor: "text-green-600",
