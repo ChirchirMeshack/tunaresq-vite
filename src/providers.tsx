@@ -2,6 +2,7 @@ import { type PropsWithChildren, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import {HelmetProvider} from "react-helmet-async";
 import { SnackbarProvider } from "notistack";
+import { AuthCtxProvider } from "@contexts/auth/auth-context";
 
 
 const Providers = ({ children }: PropsWithChildren) => {
@@ -24,7 +25,7 @@ const Providers = ({ children }: PropsWithChildren) => {
 			dense
 			preventDuplicate
 		>
-			{children}
+			<AuthCtxProvider>{children}</AuthCtxProvider>
 		</SnackbarProvider>
 		</HelmetProvider>
 	);

@@ -2,10 +2,10 @@ import * as yup from "yup";
 
 
 export const SignUpFormSchema = yup.object().shape({
-	firstName: yup.string().required("Company Name is required"),
-	lastName: yup.string().required("Company Name is required"),
+	firstname: yup.string().required("Company Name is required"),
+	lastname: yup.string().required("Company Name is required"),
 
-	email: yup
+	email_address: yup
 		.string()
 		.required("Email is required")
 		.email("Enter a valid email address"),
@@ -26,9 +26,9 @@ export const SignUpFormSchema = yup.object().shape({
 export type SignUpFormData = yup.InferType<typeof SignUpFormSchema>;
 
 export const DefaultSignUpFormValues: SignUpFormData = {
-	firstName: "",
-    lastName: "",
-	email: "",
+	firstname: "",
+    lastname: "",
+	email_address: "",
 	password: "",
     confirmPassword: "",
 };
