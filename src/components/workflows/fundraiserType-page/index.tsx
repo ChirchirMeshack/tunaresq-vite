@@ -1,15 +1,15 @@
 // import { useState } from "react";
 import { Building2, User, Users, ArrowLeft, ArrowRight } from 'lucide-react';
 import { useOutletContext } from 'react-router-dom';
-import { Step } from '@lib/progressUtils';
 import { Button } from "@components/ui/button";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@components/ui/card";
-import { useFundraiserTypeStore } from '@lib/fundraiserTypeStore';
+import { useFundraiserTypeStore } from 'stores/fundraiser-form';
+import { LayoutContextType } from '@layouts/registration';
 
 const FundraiserTypePage = () => {
 	// const [selectedFundraiserType, setSelectedFundraiserType] = useState<string | null>(null);
 	const { fundraiserType, setFundraiserType } = useFundraiserTypeStore();
-	const { handleStepComplete, setCurrentStep } = useOutletContext<{ steps: Step[]; currentStep: string; handleStepComplete: (stepId: string) => void; setCurrentStep: (stepId: string) => void }>();
+	const { handleStepComplete, setCurrentStep } = useOutletContext<LayoutContextType>();
 
 	const handleBack = () => {
 		setCurrentStep('welcome');
