@@ -10,7 +10,7 @@ import {
   CardContent,
 } from "@components/ui/card";
 import { Step } from "@lib/progressUtils";
-import { useFundraiserTypeStore } from "stores/fundraiser-form";
+import { FundraiserData, useFundraiserTypeStore } from "stores/fundraiser-form";
 import { cn } from "@lib/utils";
 
 interface EditableFieldProps {
@@ -105,7 +105,7 @@ const EditableField: React.FC<EditableFieldProps> = ({
 };
 
 export default function SignupForm() {
-  const { fundraiserType, setFundraiserType, fundraiserDetails, setFundraiserDetails } = useFundraiserTypeStore();
+  const { fundraiserType, setFundraiserType, fundraiserData, setFundraiserDetails } = useFundraiserTypeStore();
   
   const { setCurrentStep } = useOutletContext<{
     steps: Step[];
@@ -145,7 +145,7 @@ export default function SignupForm() {
     setCurrentStep("payment-details");
   };
   function handleSubmitFundraiserData(
-    fundraiserDetails: string | null,
+    fundraiserDetails: FundraiserData | null,
     fundraiserType: string | null,
     paymentDetails: string
   ): React.MouseEventHandler<HTMLButtonElement> {
@@ -197,7 +197,7 @@ export default function SignupForm() {
                   </h2>
                   <EditableField
                     label="Fundraiser Details"
-                    value={fundraiserDetails || ""}
+                    value={fundraiserData?.details || ""}
                     isEditing={editingField === "details"}
                     onEdit={() => handleEdit("details")}
                     onSave={(value) => handleSave("details", value)}
@@ -237,7 +237,7 @@ export default function SignupForm() {
         </Button>
         <Button
           type="button"
-          onClick={handleSubmitFundraiserData(fundraiserDetails, fundraiserType, paymentDetails)}
+          onClick={handleSubmitFundraiserData(fundraiserData, fundraiserType, paymentDetails)}
           className="w-[120px] md:w-[150px] rounded-lg bg-orange-500 hover:bg-orange-600 text-white font-medium px-4 sm:px-6 py-2 flex items-center justify-center gap-2"
         >
           Continue
