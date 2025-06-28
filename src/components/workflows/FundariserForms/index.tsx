@@ -1,19 +1,22 @@
 import { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useFundraiserTypeStore } from '@lib/fundraiserTypeStore';
+import { useOutletContext } from 'react-router-dom';
+import { useFundraiserTypeStore } from 'stores/fundraiser-form';
 import IndividualFundraiserForm from './individualForm';
 import StartupFundraiserForm from './startupForm';
 import OrganizationFundraiserForm from './OrganizationForm';
+import { LayoutContextType } from '@pages/registration-page';
 
 const FundraiserDetailsPage = () => {
   const { fundraiserType } = useFundraiserTypeStore();
-  const navigate = useNavigate();
+  const { handleStepComplete } = useOutletContext<LayoutContextType>();
+
 
   useEffect(() => {
     if (!fundraiserType) {
-      navigate('/registration/fundraiser-type'); // Adjust route as needed
+      handleStepComplete('create-account');
     }
-  }, [fundraiserType, navigate]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [fundraiserType]);
 
   if (!fundraiserType) return null;
 
