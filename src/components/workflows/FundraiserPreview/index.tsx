@@ -11,6 +11,7 @@ import {
 } from "@components/ui/card";
 import { Step } from "@lib/progressUtils";
 import { useFundraiserTypeStore } from "stores/fundraiser-form";
+import { cn } from "@lib/utils";
 
 interface EditableFieldProps {
   label: string;
@@ -45,7 +46,7 @@ const EditableField: React.FC<EditableFieldProps> = ({
   return (
     <div className="bg-gray-50 border border-gray-200 rounded-lg p-4 mb-4">
       <div className="flex justify-between items-start">
-        <div className="flex-1">
+        <div className={cn("flex-1", isEditing && " overflow-y-auto max-h-[400px]")}>
           {isEditing ? (
             <div className="space-y-3">
               {multiline ? (
@@ -82,7 +83,7 @@ const EditableField: React.FC<EditableFieldProps> = ({
           ) : (
             <div className="text-gray-700">
               {multiline ? (
-                <p className="whitespace-pre-wrap leading-relaxed">{value}</p>
+                <p className="whitespace-pre-wrap leading-relaxed overflow-y-auto max-h-[400px]">{value}</p>
               ) : (
                 <p className="font-medium">{value}</p>
               )}
@@ -92,7 +93,7 @@ const EditableField: React.FC<EditableFieldProps> = ({
         {!isEditing && (
           <button
             onClick={onEdit}
-            className="ml-4 px-3 py-2 bg-gray-800 text-white rounded-md hover:bg-gray-900 transition-colors flex items-center gap-2 text-sm"
+            className="px-3 py-2 bg-gray-800 text-white rounded-md hover:bg-gray-900 transition-colors flex items-center gap-2 text-sm"
           >
             <Edit3 size={16} />
             Edit
@@ -141,7 +142,7 @@ export default function SignupForm() {
   };
 
   const handleBack = () => {
-    setCurrentStep("select-beneficiary");
+    setCurrentStep("payment-details");
   };
   function handleSubmitFundraiserData(
     fundraiserDetails: string | null,
