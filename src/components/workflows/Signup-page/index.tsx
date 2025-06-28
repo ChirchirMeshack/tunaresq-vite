@@ -215,11 +215,11 @@ export default function SignupForm() {
            id="signup-form"
            >
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
-                <TextField name="firstName" label="First Name" placeholder="Enter your first name"/>
-                <TextField name="lastName" label="Last Name" placeholder="Enter your last name"/>
+                <TextField name="firstname" label="First Name" placeholder="Enter your first name"/>
+                <TextField name="lastname" label="Last Name" placeholder="Enter your last name"/>
               </div>
             <div className="space-y-2">
-                <TextField name="email" label="Email Address" placeholder="Enter a valid email address"/>
+                <TextField name="email_address" label="Email Address" placeholder="Enter a valid email address"/>
                 
                 {/* <TextField
 					className="focus:outline-none"
