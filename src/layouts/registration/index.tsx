@@ -2,7 +2,10 @@ import { Outlet} from "react-router-dom";
 import Progress from "./progress";
 import Header from "./header";
 import { defaultSteps, Step } from "@lib/progressUtils";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { getAllFundraiserTypes } from "api/fundraiser-type";
+import { handleErrors } from "@lib/utils";
+import { useFundraiserTypeStore } from "stores/fundraiser-form";
 
 export type LayoutContextType = {
   steps: Step[];
@@ -14,6 +17,7 @@ export type LayoutContextType = {
 const RegistrationLayout = () => {
   const [steps, setSteps] = useState(defaultSteps);
   const [currentStep, setCurrentStep] = useState<string>('welcome');
+  const {fundraiserTypes, updateFundraiserTypes} = useFundraiserTypeStore();
 
   const handleStepComplete = (currentStepId: string) => {
     const updatedSteps = steps.map((step) => ({
@@ -38,6 +42,25 @@ const RegistrationLayout = () => {
     handleStepComplete,
     setCurrentStep,
   };
+
+  const fetchFundraiserTypes = async () => {
+    try {
+    const response = await getAllFundraiserTypes();
+      if (!response.data) {
+        handleErrors(response.error);
+      }
+      updateFundraiserTypes(response.data);
+    } catch (error) {
+      handleErrors(error);
+    }
+  }
+
+  useEffect(() => {
+    if(fundraiserTypes.length === 0) {
+      fetchFundraiserTypes();
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  },[]);
 
   return (
     <>

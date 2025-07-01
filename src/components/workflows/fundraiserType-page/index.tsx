@@ -1,5 +1,5 @@
 // import { useState } from "react";
-import { Building2, User, Users, ArrowLeft, ArrowRight } from 'lucide-react';
+import { User, ArrowLeft, ArrowRight } from 'lucide-react';
 import { useOutletContext } from 'react-router-dom';
 import { Button } from "@components/ui/button";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@components/ui/card";
@@ -8,7 +8,7 @@ import { LayoutContextType } from '@layouts/registration';
 
 const FundraiserTypePage = () => {
 	// const [selectedFundraiserType, setSelectedFundraiserType] = useState<string | null>(null);
-	const { fundraiserType, setFundraiserType } = useFundraiserTypeStore();
+	const { fundraiserTypes, selectedFundraiserType, selectFundraiserType } = useFundraiserTypeStore();
 	const { handleStepComplete, setCurrentStep } = useOutletContext<LayoutContextType>();
 
 	const handleBack = () => {
@@ -33,88 +33,36 @@ const FundraiserTypePage = () => {
 				</CardHeader>
 				<CardContent className="space-y-3 sm:space-y-4">
 					{/* For Yourself */}
+					{fundraiserTypes && fundraiserTypes.length > 0 && (
+						fundraiserTypes.map((fundraiserType) => (
 					<label
-						className={`flex items-center p-3 sm:p-4 rounded-lg border cursor-pointer ${fundraiserType === "yourself" ? "border-green-500 bg-green-50" : "border-gray-300"}`}
-						htmlFor="yourself"
+					key={fundraiserType.name}
+						className={`flex items-center p-3 sm:p-4 rounded-lg border cursor-pointer ${fundraiserType.name === selectedFundraiserType ? "border-green-500 bg-green-50" : "border-gray-300"}`}
+						htmlFor={fundraiserType.name}
 					>
 						<input
 							type="radio"
-							id="yourself"
+							id={fundraiserType.name}
 							name="fundraiserType"
-							value="yourself"
-							checked={fundraiserType === "yourself"}
-							onChange={() => setFundraiserType("yourself")}
+							value={fundraiserType.name}
+							checked={fundraiserType.name === selectedFundraiserType}
+							onChange={() => selectFundraiserType(fundraiserType.name)}
 							className="form-radio h-4 w-4 sm:h-5 sm:w-5 text-green-600"
 						/>
 						<div className="ml-3 sm:ml-4 flex-grow">
 							<span className="text-base sm:text-lg font-semibold text-gray-800">
-								For Yourself
+								{fundraiserType.name.charAt(0).toUpperCase() + fundraiserType.name.slice(1)}
 							</span>
 							<p className="text-xs sm:text-sm text-gray-500">
-								You are raising funds for yourself or your project
+								{fundraiserType.description}
 							</p>
 						</div>
 						{/* User icon from lucide-react */}
 						<div className="text-gray-400">
 							<User className="size-5 sm:size-6" />
 						</div>
-					</label>
-
-					{/* For a Startup or Business */}
-					<label
-						className={`flex items-center p-3 sm:p-4 rounded-lg border cursor-pointer ${fundraiserType === "startup" ? "border-green-500 bg-green-50" : "border-gray-300"}`}
-						htmlFor="startup"
-					>
-						<input
-							type="radio"
-							id="startup"
-							name="fundraiserType"
-							value="startup"
-							checked={fundraiserType === "startup"}
-							onChange={() => setFundraiserType("startup")}
-							className="form-radio h-4 w-4 sm:h-5 sm:w-5 text-green-600"
-						/>
-						<div className="ml-3 sm:ml-4 flex-grow">
-							<span className="text-base sm:text-lg font-semibold text-gray-800">
-								For a Startup or Business
-							</span>
-							<p className="text-xs sm:text-sm text-gray-500">
-								You are raising funds for your startup or your business
-							</p>
-						</div>
-						{/* Users icon from lucide-react */}
-						<div className="text-gray-400">
-							<Users className="size-5 sm:size-6" />
-						</div>
-					</label>
-
-					{/* For a Charity or Nonprofit */}
-					<label
-						className={`flex items-center p-3 sm:p-4 rounded-lg border cursor-pointer ${fundraiserType === "organization" ? "border-green-500 bg-green-50" : "border-gray-300"}`}
-						htmlFor="organization"
-					>
-						<input
-							type="radio"
-							id="organization"
-							name="fundraiserType"
-							value="organization"
-							checked={fundraiserType === "organization"}
-							onChange={() => setFundraiserType("organization")}
-							className="form-radio h-4 w-4 sm:h-5 sm:w-5 text-green-600"
-						/>
-						<div className="ml-3 sm:ml-4 flex-grow">
-							<span className="text-base sm:text-lg font-semibold text-gray-800">
-								For a Charity or Nonprofit
-							</span>
-							<p className="text-xs sm:text-sm text-gray-500">
-								You are raising funds for a charity drive or a nonprofit organisation
-							</p>
-						</div>
-						{/* Building icon from lucide-react */}
-						<div className="text-gray-400">
-							<Building2 className="size-5 sm:size-6" />
-						</div>
-					</label>
+					</label>)
+))}
 				</CardContent>
 			</Card>
 			<div className="w-full max-w-3xl mx-auto px-2 sm:px-4 pb-6 flex flex-row justify-between gap-3 sm:gap-4 mt-4">
@@ -129,7 +77,7 @@ const FundraiserTypePage = () => {
 				<Button
 					onClick={handleContinue}
 					className="w-[120px] md:w-[150px] rounded-lg bg-orange-500 hover:bg-orange-600 text-white font-medium px-4 sm:px-6 py-2 flex items-center justify-center gap-2"
-					disabled={!fundraiserType}
+					disabled={!selectedFundraiserType}
 					// Disable button if no type is selected
 				>
 					Continue

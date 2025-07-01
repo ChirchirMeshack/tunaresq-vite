@@ -2,6 +2,7 @@ import { IndividualFundraiserFormData } from '@components/workflows/FundariserFo
 import { OrganizationFundraiserFormData } from '@components/workflows/FundariserForms/OrganizationForm';
 import { StartupFundraiserFormData } from '@components/workflows/FundariserForms/startupForm';
 import { create } from 'zustand';
+import { FundraiserType } from '../api/fundraiser-type';
 
 
 export type FundraiserData =
@@ -9,13 +10,13 @@ export type FundraiserData =
   | StartupFundraiserFormData
   | OrganizationFundraiserFormData;
 
-interface FundraiserTypeState {
-  fundraiserType: string | null;
-  fundraiserData: FundraiserData | null;
-  setFundraiserType: (type: string) => void;
-  setFundraiserDetails: (details: string) => void;
-  setFundraiserData: (data: FundraiserData) => void;
-}
+// interface FundraiserTypeState {
+//   fundraiserType: string | null;
+//   fundraiserData: FundraiserData | null;
+//   setFundraiserType: (type: string) => void;
+//   setFundraiserDetails: (details: string) => void;
+//   setFundraiserData: (data: FundraiserData) => void;
+// }
 export const fundraiserDetails = 
     `Help Sarah Johnson recover from a life-changing accident.
     Sarah, a devoted mother of two and elementary school teacher,
@@ -25,22 +26,91 @@ export const fundraiserDetails =
     Every contribution, no matter how small, makes a meaningful difference in Sarah's journey to recovery.`
   ;
 
-export const useFundraiserTypeStore = create<FundraiserTypeState>((set) => ({
-  fundraiserType: null,
-  fundraiserData: null,
+  
+interface FundraiserTypeStore {
+  fundraiserTypes: FundraiserType[];
+  selectedFundraiserType: string | null;
+  selectFundraiserType: (type: string) => void;
+  updateFundraiserTypes: (
+    fundraiserData: FundraiserType[] | FundraiserType | string
+  ) => void;
+  resetFundraiserTypes: () => void;
+}
 
-  setFundraiserType: (type) => set({ fundraiserType: type }),
+export const useFundraiserTypeStore = create<FundraiserTypeStore>(
+  (set) => ({
+    fundraiserTypes: [],
+    selectedFundraiserType: null,
+    selectFundraiserType: (type) => set({ selectedFundraiserType: type }),
+    updateFundraiserTypes: (fundraisersData) =>
+      set((state) => {
+        if (Array.isArray(fundraisersData)) {
+          // Replace items with new array
+          return {
+            ...state,
+            fundraiserTypes: fundraisersData,
+          };
+        }
 
-  setFundraiserDetails: (details) =>
-    set((state) => {
-      if (!state.fundraiserData) {
-        console.warn("Trying to set details, but fundraiserData is null");
-        return state;
-      }
-      return {
-        fundraiserData: { ...state.fundraiserData, details },
-      };
-    }),
+        const currentFundraisers = state.fundraiserTypes;
+  
+        if (typeof fundraisersData === "string") {
+          // Remove item by ID
+          const filteredFundraisers = currentFundraisers.filter(
+            (obj) => obj.id !== fundraisersData
+          );
+          return {
+            ...state,
+            fundraiserTypes: filteredFundraisers,
+          };
+        }
+  
+        // Update or add single fundraiser
+        const foundIndex = currentFundraisers.findIndex(
+          (obj) => obj.id === fundraisersData.id
+        );
+  
+        if (foundIndex !== -1) {
+          const updatedItems = [...currentFundraisers];
+          updatedItems[foundIndex] = fundraisersData;
+          return {
+            ...state,
+            fundraiserTypes: updatedItems,
+          };
+        }
+  
+        return {
+          ...state,
+          fundraiserTypes: [...currentFundraisers, fundraisersData],
+        };
+      }),
+    resetFundraiserTypes: () =>
+      set((state) => {
+        return {
+          ...state,
+          fundraiserTypes: [],
+        };
+      }),
+  })
+);
 
-  setFundraiserData: (data) => set({ fundraiserData: data }),
-}));
+
+// export const useFundraiserTypeStore = create<FundraiserTypeState>((set) => ({
+//   fundraiserType: null,
+//   fundraiserData: null,
+
+//   setFundraiserType: (type) => set({ fundraiserType: type }),
+
+//   setFundraiserDetails: (details) =>
+//     set((state) => {
+//       if (!state.fundraiserData) {
+//         console.warn("Trying to set details, but fundraiserData is null");
+//         return state;
+//       }
+//       return {
+//         fundraiserData: { ...state.fundraiserData, details },
+//       };
+//     }),
+
+//   setFundraiserData: (data) => set({ fundraiserData: data }),
+// }));
