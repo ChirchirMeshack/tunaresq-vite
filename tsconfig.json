@@ -25,6 +25,7 @@
 			"@components/*": ["./components/*"],
 			"@layouts/*": ["./layouts/*"],
 			"@pages/*": ["./pages/*"],
+			"@contexts/*": ["./contexts/*"],
 			"@styles/*": ["./styles/*"],
 			"@lib/*": ["./lib/*"],
 			"@hooks/*": ["./hooks/*"],

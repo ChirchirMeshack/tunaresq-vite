@@ -5,10 +5,10 @@ import { createUser, socialLogin } from "../src/lib/auth"
 
 export async function signupAction(formData: SignUpFormData) {
   try {
-    const {firstName, lastName, email, password} = formData;
+    const {firstname, lastname, email_address, password} = formData;
 
 
-    const result = await createUser(email, password, firstName, lastName)
+    const result = await createUser(email_address, password, firstname, lastname)
 
     return {
       success: true,

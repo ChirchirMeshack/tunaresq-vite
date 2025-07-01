@@ -85,7 +85,7 @@ const validationSchema = yup.object({
   // image: yup.mixed().notRequired(),
 });
 
-type OrganizationFundraiserFormData = yup.InferType<typeof validationSchema>;
+export type OrganizationFundraiserFormData = yup.InferType<typeof validationSchema>;
 
 const OrganizationFundraiserForm = () => {
   const methods = useForm<OrganizationFundraiserFormData>({

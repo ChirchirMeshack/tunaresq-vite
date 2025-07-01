@@ -8,13 +8,6 @@ import { Step } from '@lib/progressUtils';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 
-type IndividualFundraiserFormData = {
-  title: string;
-  details: string;
-  goal: number;
-  // image?: File | null; // If you want to handle image upload later
-};
-
 const validationSchema = yup.object({
   title: yup.string().required('Fundraiser title is required').max(120, 'Title must be at most 120 characters'),
   details: yup.string().required('Fundraiser details are required').max(1000, 'Details must be at most 1000 characters'),
@@ -26,6 +19,8 @@ const validationSchema = yup.object({
   // image: yup.mixed().notRequired(),
 });
 
+export type IndividualFundraiserFormData = yup.InferType<typeof validationSchema>;
+	
 const IndividualFundraiserForm = () => {
   const methods = useForm<IndividualFundraiserFormData>({
     resolver: yupResolver(validationSchema),

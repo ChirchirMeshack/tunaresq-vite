@@ -1,8 +1,15 @@
 import { Outlet} from "react-router-dom";
 import Progress from "./progress";
 import Header from "./header";
-import { defaultSteps } from "@lib/progressUtils";
+import { defaultSteps, Step } from "@lib/progressUtils";
 import { useState } from "react";
+
+export type LayoutContextType = {
+  steps: Step[];
+  currentStep: string;
+  handleStepComplete: (stepId: string) => void;
+  setCurrentStep: (stepId: string) => void;
+}
 
 const RegistrationLayout = () => {
   const [steps, setSteps] = useState(defaultSteps);

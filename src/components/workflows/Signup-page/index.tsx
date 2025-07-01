@@ -3,7 +3,7 @@ import { Button } from "@components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@components/ui/card"
 import { Separator } from "@components/ui/separator"
 import { Loader2, ArrowLeft, ArrowRight } from "lucide-react"
-import { signupAction, handleSocialLogin } from "../../../../actions/auth-actions"
+import { signupAction } from "../../../../actions/auth-actions"
 import { useOutletContext } from 'react-router-dom';
 import { Step } from '@lib/progressUtils';
 import EmailVerification from "../verification-page/EmailVerification"
@@ -14,8 +14,12 @@ import { SignUpFormData, SignUpFormSchema, DefaultSignUpFormValues } from "./val
 import { Form } from "@components/ui/form"
 import { Input } from "@components/ui/input"
 import { Label } from "@components/ui/label"
+import useAuthCtx from "@contexts/auth/use-auth"
+import { enqueueSnackbar } from "notistack"
+import { handleErrors } from "@lib/utils"
 
 export default function SignupForm() {
+  const {loginWithFacebook, loginWithGoogle, loginWithTwitter} = useAuthCtx()
 	const [showPassword, setShowPassword] = useState<boolean>(false);
 	const updateShowPasswordState = () => setShowPassword((prev) => !prev);
   const [message, setMessage] = useState<{ type: "success" | "error"; text: string } | null>(null)
@@ -57,13 +61,35 @@ export default function SignupForm() {
   const handleSocialSignup = async (provider: "google" | "facebook" | "twitter") => {
     setSocialLoading(provider)
     try {
-      const result = await handleSocialLogin(provider)
-
-      if (result.success) {
-        setMessage({ type: "success", text: result.message || `Successfully signed up with ${provider}!` })
-      } else {
-        setMessage({ type: "error", text: result.error || "Social login failed" })
+      let result;
+      switch (provider) {
+        case "google":
+          result = await loginWithGoogle()
+          break
+        case "facebook":
+          result = await loginWithFacebook()
+          break
+        case "twitter":
+          result = await loginWithTwitter()
+          break
       }
+      const { message, type } = result;
+      const variant = type as
+        | "default"
+        | "success"
+        | "warning"
+        | "error"
+        | "info";
+      enqueueSnackbar(message, { variant });
+
+      // if (result.success) {
+      //   setMessage({ type: "success", text: result.message || `Successfully signed up with ${provider}!` })
+      // } else {
+      //   setMessage({ type: "error", text: result.error || "Social login failed" })
+      // }
+      } catch (err) {
+      handleErrors(err);
+    
     } finally {
       setSocialLoading(null)
     }
@@ -189,11 +215,11 @@ export default function SignupForm() {
            id="signup-form"
            >
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
-                <TextField name="firstName" label="First Name" placeholder="Enter your first name"/>
-                <TextField name="lastName" label="Last Name" placeholder="Enter your last name"/>
+                <TextField name="firstname" label="First Name" placeholder="Enter your first name"/>
+                <TextField name="lastname" label="Last Name" placeholder="Enter your last name"/>
               </div>
             <div className="space-y-2">
-                <TextField name="email" label="Email Address" placeholder="Enter a valid email address"/>
+                <TextField name="email_address" label="Email Address" placeholder="Enter a valid email address"/>
                 
                 {/* <TextField
 					className="focus:outline-none"
