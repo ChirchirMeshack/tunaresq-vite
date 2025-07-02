@@ -4,10 +4,10 @@ import { useFundraiserTypeStore } from 'stores/fundraiser-form';
 import IndividualFundraiserForm from './individualForm';
 import StartupFundraiserForm from './startupForm';
 import OrganizationFundraiserForm from './OrganizationForm';
-import { LayoutContextType } from '@pages/registration-page';
+import { LayoutContextType } from '@layouts/registration';
 
 const FundraiserDetailsPage = () => {
-  const { fundraiserType } = useFundraiserTypeStore();
+  const { selectedFundraiserType: fundraiserType } = useFundraiserTypeStore();
   const { handleStepComplete } = useOutletContext<LayoutContextType>();
 
 
@@ -20,16 +20,17 @@ const FundraiserDetailsPage = () => {
 
   if (!fundraiserType) return null;
 
-  if (fundraiserType === 'yourself') {
+  if (fundraiserType.toLowerCase() === 'yourself') {
     return <IndividualFundraiserForm />;
   }
-  if (fundraiserType === 'startup') {
+  if (fundraiserType.toLowerCase() === 'startup') {
     return <StartupFundraiserForm />;
   }
-  if (fundraiserType === 'organization') {
+  if (fundraiserType.toLowerCase() === 'organization') {
     return <OrganizationFundraiserForm />;
   }
   return null;
+
 };
 
 export default FundraiserDetailsPage; 
