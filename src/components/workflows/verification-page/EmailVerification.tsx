@@ -7,6 +7,10 @@ import { Button } from "../../ui/button";
 import RHFTextField from "../../form/RHFTextField";
 import { useOutletContext } from 'react-router-dom';
 import { Step } from '@lib/progressUtils';
+import { verifyAccount } from "api/auth";
+import useAuthCtx from "@contexts/auth/use-auth";
+import { handleErrors } from "@lib/utils";
+import { enqueueSnackbar } from "notistack";
 
 
 // Validation schema with Yup
@@ -21,6 +25,8 @@ interface EmailVerificationProps {
 }
 
 const EmailVerification: React.FC<EmailVerificationProps> = ({ onBack }) => {
+  const {user} = useAuthCtx();
+  
   const { handleStepComplete } = useOutletContext<{ steps: Step[]; currentStep: string; handleStepComplete: (stepId: string) => void; setCurrentStep: (stepId: string) => void }>();
   const [isSuccess, setIsSuccess] = React.useState(false);
   
@@ -28,11 +34,28 @@ const EmailVerification: React.FC<EmailVerificationProps> = ({ onBack }) => {
     resolver: yupResolver(verificationSchema),
   });
   
-  const { handleSubmit, formState: { isSubmitting} } = form;
+  const { handleSubmit, reset, formState: { isSubmitting} } = form;
 
-  const onSubmit = () => {
-    setIsSuccess(true);
-  };
+  const handleVerification = async (formData: VerificationFormData) => {
+    try {
+      const result = await verifyAccount(
+        user?.email_address || "",
+        formData.code
+      )
+
+      if (result.data) {
+        enqueueSnackbar(result.message || "Account verified successfully!", { variant: "success" })
+        // Reset form
+        reset()
+        setIsSuccess(true);
+      } else {
+        handleErrors(result.message || "Something went wrong");
+      }
+      
+    } catch (error) {
+      handleErrors(error);
+    }
+  }
 
   const handleContinue = () => {
     handleStepComplete('create-account');
@@ -80,7 +103,7 @@ const EmailVerification: React.FC<EmailVerificationProps> = ({ onBack }) => {
         </CardHeader>
         <CardContent>
           <FormProvider {...form}>
-            <form onSubmit={handleSubmit(onSubmit)}>
+            <form onSubmit={handleSubmit(handleVerification)}>
               <RHFTextField
                 name="code"
                 label="The 6-digit code"
