@@ -14,14 +14,14 @@ import {
   signInWithPopup,
   signOut,
   // onAuthStateChanged,
-  createUserWithEmailAndPassword,
-  signInWithEmailAndPassword,
+  
   FacebookAuthProvider,
   TwitterAuthProvider,
 } from "firebase/auth";
 import { auth, googleAuthProvider, facebookAuthProvider, twitterAuthProvider } from "@lib/firebase";
 import { SignUpFormData } from "@components/workflows/Signup-page/validation"
 import { USER as User } from "types/user";
+import { registerWithEmailAndPassword, signInWithEmailAndPassword} from "api/auth";
 
 export const AuthContext = createContext<AuthCtx | null>(null);
 
@@ -96,7 +96,7 @@ export const AuthCtxProvider = ({ children }: PropsWithChildren) => {
 
       const user = result.user;
       alert(JSON.stringify(user));
-      // const loginResp = await getLoggedInUserData(user.uid);
+      // const loginResp = await signInWithFirebaseAuth(user.uid);
       const loginResp = "User details not found"
 
       if (loginResp === "User details not found") {
@@ -181,32 +181,21 @@ export const AuthCtxProvider = ({ children }: PropsWithChildren) => {
   const credentialsLogin = useCallback(async (data: any) => {
     try {
       // If user data exists, proceed with Firebase authentication
-      const { user } = await signInWithEmailAndPassword(
-        auth,
+      const response = await signInWithEmailAndPassword(
         data.email,
         data.password
       );
-      if (!user) {
+      if (!response.data) {
         return {
           message: "No account found. Please sign up first.",
           type: "error",
         };
       }
-      // const loginResp = await getLoggedInUserData(user.uid);
+      await storeItem("tunaresq-access-token", response.data.access_token);
+      await storeItem("tunaresq-token-expiry", response.data.expires_in.toString());
       dispatch({
         type: AuthActionsTypes.LOGIN,
-        payload: { user: {
-          id: "1",
-          firstname: "loginResp.name",
-          lastname: "loginResp.name",
-          email_address: "loginResp.email",
-          profile_photo: "loginResp.photoURL",
-          createdAt: new Date(),
-          status: "approved",
-          country_code: "",
-          mobile_number: "",
-          updatedAt: new Date()
-        } },
+        payload: { user: response.data.user },
       });
 
       return { message: "Login Successful", type: "success" };
@@ -222,29 +211,13 @@ export const AuthCtxProvider = ({ children }: PropsWithChildren) => {
     async (data: SignUpFormData) => {
       try {
         // If user data doesn't exist, proceed with Firebase authentication
-        const { user } = await createUserWithEmailAndPassword(
-          auth,
-          data.email_address,
-          data.password
-        );
-        const userData = {
-          id: user.uid,
-          firstname: user.displayName?.split(" ")[0],
-          lastname: user.displayName?.split(" ")[1],
-          email_address: user.email,
-          profile_photo: user.photoURL || null,
-          status: "approved",
-          country_code: user.phoneNumber?.slice(0, 3) || "",
-          mobile_number: user.phoneNumber?.slice(0, 3) || "",
-        };
+        const response = await registerWithEmailAndPassword(data);
+      await storeItem("tunaresq-access-token", response.data?.tokens.access as string);
+      await storeItem("tunaresq-refresh-token", response.data?.tokens.refresh as string);
 
-        // const response = await saveUserData(userData);
-        const response = {
-          user: userData
-        }
         dispatch({
           type: AuthActionsTypes.REGISTER,
-          payload: { user: response.user as User },
+          payload: { user: response.data?.user as User },
         });
         return { message: "Sign Up Successful", type: "success" };
       } catch (error: any) {
