@@ -3,7 +3,6 @@ import { Button } from "@components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@components/ui/card"
 import { Separator } from "@components/ui/separator"
 import { Loader2, ArrowLeft, ArrowRight } from "lucide-react"
-import { signupAction } from "../../../../actions/auth-actions"
 import { useOutletContext } from 'react-router-dom';
 import { Step } from '@lib/progressUtils';
 import EmailVerification from "../verification-page/EmailVerification"
@@ -17,6 +16,7 @@ import { Label } from "@components/ui/label"
 import useAuthCtx from "@contexts/auth/use-auth"
 import { enqueueSnackbar } from "notistack"
 import { handleErrors } from "@lib/utils"
+import { registerWithEmailAndPassword } from "api/auth"
 
 export default function SignupForm() {
   const {loginWithFacebook, loginWithGoogle, loginWithTwitter} = useAuthCtx()
@@ -44,18 +44,22 @@ export default function SignupForm() {
 	} = methods;
 
   const handleSignupWithCredentials = async (formData: SignUpFormData) => {
-      console.log(formData)
-      const result = await signupAction(formData)
+    try {
+      const result = await registerWithEmailAndPassword(formData)
 
-      if (result.success) {
+      if (result.data) {
 		    setShowEmailVerification(true);
 
         setMessage({ type: "success", text: result.message || "Account created successfully!" })
         // Reset form
         reset()
       } else {
-        setMessage({ type: "error", text: result.error || "Something went wrong" })
+        setMessage({ type: "error", text: result.message || "Something went wrong" })
       }
+      
+    } catch (error) {
+      handleErrors(error);
+    }
   }
 
   const handleSocialSignup = async (provider: "google" | "facebook" | "twitter") => {
@@ -99,7 +103,6 @@ export default function SignupForm() {
     return <EmailVerification onBack={() => setShowEmailVerification(false)} />;
   }
 
-  console.log(methods.formState.errors)
   return (
     <Form {...methods}>
     <div className=" md:w-full ">
