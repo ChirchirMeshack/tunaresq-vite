@@ -4,9 +4,9 @@ import { RHFTextField } from '@components/form/RHFTextField';
 import { Button } from '@components/ui/button';
 import { ArrowLeft, ArrowRight, ImagePlus } from 'lucide-react';
 import { useOutletContext } from 'react-router-dom';
-import { Step } from '@lib/progressUtils';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
+import { LayoutContextType } from '@layouts/registration';
 
 const validationSchema = yup.object({
   title: yup.string().required('Fundraiser title is required').max(120, 'Title must be at most 120 characters'),
@@ -24,12 +24,11 @@ export type IndividualFundraiserFormData = yup.InferType<typeof validationSchema
 const IndividualFundraiserForm = () => {
   const methods = useForm<IndividualFundraiserFormData>({
     resolver: yupResolver(validationSchema),
-    mode: 'onTouched',
   });
-  const { handleStepComplete, setCurrentStep } = useOutletContext<{ steps: Step[]; currentStep: string; handleStepComplete: (stepId: string) => void; setCurrentStep: (stepId: string) => void }>();
+  const { handleStepComplete, handleBackStep } = useOutletContext<LayoutContextType>();
 
 	const handleBack = () => {
-		setCurrentStep('create-account');
+		handleBackStep('create-account');
 	};
 
 	const onSubmit = () => {
