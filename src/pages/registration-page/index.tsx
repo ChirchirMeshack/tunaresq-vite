@@ -2,19 +2,13 @@ import { useOutletContext } from 'react-router-dom'
 import FundraiserTypePage from '@components/workflows/fundraiserType-page';
 import SignupForm from '@components/workflows/Signup-page';
 import WelcomeCard from '@components/WelcomeCard';
-
-import { Step } from '@lib/progressUtils';
 import FundraiserDetailsPage from '@components/workflows/FundariserForms';
 import PaymentDetails from '@components/workflows/PaymentDetails';
-
-type LayoutContextType = {
-  steps: Step[];
-  currentStep: string;
-  handleStepComplete: (stepId: string) => void;
-};
+import { LayoutContextType } from '@layouts/registration';
+import FundraiserLaunchProgress from '@components/workflows/FundraiserPreview';
 
 function RegistrationPage() {
-  const { currentStep, handleStepComplete } = useOutletContext<LayoutContextType>();
+  const { currentStep, handleStepComplete, handleBackStep, onboardingComplete } = useOutletContext<LayoutContextType>();
 
   const handleCreateFundraiser = () => {
     handleStepComplete('welcome'); // First complete the welcome step
@@ -41,14 +35,18 @@ function RegistrationPage() {
       case 'fundraiser-details':
         return <FundraiserDetailsPage />;
       case 'payment-details':
-        return <PaymentDetails />;
+        return <PaymentDetails onBack={() => handleBackStep('fundraiser-details')} onContinue={() => handleStepComplete('payment-details')}/>;
       case 'launch-fundraiser':
-        return <p>Launch Fundraiser Component</p>;
+        return <FundraiserLaunchProgress onStepComplete={onboardingComplete} />;
       default:
-        return <div>Unknown step: {currentStep}</div>;
+        return (
+          <WelcomeCard
+            onCreateFundraiser={handleCreateFundraiser}
+            skipToSignUp={handleSkipToSignUp}
+          />
+        );
     }
   };
-
   return (
     <div className="flex flex-col">
       {/* <div className="w-full max-w-4xl mx-auto px-4 py-6">
