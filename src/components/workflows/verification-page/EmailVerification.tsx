@@ -6,11 +6,11 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "../..
 import { Button } from "../../ui/button";
 import RHFTextField from "../../form/RHFTextField";
 import { useOutletContext } from 'react-router-dom';
-import { Step } from '@lib/progressUtils';
 import { verifyAccount } from "api/auth";
 import useAuthCtx from "@contexts/auth/use-auth";
 import { handleErrors } from "@lib/utils";
 import { enqueueSnackbar } from "notistack";
+import { LayoutContextType } from "@layouts/registration";
 
 
 // Validation schema with Yup
@@ -27,7 +27,7 @@ interface EmailVerificationProps {
 const EmailVerification: React.FC<EmailVerificationProps> = ({ onBack }) => {
   const {user} = useAuthCtx();
   
-  const { handleStepComplete } = useOutletContext<{ steps: Step[]; currentStep: string; handleStepComplete: (stepId: string) => void; setCurrentStep: (stepId: string) => void }>();
+  const { handleStepComplete } = useOutletContext<LayoutContextType>();
   const [isSuccess, setIsSuccess] = React.useState(false);
   
   const form = useForm<VerificationFormData>({
