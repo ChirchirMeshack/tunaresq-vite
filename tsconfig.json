@@ -24,6 +24,7 @@
 		"paths": {
 			"@components/*": ["./components/*"],
 			"@layouts/*": ["./layouts/*"],
+			"@assets/*": ["./assets/*"],
 			"@pages/*": ["./pages/*"],
 			"@contexts/*": ["./contexts/*"],
 			"@styles/*": ["./styles/*"],
