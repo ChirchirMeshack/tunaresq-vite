@@ -1,47 +1,54 @@
-import { FormProvider, useForm } from 'react-hook-form';
+import { FormProvider, useForm, UseFormReturn, FieldErrors } from 'react-hook-form';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@components/ui/card';
 import { RHFTextField } from '@components/form/RHFTextField';
 import { Button } from '@components/ui/button';
-import { ArrowLeft, ArrowRight } from 'lucide-react';
+import { ArrowLeft, ArrowRight, ImagePlus} from 'lucide-react';
 import { useOutletContext } from 'react-router-dom';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useState } from 'react';
 import { AccordionCard } from './AccordionCard';
 import RHFTextAreaField from '@components/form/RHFTextareaField';
-import MultiFilePickerField from '@components/form/RHFFileInput';
-import DocumentField from '@components/ui/fileinput';
-import { handleErrors } from '@lib/utils';
 import { LayoutContextType } from '@layouts/registration';
+import { createOrganizationDetails, OrganizationDetailsPayload } from '../../../api/OrganizationDetails';
+import { handleErrors } from '@lib/utils';
+import DocumentField from '@components/ui/fileinput';
 
-const FundraiserDetailsSection = () => (
+// Reuse the details section as a component
+const FundraiserDetailsSection = ({
+  methods,
+  errors,
+}: {
+  methods: UseFormReturn<OrganizationFundraiserFormData>;
+  errors: FieldErrors<OrganizationFundraiserFormData>;
+}) => (
   <>
     <div className="w-full">
-      <RHFTextAreaField name="title" label="Fundraiser title"
-        placeholder="Give your fundraiser a clear, attention-grabbing title"
-        className={`w-full border rounded-md p-2 text-sm min-h-[56px] sm:min-h-[40px] focus:outline-none focus:ring-2 focus:ring-primary resize-none`}
-        maxLength={120}
-        rows={2}
-        style={{ lineHeight: '1.4' }}
-      />
-      <RHFTextAreaField name="title" label="Fundraiser title"
-        placeholder="Give your fundraiser a clear, attention-grabbing title"
-        className={`w-full border rounded-md p-2 text-sm min-h-[56px] sm:min-h-[40px] focus:outline-none focus:ring-2 focus:ring-primary resize-none`}
-        maxLength={120}
-        rows={2}
-        style={{ lineHeight: '1.4' }}
-      />
+      {/* Use RHFTextAreaField for Fundraiser title. Error message is handled inside the component. */}
       <RHFTextAreaField
-      label ="Fundraiser details (max 100 words)"
-        name="details"
-        placeholder="Explain why you're raising funds and how they'll be used"
-        className={`w-full border rounded-md p-2 text-sm min-h-[96px] focus:outline-none focus:ring-2 focus:ring-primary resize-none`}
-        maxLength={1000}
+        name="title"
+        label="Fundraiser title"
+        placeholder="Give your fundraiser a clear, attention-grabbing title"
+        className={`w-full border rounded-md p-2 text-sm min-h-[56px] sm:min-h-[40px] focus:outline-none focus:ring-2 focus:ring-primary resize-none`}
+        maxLength={120}
+        rows={2}
+        style={{ lineHeight: '1.4' }}
       />
     </div>
+    <div>
+      <label htmlFor="details" className="block text-sm font-medium mb-1">Fundraiser details (max 100 words)</label>
+      <textarea
+        id="details"
+        {...methods.register('details')}
+        placeholder="Explain how you'll use the funds and what milestones you will achieve"
+        className={`w-full border rounded-md p-2 text-sm min-h-[96px] focus:outline-none focus:ring-2 focus:ring-primary resize-none ${errors.details ? 'border-red-500' : ''}`}
+        maxLength={1000}
+      />
+      {errors.details && <p className="text-xs text-red-500 mt-1">{errors.details.message as string}</p>}
+    </div>
     <RHFTextField name="goal" label="What is your fundraising goal? (In USD)" placeholder="USD 0.00" type="number" min={0} step="1.00" />
-    <MultiFilePickerField name="images" label="Upload your fundraiser's image" />
-    {/* <div className="border rounded-lg p-0 sm:p-4 flex flex-col items-center text-center  min-h-[220px] justify-center relative overflow-hidden">
+    {errors.goal && <p className="text-xs text-red-500 mt-1">{errors.goal.message as string}</p>}
+    <div className="border rounded-lg p-0 sm:p-4 flex flex-col items-center text-center  min-h-[220px] justify-center relative overflow-hidden">
       <label className="block text-sm font-medium mb-1 w-full text-left px-4 pt-4 sm:pt-0 sm:px-0">Upload your fundraiser's image</label>
       <div className="flex flex-col items-center justify-center w-full h-full flex-1 py-6">
         <ImagePlus size={40} className="mx-auto mb-2" />
@@ -52,7 +59,7 @@ const FundraiserDetailsSection = () => (
           type="file"
           accept="image/*"
           className="hidden"
-          onChange={() => {/* handle file change here if needed *}}
+          onChange={() => {/* handle file change here if needed */}}
         />
         <span className="text-xs">
           <label htmlFor="fundraiser-image" className="text-blue-600 underline cursor-pointer font-medium">Click to upload file</label>
@@ -60,7 +67,7 @@ const FundraiserDetailsSection = () => (
         </span>
         <span className="text-xs text-[#bdbdbdbd] mt-2">maximum file size 15MB</span>
       </div>
-    </div> */}
+    </div> 
     <DocumentField 
   label="Upload your fundraiser's image"
   name="image"
@@ -72,6 +79,7 @@ const FundraiserDetailsSection = () => (
   </>
 );
 
+// Validation schema for organization form
 const validationSchema = yup.object({
   organizationName: yup.string().required('Organization name is required'),
   registrationNumber: yup.string().required('Registration number is required'),
@@ -96,6 +104,7 @@ export type OrganizationFundraiserFormData = yup.InferType<typeof validationSche
 const OrganizationFundraiserForm = () => {
   const methods = useForm<OrganizationFundraiserFormData>({
     resolver: yupResolver(validationSchema),
+    mode: 'onTouched',
     defaultValues: {
       website: '',
       social: '',
@@ -106,34 +115,43 @@ const OrganizationFundraiserForm = () => {
     },
   });
   const { handleStepComplete, handleBackStep } = useOutletContext<LayoutContextType>();
-  const { formState: { isValid, errors } } = methods;
-  const [orgOpen, setOrgOpen] = useState(true);
-  const [fundraiserOpen, setFundraiserOpen] = useState(true);
+  const { formState: { errors, isValid } } = methods;
+  
+  // Accordion state management - only one section open at a time
+  const [openSection, setOpenSection] = useState<'organization' | 'fundraiser' | null>('organization');
+  
+  const handleAccordionToggle = (section: 'organization' | 'fundraiser') => {
+    setOpenSection(openSection === section ? null : section);
+  };
 
   const handleBack = () => {
     handleBackStep('create-account');
   };
 
-  const onSubmit = 
-  (formData: OrganizationFundraiserFormData) => {
-    try {
-      console.log(formData);
-      // const {data, status} = await axiosInstance.post(`/fundraisers/`, {
-      //   ...formData,
-      // }, {
-      //   headers: {
-      //     'Content-Type': 'multipart/form-data',
-      //   },
-      // });
-    handleStepComplete('fundraiser-details');
-      // if (status === 201) {
-      //   console.log(data.data);
-      // } else {
-      //   handleErrors(data.message);
-      // }
-    } catch (error) {
+  // Submit handler: posts data to /organization-details/ endpoint
+  const onSubmit = async (data: OrganizationFundraiserFormData) => {
+    // Map form data to API shape
+    const payload: OrganizationDetailsPayload = {
+      fundraiser: '', // Set this if you have fundraiser id
+      fundraiser_title: data.title,
+      fundraiser_details: data.details,
+      fundraiser_goal: data.goal,
+      organisation_name: data.organizationName,
+      registration_number: data.registrationNumber,
+      website: data.website || undefined,
+      social_media: data.social || undefined,
+      mission: data.mission,
+    };
+
+    const { data: result, error } = await createOrganizationDetails(payload);
+    if (error) {
+      // Handle error using the utility function
       handleErrors(error);
+      return;
     }
+    // Success: proceed to next step or show success message
+    console.log('Organization details created successfully:', result);
+    handleStepComplete('fundraiser-details');
   };
 console.log(errors, isValid);
   return (
@@ -147,11 +165,11 @@ console.log(errors, isValid);
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
-            {/* Accordions for mobile, expanded by default on desktop */}
+            {/* Accordions for mobile - only one section open at a time */}
             <div className="block md:hidden">
               <AccordionCard
-                open={orgOpen}
-                onClick={() => setOrgOpen(v => !v)}
+                open={openSection === 'organization'}
+                onClick={() => handleAccordionToggle('organization')}
                 title="Organisation details"
               >
                 <RHFTextField name="organizationName" label="Organisation name" placeholder="Enter your organisation's name" />
@@ -161,11 +179,11 @@ console.log(errors, isValid);
                 <RHFTextField name="social" label="Enter your social media handle (Optional)" placeholder="Enter your main social media handle for your organization" />
               </AccordionCard>
               <AccordionCard
-                open={fundraiserOpen}
-                onClick={() => setFundraiserOpen(v => !v)}
+                open={openSection === 'fundraiser'}
+                onClick={() => handleAccordionToggle('fundraiser')}
                 title="Fundraiser details"
               >
-                <FundraiserDetailsSection />
+                <FundraiserDetailsSection methods={methods} errors={errors} />
               </AccordionCard>
             </div>
             {/* Desktop layout: all fields visible */}
@@ -179,7 +197,7 @@ console.log(errors, isValid);
                 <RHFTextField name="website" label="Enter your website (Optional)" placeholder="Example, my.organization.com" />
                 <RHFTextField name="social" label="Enter your social media handle (Optional)" placeholder="Enter your main social media handle for your organization" />
               </div>
-              <FundraiserDetailsSection />
+              <FundraiserDetailsSection methods={methods} errors={errors} />
             </div>
           </CardContent>
         </Card>
@@ -194,11 +212,12 @@ console.log(errors, isValid);
             Back
           </Button>
           <Button
-            // type="submit"
-            type="button"
-            onClick={() => handleStepComplete('fundraiser-details')}
+            type="submit"
+            //type="button"
+            onClick={methods.handleSubmit(onSubmit)}
+            //onClick={() => handleStepComplete('fundraiser-details')}
             className="w-[120px] md:w-[150px] rounded-lg bg-orange-500 hover:bg-orange-600 text-white font-medium px-4 sm:px-6 py-2 flex items-center justify-center gap-2"
-            // disabled={!isValid}
+            disabled={!isValid}
           >
             Continue
             <ArrowRight className="size-4 sm:size-5" />
