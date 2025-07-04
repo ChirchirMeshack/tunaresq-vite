@@ -4,11 +4,11 @@ import { RHFTextField } from '@components/form/RHFTextField';
 import { Button } from '@components/ui/button';
 import { ArrowLeft, ArrowRight, ImagePlus} from 'lucide-react';
 import { useOutletContext } from 'react-router-dom';
-import { Step } from '@lib/progressUtils';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useState } from 'react';
 import { AccordionCard } from './AccordionCard';
+import { LayoutContextType } from '@layouts/registration';
 
 const INDUSTRY_OPTIONS = [
   'Technology', 'Healthcare', 'Finance', 'Education', 'Retail', 'Manufacturing', 'Other'
@@ -111,13 +111,13 @@ const StartupFundraiserForm = () => {
       social: '',
     },
   });
-  const { handleStepComplete, setCurrentStep } = useOutletContext<{ steps: Step[]; currentStep: string; handleStepComplete: (stepId: string) => void; setCurrentStep: (stepId: string) => void }>();
+  const { handleStepComplete, handleBackStep } = useOutletContext<LayoutContextType>();
   const { formState: { errors, isValid } } = methods;
   const [startupOpen, setStartupOpen] = useState(true);
   const [fundraiserOpen, setFundraiserOpen] = useState(true);
 
   const handleBack = () => {
-    setCurrentStep('create-account');
+    handleBackStep('create-account');
   };
 
   const onSubmit = () => {
