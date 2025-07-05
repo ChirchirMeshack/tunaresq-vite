@@ -1,12 +1,7 @@
 import axiosInstance from "@lib/axios";
 import { handleErrors } from "@lib/utils";
-
-export interface Timestamps {
-    created_at: string;
-    updated_at: string;
-    deleted_at: string | null;
-}
-
+import { USER } from "types/user";
+ 
 export interface FundraiserPayload {
     user: string;
     fundraising_category: string;
@@ -14,19 +9,7 @@ export interface FundraiserPayload {
 
 export interface FundraiserResponse {
     id: string;
-    user: {
-        id: string;
-        firstname: string;
-        lastname: string;
-        full_name: string;
-        country_code: string;
-        mobile_number: string;
-        email_address: string;
-        is_verified: boolean;
-        verified_at: string;
-        created_at: string;
-        updated_at: string;
-    };
+    user: USER;
     fundraising_category: string | null;
 }
 

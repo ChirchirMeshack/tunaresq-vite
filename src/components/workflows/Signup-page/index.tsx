@@ -344,9 +344,9 @@ export default function SignupForm() {
 						Back
 					</Button>
 					<Button
-            type="submit"
-            //type="button"
-            onClick={handleSubmit(handleSignupWithCredentials)}
+            //type="submit"
+            type="button"
+            onClick={() => handleStepComplete('create-account')}
             form="signup-form"
 						className="w-[120px] md:w-[150px] rounded-lg bg-orange-500 hover:bg-orange-600 text-white font-medium px-4 sm:px-6 py-2 flex items-center justify-center gap-2"
 					>

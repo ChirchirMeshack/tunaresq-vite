@@ -10,7 +10,7 @@ import { useState } from 'react';
 import { AccordionCard } from './AccordionCard';
 import RHFTextAreaField from '@components/form/RHFTextareaField';
 import { LayoutContextType } from '@layouts/registration';
-import { createOrganizationDetails, OrganizationDetailsPayload } from '../../../api/OrganizationDetails';
+import { createOrganizationDetails, OrganizationDetailsPayload } from '../../../api/organization-details';
 import { createFundraiser, FundraiserPayload } from '../../../api/fundraiser';
 import { getAllFundraiserTypes, FundraiserType } from '../../../api/fundraiser-type';
 import { handleErrors } from '@lib/utils';
@@ -273,10 +273,10 @@ console.log(errors, isValid);
           <Button
             type="submit"
             //type="button"
-            onClick={methods.handleSubmit(onSubmit)}
-            //onClick={() => handleStepComplete('fundraiser-details')}
+            // onClick={methods.handleSubmit(onSubmit)}
+            onClick={() => handleStepComplete('fundraiser-details')}
             className="w-[120px] md:w-[150px] rounded-lg bg-orange-500 hover:bg-orange-600 text-white font-medium px-4 sm:px-6 py-2 flex items-center justify-center gap-2"
-            disabled={!isValid}
+            // disabled={!isValid}
           >
             Continue
             <ArrowRight className="size-4 sm:size-5" />

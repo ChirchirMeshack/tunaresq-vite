@@ -6,6 +6,13 @@ export interface Timestamps {
     updated_at: string;
     deleted_at: string | null;
 }
+
+export interface Timestamps2 {
+    created_at: string;
+    updated_at: string;
+}
+
+
 export interface UserLog extends Timestamps {
     created_by: string,
     updated_by: string

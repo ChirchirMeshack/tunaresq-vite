@@ -1,4 +1,4 @@
-import { FormProvider, useForm, UseFormReturn, FieldErrors } from 'react-hook-form';
+import { FormProvider, useForm } from 'react-hook-form';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@components/ui/card';
 import { RHFTextField } from '@components/form/RHFTextField';
 import { Button } from '@components/ui/button';
@@ -9,7 +9,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { useState } from 'react';
 import { AccordionCard } from './AccordionCard';
 import { LayoutContextType } from '@layouts/registration';
-import { createStartupDetails, StartupDetailsPayload } from '../../../api/StartupDetails';
+import { createStartupDetails, StartupDetails as StartupDetailsPayload } from '../../../api/startup-details';
 import { createFundraiser, FundraiserPayload } from '../../../api/fundraiser';
 import { getAllFundraiserTypes, FundraiserType } from '../../../api/fundraiser-type';
 import RHFTextAreaField from '@components/form/RHFTextareaField';
@@ -24,13 +24,7 @@ import useAuthCtx from '../../../contexts/auth/use-auth';
 // const TEAM_SIZE_OPTIONS = [ ... ];
 
 // Reuse the details section as a component
-const FundraiserDetailsSection = ({
-  methods,
-  errors,
-}: {
-  methods: UseFormReturn<StartupFundraiserFormData>;
-  errors: FieldErrors<StartupFundraiserFormData>;
-}) => (
+const FundraiserDetailsSection = ()=>(
   <>
     <div className="w-full">
       {/* Use RHFTextAreaField for Fundraiser title. Error message is handled inside the component. */}
@@ -43,19 +37,15 @@ const FundraiserDetailsSection = ({
         style={{ lineHeight: '1.4' }}
       />
     </div>
-    <div>
-      <label htmlFor="details" className="block text-sm font-medium mb-1">Fundraiser details (max 100 words)</label>
-      <textarea
-        id="details"
-        {...methods.register('details')}
-        placeholder="Explain how you'll use the funds and what milestones you will achieve"
-        className={`w-full border rounded-md p-2 text-sm min-h-[96px] focus:outline-none focus:ring-2 focus:ring-primary resize-none ${errors.details ? 'border-red-500' : ''}`}
-        maxLength={1000}
-      />
-      {errors.details && <p className="text-xs text-red-500 mt-1">{errors.details.message as string}</p>}
-    </div>
+    <RHFTextAreaField
+      name="details"
+      label="Fundraiser details (max 100 words)"
+      placeholder="Explain how you'll use the funds and what milestones you will achieve"
+      maxLength={1000}
+      rows={4}
+      style={{ lineHeight: '1.4' }}
+    />
     <RHFTextField name="goal" label="What is your fundraising goal? (In USD)" placeholder="USD 0.00" type="number" min={0} step="1.00" />
-    {errors.goal && <p className="text-xs text-red-500 mt-1">{errors.goal.message as string}</p>}
     <div className="border rounded-lg p-0 sm:p-4 flex flex-col items-center text-center  min-h-[220px] justify-center relative overflow-hidden">
       <label className="block text-sm font-medium mb-1 w-full text-left px-4 pt-4 sm:pt-0 sm:px-0">Upload your fundraiser's image</label>
       <div className="flex flex-col items-center justify-center w-full h-full flex-1 py-6">
@@ -112,7 +102,7 @@ const StartupFundraiserForm = () => {
     },
   });
   const { handleStepComplete, handleBackStep } = useOutletContext<LayoutContextType>();
-  const { formState: { errors, isValid } } = methods;
+  const { formState: { isValid } } = methods;
   const { user } = useAuthCtx();
   
   // Accordion state management - only one section open at a time
@@ -184,7 +174,7 @@ const StartupFundraiserForm = () => {
       console.log('Fundraiser created successfully:', fundraiserResult);
 
       // Step 2: Create startup details with the fundraiser ID
-      const startupPayload: StartupDetailsPayload = {
+      const startupPayload: Omit<StartupDetailsPayload, 'id' | 'created_at' | 'updated_at'> = {
         fundraiser: fundraiserResult.id,
         fundraiser_title: data.title,
         fundraiser_details: data.details,
@@ -279,7 +269,7 @@ const StartupFundraiserForm = () => {
                 onClick={() => handleAccordionToggle('fundraiser')}
                 title="Fundraising details"
               >
-                <FundraiserDetailsSection methods={methods} errors={errors} />
+                <FundraiserDetailsSection />
               </AccordionCard>
             </div>
                         {/* Desktop layout: all fields visible */}
@@ -317,7 +307,7 @@ const StartupFundraiserForm = () => {
                 <RHFTextField name="website" label="Enter your website (Optional)" placeholder="Example, www.yourstartup.com" />
                 <RHFTextField name="social" label="Enter your social media handle (Optional)" placeholder="Enter your startup's social media handle" />
               </div>
-              <FundraiserDetailsSection methods={methods} errors={errors} />
+              <FundraiserDetailsSection/>
             </div>
           </CardContent>
         </Card>
@@ -332,10 +322,11 @@ const StartupFundraiserForm = () => {
             Back
           </Button>
           <Button
-            type="submit"
-            onClick={methods.handleSubmit(onSubmit)}
+            type="button"
+            // onClick={methods.handleSubmit(onSubmit)}
+            onClick={() => handleStepComplete('fundraiser-details')}
             className="w-[120px] md:w-[150px] rounded-lg bg-orange-500 hover:bg-orange-600 text-white font-medium px-4 sm:px-6 py-2 flex items-center justify-center gap-2"
-            disabled={!isValid}
+            // disabled={!isValid}
           > 
             Continue
             <ArrowRight className="size-4 sm:size-5" />
