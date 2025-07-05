@@ -7,6 +7,11 @@ import { useOutletContext } from 'react-router-dom';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { LayoutContextType } from '@layouts/registration';
+import { createIndividualDetails, IndividualDetailsPayload } from '../../../api/IndividualDetails';
+import { createFundraiser, FundraiserPayload } from '../../../api/fundraiser';
+import { getAllFundraiserTypes, FundraiserType } from '../../../api/fundraiser-type';
+import { handleErrors } from '@lib/utils';
+import useAuthCtx from '../../../contexts/auth/use-auth';
 
 const validationSchema = yup.object({
   title: yup.string().required('Fundraiser title is required').max(120, 'Title must be at most 120 characters'),
@@ -24,15 +29,98 @@ export type IndividualFundraiserFormData = yup.InferType<typeof validationSchema
 const IndividualFundraiserForm = () => {
   const methods = useForm<IndividualFundraiserFormData>({
     resolver: yupResolver(validationSchema),
+    mode: 'onTouched',
   });
   const { handleStepComplete, handleBackStep } = useOutletContext<LayoutContextType>();
+  const { user } = useAuthCtx();
 
 	const handleBack = () => {
 		handleBackStep('create-account');
 	};
 
-	const onSubmit = () => {
-		handleStepComplete('fundraiser-details');
+	// Submit handler: creates fundraiser first, then individual details
+	const onSubmit = async (data: IndividualFundraiserFormData) => {
+		try {
+			console.log('Starting individual fundraiser creation...');
+			
+			if (!user) {
+				console.error('No user found');
+				handleErrors(new Error('User not authenticated'));
+				return;
+			}
+
+			// Get fundraising categories to find the individual category ID
+			const { data: categories, error: categoriesError } = await getAllFundraiserTypes();
+			if (categoriesError || !categories) {
+				console.error('Failed to get fundraising categories:', categoriesError);
+				handleErrors(categoriesError || new Error('Failed to get fundraising categories'));
+				return;
+			}
+
+			// Find the individual category
+			const individualCategory = categories.find((cat: FundraiserType) => 
+				cat.name.toLowerCase().includes('individual') || 
+				cat.name.toLowerCase().includes('personal')
+			);
+
+			if (!individualCategory) {
+				console.error('Individual fundraising category not found');
+				handleErrors(new Error('Individual fundraising category not found'));
+				return;
+			}
+
+			// Step 1: Create the fundraiser first
+			const fundraiserPayload: FundraiserPayload = {
+				user: user.id,
+				fundraising_category: individualCategory.id
+			};
+
+			console.log('Creating fundraiser with payload:', fundraiserPayload);
+			const { data: fundraiserResult, error: fundraiserError } = await createFundraiser(fundraiserPayload);
+			
+			if (fundraiserError) {
+				console.error('Failed to create fundraiser:', fundraiserError);
+				handleErrors(fundraiserError);
+				return;
+			}
+
+			if (!fundraiserResult) {
+				console.error('No fundraiser result returned');
+				handleErrors(new Error('Failed to create fundraiser'));
+				return;
+			}
+
+			console.log('Fundraiser created successfully:', fundraiserResult);
+
+			// Step 2: Create individual details with the fundraiser ID
+			const individualPayload: IndividualDetailsPayload = {
+				fundraiser: fundraiserResult.id,
+				fundraiser_title: data.title,
+				fundraiser_details: data.details,
+				fundraiser_goal: data.goal,
+			};
+
+			console.log('Creating individual details with payload:', individualPayload);
+			const { data: individualResult, error: individualError } = await createIndividualDetails(individualPayload);
+			
+			if (individualError) {
+				console.error('Failed to create individual details:', individualError);
+				handleErrors(individualError);
+				return;
+			}
+
+			// Success: proceed to next step or show success message
+			console.log('Individual fundraiser created successfully:', { 
+				fundraiser: fundraiserResult, 
+				details: individualResult 
+			});
+			console.log('Full individual details response:', individualResult);
+			handleStepComplete('fundraiser-details');
+			
+		} catch (error) {
+			console.error('Unexpected error during submission:', error);
+			handleErrors(error);
+		}
 	};
 
 	const { formState: { errors, isValid } } = methods;

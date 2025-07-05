@@ -10,10 +10,13 @@ import { useState } from 'react';
 import { AccordionCard } from './AccordionCard';
 import { LayoutContextType } from '@layouts/registration';
 import { createStartupDetails, StartupDetailsPayload } from '../../../api/StartupDetails';
+import { createFundraiser, FundraiserPayload } from '../../../api/fundraiser';
+import { getAllFundraiserTypes, FundraiserType } from '../../../api/fundraiser-type';
 import RHFTextAreaField from '@components/form/RHFTextareaField';
 import { SimpleSelect } from '@components/form/SimpleSelect';
 import { useCommonsData } from '../../../hooks/use-commons-data';
 import { handleErrors } from '@lib/utils';
+import useAuthCtx from '../../../contexts/auth/use-auth';
 
 // The static options below are now replaced by dynamic options fetched from the commons API.
 // const INDUSTRY_OPTIONS = [ ... ];
@@ -110,6 +113,7 @@ const StartupFundraiserForm = () => {
   });
   const { handleStepComplete, handleBackStep } = useOutletContext<LayoutContextType>();
   const { formState: { errors, isValid } } = methods;
+  const { user } = useAuthCtx();
   
   // Accordion state management - only one section open at a time
   const [openSection, setOpenSection] = useState<'startup' | 'fundraiser' | null>('startup');
@@ -126,36 +130,95 @@ const StartupFundraiserForm = () => {
   };
 
 
-  // Submit handler: posts data to /startupdetails/ endpoint
+  // Submit handler: creates fundraiser first, then startup details
   const onSubmit = async (data: StartupFundraiserFormData) => {
-    // Map form data to API shape
-    const payload: StartupDetailsPayload = {
-      fundraiser: '', // Set this if you have fundraiser id
-      fundraiser_title: data.title,
-      fundraiser_details: data.details,
-      fundraiser_goal: data.goal,
-      startup_name: data.startupName,
-      business_description: data.businessDescription,
-      location: data.startupLocation,
-      industry: data.industry,
-      industry_name: '', // Set if you have a display name
-      stage: data.startupStage,
-      stage_name: '', // Set if you have a display name
-      team_size: data.teamSize,
-      team_size_name: '', // Set if you have a display name
-      website: data.website || undefined,
-      social_media: data.social || undefined,
-    };
+    try {
+      console.log('Starting startup fundraiser creation...');
+      
+      if (!user) {
+        console.error('No user found');
+        handleErrors(new Error('User not authenticated'));
+        return;
+      }
 
-    const { data: result, error } = await createStartupDetails(payload);
-    if (error) {
-      // Handle error using the utility function
+      // Get fundraising categories to find the startup category ID
+      const { data: categories, error: categoriesError } = await getAllFundraiserTypes();
+      if (categoriesError || !categories) {
+        console.error('Failed to get fundraising categories:', categoriesError);
+        handleErrors(categoriesError || new Error('Failed to get fundraising categories'));
+        return;
+      }
+
+      // Find the startup category
+      const startupCategory = categories.find((cat: FundraiserType) => 
+        cat.name.toLowerCase().includes('startup')
+      );
+
+      if (!startupCategory) {
+        console.error('Startup fundraising category not found');
+        handleErrors(new Error('Startup fundraising category not found'));
+        return;
+      }
+
+      // Step 1: Create the fundraiser first
+      const fundraiserPayload: FundraiserPayload = {
+        user: user.id,
+        fundraising_category: startupCategory.id
+      };
+
+      console.log('Creating fundraiser with payload:', fundraiserPayload);
+      const { data: fundraiserResult, error: fundraiserError } = await createFundraiser(fundraiserPayload);
+      
+      if (fundraiserError) {
+        console.error('Failed to create fundraiser:', fundraiserError);
+        handleErrors(fundraiserError);
+        return;
+      }
+
+      if (!fundraiserResult) {
+        console.error('No fundraiser result returned');
+        handleErrors(new Error('Failed to create fundraiser'));
+        return;
+      }
+
+      console.log('Fundraiser created successfully:', fundraiserResult);
+
+      // Step 2: Create startup details with the fundraiser ID
+      const startupPayload: StartupDetailsPayload = {
+        fundraiser: fundraiserResult.id,
+        fundraiser_title: data.title,
+        fundraiser_details: data.details,
+        fundraiser_goal: data.goal,
+        startup_name: data.startupName,
+        business_description: data.businessDescription,
+        location: data.startupLocation,
+        industry: data.industry,
+        industry_name: '', // Set if you have a display name
+        stage: data.startupStage,
+        stage_name: '', // Set if you have a display name
+        team_size: data.teamSize,
+        team_size_name: '', // Set if you have a display name
+        website: data.website || undefined,
+        social_media: data.social || undefined,
+      };
+
+      console.log('Creating startup details with payload:', startupPayload);
+      const { data: startupResult, error: startupError } = await createStartupDetails(startupPayload);
+      
+      if (startupError) {
+        console.error('Failed to create startup details:', startupError);
+        handleErrors(startupError);
+        return;
+      }
+
+      // Success: proceed to next step or show success message
+      console.log('Startup fundraiser created successfully:', { fundraiser: fundraiserResult, details: startupResult });
+      handleStepComplete('fundraiser-details');
+      
+    } catch (error) {
+      console.error('Unexpected error during submission:', error);
       handleErrors(error);
-      return;
     }
-    // Success: proceed to next step or show success message
-    console.log('Startup details created successfully:', result);
-    handleStepComplete('fundraiser-details');
   };
 
   // Responsive accordions for mobile

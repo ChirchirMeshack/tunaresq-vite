@@ -44,7 +44,7 @@ export const createOrganizationDetails = async (
     payload: OrganizationDetailsPayload
 ): Promise<{ data: OrganizationDetailsResponse | null; error: unknown }> => {
     try {
-        const result = await axiosInstance.post('/organization-details/', payload);
+        const result = await axiosInstance.post('/organisation-details/', payload);
         return { data: result.data as OrganizationDetailsResponse, error: null };
     } catch (error) {
         handleErrors(error);
@@ -61,7 +61,7 @@ export const getOrganizationDetails = async (
     id: string
 ): Promise<{ data: OrganizationDetailsResponse | null; error: unknown }> => {
     try {
-        const result = await axiosInstance.get(`/organization-details/${id}/`);
+        const result = await axiosInstance.get(`/organisation-details/${id}/`);
         return { data: result.data as OrganizationDetailsResponse, error: null };
     } catch (error) {
         handleErrors(error);
@@ -80,7 +80,7 @@ export const updateOrganizationDetails = async (
     payload: Partial<OrganizationDetailsPayload>
 ): Promise<{ data: OrganizationDetailsResponse | null; error: unknown }> => {
     try {
-        const result = await axiosInstance.put(`/organization-details/${id}/`, payload);
+        const result = await axiosInstance.put(`/organisation-details/${id}/`, payload);
         return { data: result.data as OrganizationDetailsResponse, error: null };
     } catch (error) {
         handleErrors(error);
@@ -97,7 +97,7 @@ export const getAllOrganizationDetails = async (): Promise<{
     error: unknown 
 }> => {
     try {
-        const result = await axiosInstance.get('/organization-details/');
+        const result = await axiosInstance.get('/organisation-details/');
         return { data: result.data.data as OrganizationDetailsResponse[], error: null };
     } catch (error) {
         handleErrors(error);
@@ -114,7 +114,7 @@ export const deleteOrganizationDetails = async (
     id: string
 ): Promise<{ success: boolean; error: unknown }> => {
     try {
-        await axiosInstance.delete(`/organization-details/${id}/`);
+        await axiosInstance.delete(`/organisation-details/${id}/`);
         return { success: true, error: null };
     } catch (error) {
         handleErrors(error);

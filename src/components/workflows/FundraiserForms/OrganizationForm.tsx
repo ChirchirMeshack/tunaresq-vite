@@ -11,8 +11,10 @@ import { AccordionCard } from './AccordionCard';
 import RHFTextAreaField from '@components/form/RHFTextareaField';
 import { LayoutContextType } from '@layouts/registration';
 import { createOrganizationDetails, OrganizationDetailsPayload } from '../../../api/OrganizationDetails';
+import { createFundraiser, FundraiserPayload } from '../../../api/fundraiser';
+import { getAllFundraiserTypes, FundraiserType } from '../../../api/fundraiser-type';
 import { handleErrors } from '@lib/utils';
-import DocumentField from '@components/ui/fileinput';
+import useAuthCtx from '../../../contexts/auth/use-auth';
 
 // Reuse the details section as a component
 const FundraiserDetailsSection = ({
@@ -67,15 +69,7 @@ const FundraiserDetailsSection = ({
         </span>
         <span className="text-xs text-[#bdbdbdbd] mt-2">maximum file size 15MB</span>
       </div>
-    </div> 
-    <DocumentField 
-  label="Upload your fundraiser's image"
-  name="image"
-  // className?: string;
-  // isDisabled?: boolean;
-  // acceptedTypes?: string;
-  description="Fundraisers with images receive 35% more donations"
-/>
+    </div>
   </>
 );
 
@@ -116,6 +110,7 @@ const OrganizationFundraiserForm = () => {
   });
   const { handleStepComplete, handleBackStep } = useOutletContext<LayoutContextType>();
   const { formState: { errors, isValid } } = methods;
+  const { user } = useAuthCtx();
   
   // Accordion state management - only one section open at a time
   const [openSection, setOpenSection] = useState<'organization' | 'fundraiser' | null>('organization');
@@ -128,30 +123,94 @@ const OrganizationFundraiserForm = () => {
     handleBackStep('create-account');
   };
 
-  // Submit handler: posts data to /organization-details/ endpoint
+  // Submit handler: creates fundraiser first, then organization details
   const onSubmit = async (data: OrganizationFundraiserFormData) => {
-    // Map form data to API shape
-    const payload: OrganizationDetailsPayload = {
-      fundraiser: '', // Set this if you have fundraiser id
-      fundraiser_title: data.title,
-      fundraiser_details: data.details,
-      fundraiser_goal: data.goal,
-      organisation_name: data.organizationName,
-      registration_number: data.registrationNumber,
-      website: data.website || undefined,
-      social_media: data.social || undefined,
-      mission: data.mission,
-    };
+    try {
+      console.log('Starting organization fundraiser creation...');
+      
+      if (!user) {
+        console.error('No user found');
+        handleErrors(new Error('User not authenticated'));
+        return;
+      }
 
-    const { data: result, error } = await createOrganizationDetails(payload);
-    if (error) {
-      // Handle error using the utility function
+      // Get fundraising categories to find the organization category ID
+      const { data: categories, error: categoriesError } = await getAllFundraiserTypes();
+      if (categoriesError || !categories) {
+        console.error('Failed to get fundraising categories:', categoriesError);
+        handleErrors(categoriesError || new Error('Failed to get fundraising categories'));
+        return;
+      }
+
+      // Find the organization category
+      const organizationCategory = categories.find((cat: FundraiserType) => 
+        cat.name.toLowerCase().includes('organization') || 
+        cat.name.toLowerCase().includes('organisation')
+      );
+
+      if (!organizationCategory) {
+        console.error('Organization fundraising category not found');
+        handleErrors(new Error('Organization fundraising category not found'));
+        return;
+      }
+
+      // Step 1: Create the fundraiser first
+      const fundraiserPayload: FundraiserPayload = {
+        user: user.id,
+        fundraising_category: organizationCategory.id
+      };
+
+      console.log('Creating fundraiser with payload:', fundraiserPayload);
+      const { data: fundraiserResult, error: fundraiserError } = await createFundraiser(fundraiserPayload);
+      
+      if (fundraiserError) {
+        console.error('Failed to create fundraiser:', fundraiserError);
+        handleErrors(fundraiserError);
+        return;
+      }
+
+      if (!fundraiserResult) {
+        console.error('No fundraiser result returned');
+        handleErrors(new Error('Failed to create fundraiser'));
+        return;
+      }
+
+      console.log('Fundraiser created successfully:', fundraiserResult);
+
+      // Step 2: Create organization details with the fundraiser ID
+      const organizationPayload: OrganizationDetailsPayload = {
+        fundraiser: fundraiserResult.id,
+        fundraiser_title: data.title,
+        fundraiser_details: data.details,
+        fundraiser_goal: data.goal,
+        organisation_name: data.organizationName,
+        registration_number: data.registrationNumber,
+        website: data.website || undefined,
+        social_media: data.social || undefined,
+        mission: data.mission,
+      };
+
+            console.log('Creating organization details with payload:', organizationPayload);
+      const { data: orgResult, error: orgError } = await createOrganizationDetails(organizationPayload);
+      
+      if (orgError) {
+        console.error('Failed to create organization details:', orgError);
+        handleErrors(orgError);
+        return;
+      }
+
+      // Success: proceed to next step or show success message
+      console.log('Organization fundraiser created successfully:', { 
+        fundraiser: fundraiserResult, 
+        details: orgResult 
+      });
+      console.log('Full organization details response:', orgResult);
+      handleStepComplete('fundraiser-details');
+      
+    } catch (error) {
+      console.error('Unexpected error during submission:', error);
       handleErrors(error);
-      return;
     }
-    // Success: proceed to next step or show success message
-    console.log('Organization details created successfully:', result);
-    handleStepComplete('fundraiser-details');
   };
 console.log(errors, isValid);
   return (
