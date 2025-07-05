@@ -1,52 +1,47 @@
-import { FormProvider, useForm, UseFormReturn, FieldErrors } from 'react-hook-form';
+import { FormProvider, useForm } from 'react-hook-form';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@components/ui/card';
 import { RHFTextField } from '@components/form/RHFTextField';
 import { Button } from '@components/ui/button';
-import { ArrowLeft, ArrowRight, ImagePlus } from 'lucide-react';
+import { ArrowLeft, ArrowRight } from 'lucide-react';
 import { useOutletContext } from 'react-router-dom';
-import { Step } from '@lib/progressUtils';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useState } from 'react';
 import { AccordionCard } from './AccordionCard';
+import RHFTextAreaField from '@components/form/RHFTextareaField';
+import MultiFilePickerField from '@components/form/RHFFileInput';
+import DocumentField from '@components/ui/fileinput';
+import { handleErrors } from '@lib/utils';
+import { LayoutContextType } from '@layouts/registration';
 
-const FundraiserDetailsSection = ({
-  methods,
-  errors,
-}: {
-  methods: UseFormReturn<OrganizationFundraiserFormData>;
-  errors: FieldErrors<OrganizationFundraiserFormData>;
-}) => (
+const FundraiserDetailsSection = () => (
   <>
     <div className="w-full">
-      <label htmlFor="title" className="block text-sm font-medium mb-1">
-        Fundraiser title
-      </label>
-      <textarea
-        id="title"
-        {...methods.register('title')}
+      <RHFTextAreaField name="title" label="Fundraiser title"
         placeholder="Give your fundraiser a clear, attention-grabbing title"
-        className={`w-full border rounded-md p-2 text-sm min-h-[56px] sm:min-h-[40px] focus:outline-none focus:ring-2 focus:ring-primary resize-none ${errors.title ? 'border-red-500' : ''}`}
+        className={`w-full border rounded-md p-2 text-sm min-h-[56px] sm:min-h-[40px] focus:outline-none focus:ring-2 focus:ring-primary resize-none`}
         maxLength={120}
         rows={2}
         style={{ lineHeight: '1.4' }}
       />
-      {errors.title && <p className="text-xs text-red-500 mt-1">{errors.title.message as string}</p>}
-    </div>
-    <div>
-      <label htmlFor="details" className="block text-sm font-medium mb-1">Fundraiser details (max 100 words)</label>
-      <textarea
-        id="details"
-        {...methods.register('details')}
+      <RHFTextAreaField name="title" label="Fundraiser title"
+        placeholder="Give your fundraiser a clear, attention-grabbing title"
+        className={`w-full border rounded-md p-2 text-sm min-h-[56px] sm:min-h-[40px] focus:outline-none focus:ring-2 focus:ring-primary resize-none`}
+        maxLength={120}
+        rows={2}
+        style={{ lineHeight: '1.4' }}
+      />
+      <RHFTextAreaField
+      label ="Fundraiser details (max 100 words)"
+        name="details"
         placeholder="Explain why you're raising funds and how they'll be used"
-        className={`w-full border rounded-md p-2 text-sm min-h-[96px] focus:outline-none focus:ring-2 focus:ring-primary resize-none ${errors.details ? 'border-red-500' : ''}`}
+        className={`w-full border rounded-md p-2 text-sm min-h-[96px] focus:outline-none focus:ring-2 focus:ring-primary resize-none`}
         maxLength={1000}
       />
-      {errors.details && <p className="text-xs text-red-500 mt-1">{errors.details.message as string}</p>}
     </div>
     <RHFTextField name="goal" label="What is your fundraising goal? (In USD)" placeholder="USD 0.00" type="number" min={0} step="1.00" />
-    {errors.goal && <p className="text-xs text-red-500 mt-1">{errors.goal.message as string}</p>}
-    <div className="border rounded-lg p-0 sm:p-4 flex flex-col items-center text-center  min-h-[220px] justify-center relative overflow-hidden">
+    <MultiFilePickerField name="images" label="Upload your fundraiser's image" />
+    {/* <div className="border rounded-lg p-0 sm:p-4 flex flex-col items-center text-center  min-h-[220px] justify-center relative overflow-hidden">
       <label className="block text-sm font-medium mb-1 w-full text-left px-4 pt-4 sm:pt-0 sm:px-0">Upload your fundraiser's image</label>
       <div className="flex flex-col items-center justify-center w-full h-full flex-1 py-6">
         <ImagePlus size={40} className="mx-auto mb-2" />
@@ -57,7 +52,7 @@ const FundraiserDetailsSection = ({
           type="file"
           accept="image/*"
           className="hidden"
-          onChange={() => {/* handle file change here if needed */}}
+          onChange={() => {/* handle file change here if needed *}}
         />
         <span className="text-xs">
           <label htmlFor="fundraiser-image" className="text-blue-600 underline cursor-pointer font-medium">Click to upload file</label>
@@ -65,7 +60,15 @@ const FundraiserDetailsSection = ({
         </span>
         <span className="text-xs text-[#bdbdbdbd] mt-2">maximum file size 15MB</span>
       </div>
-    </div>
+    </div> */}
+    <DocumentField 
+  label="Upload your fundraiser's image"
+  name="image"
+  // className?: string;
+  // isDisabled?: boolean;
+  // acceptedTypes?: string;
+  description="Fundraisers with images receive 35% more donations"
+/>
   </>
 );
 
@@ -82,7 +85,10 @@ const validationSchema = yup.object({
     .typeError('Goal must be a number')
     .required('Fundraising goal is required')
     .positive('Goal must be a positive number'),
-  // image: yup.mixed().notRequired(),
+  image: yup.object().shape({
+		file: yup.mixed(),
+		preview: yup.string(),
+	}),
 });
 
 export type OrganizationFundraiserFormData = yup.InferType<typeof validationSchema>;
@@ -90,25 +96,46 @@ export type OrganizationFundraiserFormData = yup.InferType<typeof validationSche
 const OrganizationFundraiserForm = () => {
   const methods = useForm<OrganizationFundraiserFormData>({
     resolver: yupResolver(validationSchema),
-    mode: 'onTouched',
     defaultValues: {
       website: '',
       social: '',
+      image: {
+		preview: "",
+		file: "",
+	}
     },
   });
-  const { handleStepComplete, setCurrentStep } = useOutletContext<{ steps: Step[]; currentStep: string; handleStepComplete: (stepId: string) => void; setCurrentStep: (stepId: string) => void }>();
-  const { formState: { errors, isValid } } = methods;
+  const { handleStepComplete, handleBackStep } = useOutletContext<LayoutContextType>();
+  const { formState: { isValid, errors } } = methods;
   const [orgOpen, setOrgOpen] = useState(true);
   const [fundraiserOpen, setFundraiserOpen] = useState(true);
 
   const handleBack = () => {
-    setCurrentStep('create-account');
+    handleBackStep('create-account');
   };
 
-  const onSubmit = () => {
+  const onSubmit = 
+  (formData: OrganizationFundraiserFormData) => {
+    try {
+      console.log(formData);
+      // const {data, status} = await axiosInstance.post(`/fundraisers/`, {
+      //   ...formData,
+      // }, {
+      //   headers: {
+      //     'Content-Type': 'multipart/form-data',
+      //   },
+      // });
     handleStepComplete('fundraiser-details');
+      // if (status === 201) {
+      //   console.log(data.data);
+      // } else {
+      //   handleErrors(data.message);
+      // }
+    } catch (error) {
+      handleErrors(error);
+    }
   };
-
+console.log(errors, isValid);
   return (
     <FormProvider {...methods}>
       <form onSubmit={methods.handleSubmit(onSubmit)}>
@@ -138,7 +165,7 @@ const OrganizationFundraiserForm = () => {
                 onClick={() => setFundraiserOpen(v => !v)}
                 title="Fundraiser details"
               >
-                <FundraiserDetailsSection methods={methods} errors={errors} />
+                <FundraiserDetailsSection />
               </AccordionCard>
             </div>
             {/* Desktop layout: all fields visible */}
@@ -152,7 +179,7 @@ const OrganizationFundraiserForm = () => {
                 <RHFTextField name="website" label="Enter your website (Optional)" placeholder="Example, my.organization.com" />
                 <RHFTextField name="social" label="Enter your social media handle (Optional)" placeholder="Enter your main social media handle for your organization" />
               </div>
-              <FundraiserDetailsSection methods={methods} errors={errors} />
+              <FundraiserDetailsSection />
             </div>
           </CardContent>
         </Card>
@@ -167,9 +194,11 @@ const OrganizationFundraiserForm = () => {
             Back
           </Button>
           <Button
-            type="submit"
+            // type="submit"
+            type="button"
+            onClick={() => handleStepComplete('fundraiser-details')}
             className="w-[120px] md:w-[150px] rounded-lg bg-orange-500 hover:bg-orange-600 text-white font-medium px-4 sm:px-6 py-2 flex items-center justify-center gap-2"
-            disabled={!isValid}
+            // disabled={!isValid}
           >
             Continue
             <ArrowRight className="size-4 sm:size-5" />

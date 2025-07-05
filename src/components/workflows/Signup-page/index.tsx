@@ -4,7 +4,6 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@comp
 import { Separator } from "@components/ui/separator"
 import { Loader2, ArrowLeft, ArrowRight } from "lucide-react"
 import { useOutletContext } from 'react-router-dom';
-import { Step } from '@lib/progressUtils';
 import EmailVerification from "../verification-page/EmailVerification"
 import { RHFTextField as TextField } from "@components/form/RHFTextField"
 import { yupResolver } from "@hookform/resolvers/yup"
@@ -17,6 +16,7 @@ import useAuthCtx from "@contexts/auth/use-auth"
 import { enqueueSnackbar } from "notistack"
 import { handleErrors } from "@lib/utils"
 import { registerWithEmailAndPassword } from "api/auth"
+import { LayoutContextType } from "@layouts/registration"
 
 export default function SignupForm() {
   const {loginWithFacebook, loginWithGoogle, loginWithTwitter} = useAuthCtx()
@@ -24,11 +24,11 @@ export default function SignupForm() {
 	const updateShowPasswordState = () => setShowPassword((prev) => !prev);
   const [message, setMessage] = useState<{ type: "success" | "error"; text: string } | null>(null)
   const [socialLoading, setSocialLoading] = useState<string | null>(null)
-  const { setCurrentStep } = useOutletContext<{ steps: Step[]; currentStep: string; handleStepComplete: (stepId: string) => void; setCurrentStep: (stepId: string) => void }>();
+  const { handleBackStep, handleStepComplete } = useOutletContext<LayoutContextType>();
   const [showEmailVerification, setShowEmailVerification] = useState(false);
 
 	const handleBack = () => {
-		setCurrentStep('select-beneficiary');
+		handleBackStep('select-beneficiary');
 	};
 
   const methods = useForm<SignUpFormData>({
@@ -343,7 +343,9 @@ export default function SignupForm() {
 						Back
 					</Button>
 					<Button
-            type="submit"
+            // type="submit"
+            type="button"
+            onClick={() => handleStepComplete('create-account')}
             form="signup-form"
 						className="w-[120px] md:w-[150px] rounded-lg bg-orange-500 hover:bg-orange-600 text-white font-medium px-4 sm:px-6 py-2 flex items-center justify-center gap-2"
 					>

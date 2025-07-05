@@ -10,12 +10,16 @@ import { useFundraiserTypeStore } from "stores/fundraiser-form";
 export type LayoutContextType = {
   steps: Step[];
   currentStep: string;
+  onboardingComplete: boolean;
+  setOnboardingComplete: () => void;
   handleStepComplete: (stepId: string) => void;
   setCurrentStep: (stepId: string) => void;
+  handleBackStep: (stepId: string) => void
 }
 
 const RegistrationLayout = () => {
   const [steps, setSteps] = useState(defaultSteps);
+  const [onboardingComplete, setOnboardingComplete] = useState(false);
   const [currentStep, setCurrentStep] = useState<string>('welcome');
   const {fundraiserTypes, updateFundraiserTypes} = useFundraiserTypeStore();
 
@@ -35,12 +39,33 @@ const RegistrationLayout = () => {
 
     setSteps(updatedSteps);
   };
+  const handleBackStep = (currentStepId: string) => {
+  const currentStepObj = steps.find((step) => step.id === currentStepId);
+  if (!currentStepObj) return;
+
+  const updatedSteps = steps.map((step) => {
+    if (step.no === currentStepObj.no) {
+      return { ...step, completed: false };
+    } else if (step.no > currentStepObj.no) {
+      return { ...step, completed: false };
+    } else {
+      return step;
+    }
+  });
+
+  setCurrentStep(currentStepId);
+  setSteps(updatedSteps);
+};
+
 
   const layoutContext = {
     steps,
     currentStep,
     handleStepComplete,
     setCurrentStep,
+    handleBackStep,
+    onboardingComplete,
+    setOnboardingComplete
   };
 
   const fetchFundraiserTypes = async () => {

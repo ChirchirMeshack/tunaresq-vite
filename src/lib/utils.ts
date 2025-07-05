@@ -14,3 +14,20 @@ export const handleErrors = async (error: unknown) => {
 		enqueueSnackbar("An unexpected error occurred", { variant: "error" });
 	}
 };
+
+
+/**
+ * @param STRING | NUMBER
+ * @return FORMATTED STRING
+ */
+
+export const trimText = (text: string, length: number): string => {
+	if (text?.length < length) {
+		return text;
+	}
+	if (typeof text !== "string") {
+		return "";
+	}
+
+	return text?.slice(0, length) + "...";
+};
