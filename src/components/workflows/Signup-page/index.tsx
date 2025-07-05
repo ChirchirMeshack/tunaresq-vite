@@ -60,6 +60,7 @@ export default function SignupForm() {
     } catch (error) {
       handleErrors(error);
     }
+    handleStepComplete('create-account');
   }
 
   const handleSocialSignup = async (provider: "google" | "facebook" | "twitter") => {
@@ -343,7 +344,7 @@ export default function SignupForm() {
 						Back
 					</Button>
 					<Button
-            // type="submit"
+            //type="submit"
             type="button"
             onClick={() => handleStepComplete('create-account')}
             form="signup-form"

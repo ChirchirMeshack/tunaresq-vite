@@ -1,10 +1,6 @@
 import axiosInstance from "@lib/axios";
+import { Timestamps } from './commons';
 
-export interface Timestamps {
-    created_at: string;
-    updated_at: string;
-    deleted_at: string | null;
-}
 export interface FundraiserType extends Timestamps {
     id: string,
     name: string,
