@@ -10,18 +10,18 @@ import {
 import { AuthActions, AuthActionsTypes, AuthCtx, AuthState } from "./types";
 import useLocalStorage from "@hooks/use-local-storage";
 import {
-  GoogleAuthProvider,
+  // GoogleAuthProvider,
   signInWithPopup,
   signOut,
   // onAuthStateChanged,
   
-  FacebookAuthProvider,
-  TwitterAuthProvider,
+  // FacebookAuthProvider,
+  // TwitterAuthProvider,
 } from "firebase/auth";
 import { auth, googleAuthProvider, facebookAuthProvider, twitterAuthProvider } from "@lib/firebase";
 import { SignUpFormData, VerificationFormData } from "@components/workflows/Signup-page/validation"
 import { USER as User } from "types/user";
-import { registerWithEmailAndPassword, signInWithEmailAndPassword, verifyAccount as emailVerification} from "api/auth";
+import { registerWithEmailAndPassword, signInWithEmailAndPassword, verifyAccount as emailVerification, signInWithFirebaseAuth} from "api/auth";
 
 export const AuthContext = createContext<AuthCtx | null>(null);
 
@@ -87,27 +87,24 @@ export const AuthCtxProvider = ({ children }: PropsWithChildren) => {
   const loginWithGoogle = useCallback(async () => {
     try {
       const result = await signInWithPopup(auth, googleAuthProvider);
-      const credential = GoogleAuthProvider.credentialFromResult(result);
-      const token = credential?.accessToken;
+      // const credential = GoogleAuthProvider.credentialFromResult(result);
+      // const token = credential?.accessToken;
 
-      if (token) {
-        storeItem("tunaresq-token", token);
-      }
+      // Send user details from Google to backend
+      const loginResp = await signInWithFirebaseAuth('google', result.user);
 
-      const user = result.user;
-      alert(JSON.stringify(user));
-      // const loginResp = await signInWithFirebaseAuth(user.uid);
-      const loginResp = "User details not found"
-
-      if (loginResp === "User details not found") {
+      
+      if (!loginResp.data) {
         return {
-          message: "No account found. Please sign up first.",
+          message: loginResp.message || "Login failed",
           type: "error",
         };
       } else {
+      await storeItem("tunaresq-access-token", loginResp.data.access_token);
+      await storeItem("tunaresq-token-expiry", loginResp.data.expires_in.toString());
         dispatch({
           type: AuthActionsTypes.LOGIN,
-          payload: { user: loginResp },
+          payload: { user: loginResp.data.user },
         });
       }
       return { message: "Login Successful", type: "success" };
@@ -118,27 +115,24 @@ export const AuthCtxProvider = ({ children }: PropsWithChildren) => {
   const loginWithFacebook = useCallback(async () => {
     try {
       const result = await signInWithPopup(auth, facebookAuthProvider);
-      const credential = FacebookAuthProvider.credentialFromResult(result);
-      const token = credential?.accessToken;
+      // const credential = FacebookAuthProvider.credentialFromResult(result);
+      // const token = credential?.accessToken;
 
-      if (token) {
-        storeItem("tunaresq-token", token);
-      }
+      // Send user details from Facebook to backend
+      const loginResp = await signInWithFirebaseAuth('facebook', result.user);
 
-      const user = result.user;
-      alert(JSON.stringify(user));
-      // const loginResp = await getLoggedInUserData(user.uid);
-      const loginResp = "User details not found"
-
-      if (loginResp === "User details not found") {
+      
+      if (!loginResp.data) {
         return {
-          message: "No account found. Please sign up first.",
+          message: loginResp.message || "Login failed",
           type: "error",
         };
       } else {
+      await storeItem("tunaresq-access-token", loginResp.data.access_token);
+      await storeItem("tunaresq-token-expiry", loginResp.data.expires_in.toString());
         dispatch({
           type: AuthActionsTypes.LOGIN,
-          payload: { user: loginResp },
+          payload: { user: loginResp.data.user },
         });
       }
       return { message: "Login Successful", type: "success" };
@@ -149,27 +143,24 @@ export const AuthCtxProvider = ({ children }: PropsWithChildren) => {
   const loginWithTwitter = useCallback(async () => {
     try {
       const result = await signInWithPopup(auth, twitterAuthProvider);
-      const credential = TwitterAuthProvider.credentialFromResult(result);
-      const token = credential?.accessToken;
+      // const credential = TwitterAuthProvider.credentialFromResult(result);
+      // const token = credential?.accessToken;
 
-      if (token) {
-        storeItem("tunaresq-token", token);
-      }
+      // Send user details from Twitter to backend
+      const loginResp = await signInWithFirebaseAuth('twitter', result.user);
 
-      const user = result.user;
-      alert(JSON.stringify(user));
-      // const loginResp = await getLoggedInUserData(user.uid);
-      const loginResp = "User details not found"
-
-      if (loginResp === "User details not found") {
+      
+      if (!loginResp.data) {
         return {
-          message: "No account found. Please sign up first.",
+          message: loginResp.message || "Login failed",
           type: "error",
         };
       } else {
+      await storeItem("tunaresq-access-token", loginResp.data.access_token);
+      await storeItem("tunaresq-token-expiry", loginResp.data.expires_in.toString());
         dispatch({
           type: AuthActionsTypes.LOGIN,
-          payload: { user: loginResp },
+          payload: { user: loginResp.data.user },
         });
       }
       return { message: "Login Successful", type: "success" };
