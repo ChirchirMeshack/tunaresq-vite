@@ -77,7 +77,16 @@ export async function registerWithEmailAndPassword(formData: SignUpFormData): Pr
 
 export async function signInWithFirebaseAuth(provider: 'google' | 'facebook' | 'twitter', data: any): Promise<LoginResponse> {
     try {
-        const response = await axiosInstance.post(`/users/social-auth/`, { provider, data });
+        const payload ={
+            firstname: data.displayName.split(' ')[0],
+    lastname: data.displayName.split(' ')[1] || '',
+	email_address: data.email,
+	uid: data.uid,
+    photoURL: data.photoURL,
+    provider: data.providerId || provider,
+        }
+        console.log('Signing in with Firebase auth:', payload);
+        const response = await axiosInstance.post(`/users/social-auth/`, payload);
         return {
             data: response.data.data,
             message: response.data.message
