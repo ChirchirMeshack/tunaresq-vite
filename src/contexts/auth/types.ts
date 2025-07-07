@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { SignUpFormData, VerificationFormData } from "@components/workflows/Signup-page/validation";
 import { USER as User } from "types/user";
 
 
@@ -7,12 +8,13 @@ export type AuthCtx = {
   loginWithGoogle: () => Promise<{ message: string; type: string }>;
   loginWithFacebook: () => Promise<{ message: string; type: string }>;
   loginWithTwitter: () => Promise<{ message: string; type: string }>;
+  verifyAccount: (data: VerificationFormData) => Promise<{ message: string; type: string }>;
   credentialsLogin: (loginData: {
     email: string;
     password: string;
   }) => Promise<{ message: string; type: string }>;
   credentialsSignUp: (
-    signUpData: any
+    signUpData: SignUpFormData
   ) => Promise<{ message: string; type: string }>;
   // updateUser: (data: SetupFormData) => void;
   logout: () => void;
