@@ -5,9 +5,10 @@ import { Button } from "@components/ui/button";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@components/ui/card";
 import { useFundraiserTypeStore } from 'stores/fundraiser-form';
 import { LayoutContextType } from '@layouts/registration';
+import useAuthCtx from '@contexts/auth/use-auth';
 
 const FundraiserTypePage = () => {
-	// const [selectedFundraiserType, setSelectedFundraiserType] = useState<string | null>(null);
+	const {user} = useAuthCtx();
 	const { fundraiserTypes, selectedFundraiserType, selectFundraiserType } = useFundraiserTypeStore();
 	const { handleStepComplete, setCurrentStep } = useOutletContext<LayoutContextType>();
 
@@ -16,7 +17,12 @@ const FundraiserTypePage = () => {
 	};
 
 	const handleContinue = () => {
+		if (user) {
+			handleStepComplete('create-account');
+		} else {
 		handleStepComplete('select-beneficiary');
+			
+		}
 	};
 
 	return (
