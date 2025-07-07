@@ -7,6 +7,7 @@ import RegistrationLayout from "@layouts/registration";
 // import WelcomePage from "@components/workflows/welcome-page";
 // import FundraiserTypePage from "@components/workflows/fundraiserType-page";
 import RegistrationPage from "@pages/registration-page";
+import SamplePage from "@pages/dashboard-page";
 
 const Router = () => {
 	const routes = useRoutes([
@@ -37,26 +38,11 @@ const Router = () => {
 				},
 			],
 		},
-		// {
-		// 	path: "/register",
-		// 	element: <RegistrationLayout />,
-		// 	children: [
-		// 		{
-		// 			index: true,
-		// 			element: <WelcomePage />,
-		// 		},
-		// 	],
-		// },
-		// {
-		// 	path: "/register/fundraiser-type",
-		// 	element: <RegistrationLayout />,
-		// 	children: [
-		// 		{
-		// 			index: true,
-		// 			element: <FundraiserTypePage />,
-		// 		},
-		// 	],
-		// },
+		// Dashboard
+		{
+			path: "dashboard",
+			element: <SamplePage />,
+		},
 
 		// not found page
 		{
