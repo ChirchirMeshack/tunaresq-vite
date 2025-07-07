@@ -15,16 +15,16 @@ import { Label } from "@components/ui/label"
 import useAuthCtx from "@contexts/auth/use-auth"
 import { enqueueSnackbar } from "notistack"
 import { handleErrors } from "@lib/utils"
-import { registerWithEmailAndPassword } from "api/auth"
 import { LayoutContextType } from "@layouts/registration"
 
 export default function SignupForm() {
+  const {credentialsSignUp} = useAuthCtx()
   const {loginWithFacebook, loginWithGoogle, loginWithTwitter} = useAuthCtx()
 	const [showPassword, setShowPassword] = useState<boolean>(false);
 	const updateShowPasswordState = () => setShowPassword((prev) => !prev);
   const [message, setMessage] = useState<{ type: "success" | "error"; text: string } | null>(null)
   const [socialLoading, setSocialLoading] = useState<string | null>(null)
-  const { handleBackStep, handleStepComplete } = useOutletContext<LayoutContextType>();
+  const { handleBackStep } = useOutletContext<LayoutContextType>();
   const [showEmailVerification, setShowEmailVerification] = useState(false);
 
 	const handleBack = () => {
@@ -45,9 +45,9 @@ export default function SignupForm() {
 
   const handleSignupWithCredentials = async (formData: SignUpFormData) => {
     try {
-      const result = await registerWithEmailAndPassword(formData)
+      const result = await credentialsSignUp(formData)
 
-      if (result.data) {
+      if (result.type === "success") {
 		    setShowEmailVerification(true);
 
         setMessage({ type: "success", text: result.message || "Account created successfully!" })
@@ -99,10 +99,14 @@ export default function SignupForm() {
     }
   }
 
-  if (showEmailVerification) {
-    return <EmailVerification onBack={() => setShowEmailVerification(false)} />;
-  }
+  const handleBackClickOnEmailVerification = () => {
+    handleBackStep('select-beneficiary');
+    setShowEmailVerification(false);
+  };
 
+  if (showEmailVerification) {
+    return <EmailVerification onBack={handleBackClickOnEmailVerification} />;
+  }
   return (
     <Form {...methods}>
     <div className=" md:w-full ">
@@ -300,10 +304,10 @@ export default function SignupForm() {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="confirmPassword">Confirm Your Password</Label>
+              <Label htmlFor="password_confirm">Confirm Your Password</Label>
               <div className="relative">
                 <Input
-                  {...register("confirmPassword")}
+                  {...register("password_confirm")}
                   placeholder="Confirm your password"
                   type={showPassword ? "text" : "password"}
                   className="text-sm sm:text-base pr-10"
@@ -320,7 +324,7 @@ export default function SignupForm() {
                   {/* {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />} */}
                 </Button>
               </div>
-              {errors.confirmPassword && <p className="text-red-500 text-xs mt-1">{errors.confirmPassword.message}</p>}
+              {errors.password_confirm && <p className="text-red-500 text-xs mt-1">{errors.password_confirm.message}</p>}
             </div>
             
 
@@ -343,9 +347,7 @@ export default function SignupForm() {
 						Back
 					</Button>
 					<Button
-            // type="submit"
-            type="button"
-            onClick={() => handleStepComplete('create-account')}
+            type="submit"
             form="signup-form"
 						className="w-[120px] md:w-[150px] rounded-lg bg-orange-500 hover:bg-orange-600 text-white font-medium px-4 sm:px-6 py-2 flex items-center justify-center gap-2"
 					>
