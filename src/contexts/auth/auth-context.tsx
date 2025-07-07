@@ -19,9 +19,9 @@ import {
   TwitterAuthProvider,
 } from "firebase/auth";
 import { auth, googleAuthProvider, facebookAuthProvider, twitterAuthProvider } from "@lib/firebase";
-import { SignUpFormData } from "@components/workflows/Signup-page/validation"
+import { SignUpFormData, VerificationFormData } from "@components/workflows/Signup-page/validation"
 import { USER as User } from "types/user";
-import { registerWithEmailAndPassword, signInWithEmailAndPassword} from "api/auth";
+import { registerWithEmailAndPassword, signInWithEmailAndPassword, verifyAccount as emailVerification} from "api/auth";
 
 export const AuthContext = createContext<AuthCtx | null>(null);
 
@@ -212,7 +212,16 @@ export const AuthCtxProvider = ({ children }: PropsWithChildren) => {
       try {
         // If user data doesn't exist, proceed with Firebase authentication
         const response = await registerWithEmailAndPassword(data);
+        
+        if (!response.data) {
+          return {
+            message: "Account Creation Failed.",
+            type: "error",
+          };
+        }
+
       await storeItem("tunaresq-access-token", response.data?.tokens.access as string);
+      // await storeItem("tunaresq-user", JSON.stringify(response.data?.user));
       await storeItem("tunaresq-refresh-token", response.data?.tokens.refresh as string);
 
         dispatch({
@@ -230,6 +239,38 @@ export const AuthCtxProvider = ({ children }: PropsWithChildren) => {
     },
     []
   );
+  const verifyAccount = useCallback(
+    async (data: VerificationFormData) => {
+      try {
+        // If user data doesn't exist, proceed with Firebase authentication
+        const response = await emailVerification(data.email_address, data.code);
+
+        if (!response.data) {
+          return {
+            message: "Account Verification Failed.",
+            type: "error",
+          };
+        }
+
+      // await storeItem("tunaresq-access-token", response.data?.tokens.access as string);
+      // await storeItem("tunaresq-refresh-token", response.data?.tokens.refresh as string);
+
+        dispatch({
+          type: AuthActionsTypes.REGISTER,
+          payload: { user: response.data?.user as User },
+        });
+        return { message: response.message, type: "success" };
+      } catch (error: any) {
+        if (error.code === "auth/email-already-in-use") {
+          return { message: "Email Address Already in use", type: "error" };
+        } else {
+          return { message: "Unable to create Account", type: "error" };
+        }
+      }
+    },
+    []
+  );
+
 
 
   // const updateUser = useCallback(
@@ -277,7 +318,8 @@ export const AuthCtxProvider = ({ children }: PropsWithChildren) => {
   // );
 
   const logout = useCallback(async () => {
-    await deleteItem("tunaresq-token");
+    await deleteItem("tunaresq-access-token");
+    await deleteItem("tunaresq-refresh-token");
     await signOut(auth);
 
     dispatch({
@@ -291,12 +333,13 @@ export const AuthCtxProvider = ({ children }: PropsWithChildren) => {
       user: authState.user,
       loginWithFacebook,
       loginWithGoogle,
+      verifyAccount,
       loginWithTwitter,
       credentialsLogin,
       credentialsSignUp,
       logout,
     }),
-    [authState, loginWithFacebook, loginWithGoogle, loginWithTwitter, credentialsLogin, credentialsSignUp, logout]
+    [authState, loginWithFacebook, loginWithGoogle, verifyAccount, loginWithTwitter, credentialsLogin, credentialsSignUp, logout]
   );
 
   return (
