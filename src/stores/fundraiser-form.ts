@@ -1,6 +1,6 @@
-import { IndividualFundraiserFormData } from '@components/workflows/FundariserForms/individualForm';
-import { OrganizationFundraiserFormData } from '@components/workflows/FundariserForms/OrganizationForm';
-import { StartupFundraiserFormData } from '@components/workflows/FundariserForms/startupForm';
+import { IndividualFundraiserFormData } from '@components/workflows/FundraiserForms/individualForm';
+import { OrganizationFundraiserFormData } from '@components/workflows/FundraiserForms/OrganizationForm';
+import { StartupFundraiserFormData } from '@components/workflows/FundraiserForms/startupForm';
 import { create } from 'zustand';
 import { FundraiserType } from '../api/fundraiser-type';
 

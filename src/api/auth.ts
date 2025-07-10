@@ -3,9 +3,6 @@ import { SignUpFormData } from '@components/workflows/Signup-page/validation';
 import axiosInstance from '@lib/axios';
 import { USER } from 'types/user';
 
-
-
-
 interface LoginResponse {
     data: {
         access_token: string;

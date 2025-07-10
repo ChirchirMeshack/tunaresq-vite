@@ -2,7 +2,7 @@ import { useOutletContext } from 'react-router-dom'
 import FundraiserTypePage from '@components/workflows/fundraiserType-page';
 import SignupForm from '@components/workflows/Signup-page';
 import WelcomeCard from '@components/WelcomeCard';
-import FundraiserDetailsPage from '@components/workflows/FundariserForms';
+import FundraiserDetailsPage from '@components/workflows/FundraiserForms';
 import PaymentDetails from '@components/workflows/PaymentDetails';
 import { LayoutContextType } from '@layouts/registration';
 import FundraiserLaunchProgress from '@components/workflows/FundraiserPreview';
