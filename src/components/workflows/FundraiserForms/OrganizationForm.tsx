@@ -205,7 +205,7 @@ const OrganizationFundraiserForm = () => {
         details: orgResult 
       });
       console.log('Full organization details response:', orgResult);
-      handleStepComplete('fundraiser-details');
+    handleStepComplete('fundraiser-details');
       
     } catch (error) {
       console.error('Unexpected error during submission:', error);

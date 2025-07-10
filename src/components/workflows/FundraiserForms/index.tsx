@@ -1,10 +1,11 @@
 import { useEffect } from 'react';
-import { useOutletContext } from 'react-router-dom';
+import { Navigate,useOutletContext } from 'react-router-dom';
 import { useFundraiserTypeStore } from 'stores/fundraiser-form';
 import IndividualFundraiserForm from './individualForm';
 import StartupFundraiserForm from './startupForm';
 import OrganizationFundraiserForm from './OrganizationForm';
 import { LayoutContextType } from '@layouts/registration';
+import {PATHS} from 'config'
 
 // Constants for fundraiser types to avoid hardcoded strings
 const FUNDRAISER_TYPES = {
@@ -24,7 +25,7 @@ const FundraiserDetailsPage = () => {
   }, [fundraiserType, handleStepComplete]);
 
   // Early return if no fundraiser type is selected
-  if (!fundraiserType) return null;
+  if (!fundraiserType) return <Navigate to={PATHS.dashboard.index} replace />;
 
   // Render appropriate form based on fundraiser type
   switch (fundraiserType.toLowerCase()) {

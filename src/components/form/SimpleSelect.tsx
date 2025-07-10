@@ -1,11 +1,16 @@
 import { useFormContext } from 'react-hook-form';
 import { FieldError } from 'react-hook-form';
 
+interface CommonsOption {
+  value: string;
+  label: string;
+}
+
 interface SimpleSelectProps {
   name: string;
   label: string;
   placeholder: string;
-  options: string[];
+  options: CommonsOption[];
   loading?: boolean;
   error?: string | null;
   disabled?: boolean;
@@ -13,7 +18,7 @@ interface SimpleSelectProps {
 }
 
 /**
- * Simple select dropdown component for string-based options
+ * Simple select dropdown component for CommonsOption-based options
  * Handles loading states, error display, and form validation
  */
 export const SimpleSelect = ({
@@ -47,8 +52,8 @@ export const SimpleSelect = ({
           {loading ? 'Loading...' : placeholder}
         </option>
         {options.map(opt => (
-          <option key={opt} value={opt}>
-            {opt}
+          <option key={opt.value} value={opt.value}>
+            {opt.label}
           </option>
         ))}
       </select>
