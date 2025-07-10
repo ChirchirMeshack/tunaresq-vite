@@ -46,7 +46,7 @@ interface ForgotPasswordResponse {
 
 export async function signInWithEmailAndPassword(email: string, password: string): Promise<LoginResponse> {
     try {
-        const response = await axiosInstance.post(`/users/login`, { email_address: email, password });
+        const response = await axiosInstance.post(`/users/login/`, { email_address: email, password });
        
         return {data: response.data.data, message: response.data.message};
     } catch (error: any) {
@@ -74,7 +74,16 @@ export async function registerWithEmailAndPassword(formData: SignUpFormData): Pr
 
 export async function signInWithFirebaseAuth(provider: 'google' | 'facebook' | 'twitter', data: any): Promise<LoginResponse> {
     try {
-        const response = await axiosInstance.post(`/users/social-auth`, { provider, data });
+        const payload ={
+            firstname: data.displayName.split(' ')[0],
+    lastname: data.displayName.split(' ')[1] || '',
+	email_address: data.email,
+	uid: data.uid,
+    photoURL: data.photoURL,
+    provider: data.providerId || provider,
+        }
+        console.log('Signing in with Firebase auth:', payload);
+        const response = await axiosInstance.post(`/users/social-auth/`, payload);
         return {
             data: response.data.data,
             message: response.data.message
@@ -90,7 +99,7 @@ export async function signInWithFirebaseAuth(provider: 'google' | 'facebook' | '
 
 export async function verifyAccount(email: string, otp: string): Promise<VerifyAccountResponse> {
     try {
-        const response = await axiosInstance.post(`/users/verify`, {
+        const response = await axiosInstance.post(`/users/verify/`, {
     email_address:email,
     verification_code:otp
 });
@@ -108,7 +117,7 @@ export async function verifyAccount(email: string, otp: string): Promise<VerifyA
 
 export async function forgotPassword(email: string): Promise<ForgotPasswordResponse> {
     try {
-        const response = await axiosInstance.post(`/users/forgot_password`, { email_address: email });
+        const response = await axiosInstance.post(`/users/forgot_password/`, { email_address: email });
         return {
             message: response.data.message,
             data: response.data.data
@@ -123,7 +132,7 @@ export async function forgotPassword(email: string): Promise<ForgotPasswordRespo
 
 export async function resetPassword(_email: string, otp: string, newPassword: string): Promise<ResetPasswordResponse> {
     try {
-        const response = await axiosInstance.post(`/users/reset_password`, {
+        const response = await axiosInstance.post(`/users/reset_password/`, {
     token:  otp,
     new_password:   newPassword,
     confirm_password:   newPassword

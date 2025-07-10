@@ -1,49 +1,47 @@
 import React from "react";
 import { useForm, FormProvider } from "react-hook-form";
-import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "../../ui/card";
 import { Button } from "../../ui/button";
 import RHFTextField from "../../form/RHFTextField";
-import { useOutletContext } from 'react-router-dom';
-import { verifyAccount } from "api/auth";
+import { useNavigate, useOutletContext } from 'react-router-dom';
 import useAuthCtx from "@contexts/auth/use-auth";
 import { handleErrors } from "@lib/utils";
 import { enqueueSnackbar } from "notistack";
 import { LayoutContextType } from "@layouts/registration";
+import { VerificationFormData, verificationSchema } from "../Signup-page/validation";
+import { PATHS } from "config";
+import { useFundraiserTypeStore } from "stores/fundraiser-form";
 
-
-// Validation schema with Yup
-const verificationSchema = yup.object({
-  code: yup.string().length(6, "The code must be 6 digits long.").required("A code is required."),
-});
-
-type VerificationFormData = yup.InferType<typeof verificationSchema>;
 
 interface EmailVerificationProps {
   onBack: () => void;
 }
 
 const EmailVerification: React.FC<EmailVerificationProps> = ({ onBack }) => {
-  const {user} = useAuthCtx();
+  const {user,verifyAccount} = useAuthCtx();
+  const navigate = useNavigate();
+  const { selectedFundraiserType } = useFundraiserTypeStore();
   
   const { handleStepComplete } = useOutletContext<LayoutContextType>();
   const [isSuccess, setIsSuccess] = React.useState(false);
   
   const form = useForm<VerificationFormData>({
     resolver: yupResolver(verificationSchema),
+    defaultValues: {
+      email_address: user?.email_address ?? undefined,
+    }
   });
   
   const { handleSubmit, reset, formState: { isSubmitting} } = form;
 
+  
   const handleVerification = async (formData: VerificationFormData) => {
     try {
-      const result = await verifyAccount(
-        user?.email_address || "",
-        formData.code
-      )
+      if (!user?.email_address) return;
+      const result = await verifyAccount(formData);
 
-      if (result.data) {
+      if (result.type === "success") {
         enqueueSnackbar(result.message || "Account verified successfully!", { variant: "success" })
         // Reset form
         reset()
@@ -58,7 +56,12 @@ const EmailVerification: React.FC<EmailVerificationProps> = ({ onBack }) => {
   }
 
   const handleContinue = () => {
+    if (!selectedFundraiserType) {
+      navigate(PATHS.dashboard.index);
+    } else {
     handleStepComplete('create-account');
+      
+    }
   };
 
   // Success page
@@ -84,7 +87,7 @@ const EmailVerification: React.FC<EmailVerificationProps> = ({ onBack }) => {
               Your account has been verified successfully. Let's<br/>continue setting up your fundraiser.
             </CardDescription>
             <Button size="lg" className="w-full max-w-xs bg-[#F97342] hover:bg-[#F97342]/90" onClick={handleContinue}>
-                Continue to Fundraiser Details <span style={{marginLeft: 8}}>&rarr;</span>
+                Continue to {!selectedFundraiserType ? 'Your Dashboard' : 'Fundraiser Details'} <span style={{marginLeft: 8}}>&rarr;</span>
             </Button>
           </CardContent>
         </Card>

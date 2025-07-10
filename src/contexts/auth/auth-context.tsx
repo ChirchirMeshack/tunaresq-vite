@@ -10,18 +10,18 @@ import {
 import { AuthActions, AuthActionsTypes, AuthCtx, AuthState } from "./types";
 import useLocalStorage from "@hooks/use-local-storage";
 import {
-  GoogleAuthProvider,
+  // GoogleAuthProvider,
   signInWithPopup,
   signOut,
   // onAuthStateChanged,
   
-  FacebookAuthProvider,
-  TwitterAuthProvider,
+  // FacebookAuthProvider,
+  // TwitterAuthProvider,
 } from "firebase/auth";
 import { auth, googleAuthProvider, facebookAuthProvider, twitterAuthProvider } from "@lib/firebase";
-import { SignUpFormData } from "@components/workflows/Signup-page/validation"
+import { SignUpFormData, VerificationFormData } from "@components/workflows/Signup-page/validation"
 import { USER as User } from "types/user";
-import { registerWithEmailAndPassword, signInWithEmailAndPassword} from "api/auth";
+import { registerWithEmailAndPassword, signInWithEmailAndPassword, verifyAccount as emailVerification, signInWithFirebaseAuth} from "api/auth";
 
 export const AuthContext = createContext<AuthCtx | null>(null);
 
@@ -87,27 +87,24 @@ export const AuthCtxProvider = ({ children }: PropsWithChildren) => {
   const loginWithGoogle = useCallback(async () => {
     try {
       const result = await signInWithPopup(auth, googleAuthProvider);
-      const credential = GoogleAuthProvider.credentialFromResult(result);
-      const token = credential?.accessToken;
+      // const credential = GoogleAuthProvider.credentialFromResult(result);
+      // const token = credential?.accessToken;
 
-      if (token) {
-        storeItem("tunaresq-token", token);
-      }
+      // Send user details from Google to backend
+      const loginResp = await signInWithFirebaseAuth('google', result.user);
 
-      const user = result.user;
-      alert(JSON.stringify(user));
-      // const loginResp = await signInWithFirebaseAuth(user.uid);
-      const loginResp = "User details not found"
-
-      if (loginResp === "User details not found") {
+      
+      if (!loginResp.data) {
         return {
-          message: "No account found. Please sign up first.",
+          message: loginResp.message || "Login failed",
           type: "error",
         };
       } else {
+      await storeItem("tunaresq-access-token", loginResp.data.access_token);
+      await storeItem("tunaresq-token-expiry", loginResp.data.expires_in.toString());
         dispatch({
           type: AuthActionsTypes.LOGIN,
-          payload: { user: loginResp },
+          payload: { user: loginResp.data.user },
         });
       }
       return { message: "Login Successful", type: "success" };
@@ -118,27 +115,24 @@ export const AuthCtxProvider = ({ children }: PropsWithChildren) => {
   const loginWithFacebook = useCallback(async () => {
     try {
       const result = await signInWithPopup(auth, facebookAuthProvider);
-      const credential = FacebookAuthProvider.credentialFromResult(result);
-      const token = credential?.accessToken;
+      // const credential = FacebookAuthProvider.credentialFromResult(result);
+      // const token = credential?.accessToken;
 
-      if (token) {
-        storeItem("tunaresq-token", token);
-      }
+      // Send user details from Facebook to backend
+      const loginResp = await signInWithFirebaseAuth('facebook', result.user);
 
-      const user = result.user;
-      alert(JSON.stringify(user));
-      // const loginResp = await getLoggedInUserData(user.uid);
-      const loginResp = "User details not found"
-
-      if (loginResp === "User details not found") {
+      
+      if (!loginResp.data) {
         return {
-          message: "No account found. Please sign up first.",
+          message: loginResp.message || "Login failed",
           type: "error",
         };
       } else {
+      await storeItem("tunaresq-access-token", loginResp.data.access_token);
+      await storeItem("tunaresq-token-expiry", loginResp.data.expires_in.toString());
         dispatch({
           type: AuthActionsTypes.LOGIN,
-          payload: { user: loginResp },
+          payload: { user: loginResp.data.user },
         });
       }
       return { message: "Login Successful", type: "success" };
@@ -149,27 +143,24 @@ export const AuthCtxProvider = ({ children }: PropsWithChildren) => {
   const loginWithTwitter = useCallback(async () => {
     try {
       const result = await signInWithPopup(auth, twitterAuthProvider);
-      const credential = TwitterAuthProvider.credentialFromResult(result);
-      const token = credential?.accessToken;
+      // const credential = TwitterAuthProvider.credentialFromResult(result);
+      // const token = credential?.accessToken;
 
-      if (token) {
-        storeItem("tunaresq-token", token);
-      }
+      // Send user details from Twitter to backend
+      const loginResp = await signInWithFirebaseAuth('twitter', result.user);
 
-      const user = result.user;
-      alert(JSON.stringify(user));
-      // const loginResp = await getLoggedInUserData(user.uid);
-      const loginResp = "User details not found"
-
-      if (loginResp === "User details not found") {
+      
+      if (!loginResp.data) {
         return {
-          message: "No account found. Please sign up first.",
+          message: loginResp.message || "Login failed",
           type: "error",
         };
       } else {
+      await storeItem("tunaresq-access-token", loginResp.data.access_token);
+      await storeItem("tunaresq-token-expiry", loginResp.data.expires_in.toString());
         dispatch({
           type: AuthActionsTypes.LOGIN,
-          payload: { user: loginResp },
+          payload: { user: loginResp.data.user },
         });
       }
       return { message: "Login Successful", type: "success" };
@@ -212,7 +203,16 @@ export const AuthCtxProvider = ({ children }: PropsWithChildren) => {
       try {
         // If user data doesn't exist, proceed with Firebase authentication
         const response = await registerWithEmailAndPassword(data);
+        
+        if (!response.data) {
+          return {
+            message: "Account Creation Failed.",
+            type: "error",
+          };
+        }
+
       await storeItem("tunaresq-access-token", response.data?.tokens.access as string);
+      // await storeItem("tunaresq-user", JSON.stringify(response.data?.user));
       await storeItem("tunaresq-refresh-token", response.data?.tokens.refresh as string);
 
         dispatch({
@@ -230,6 +230,38 @@ export const AuthCtxProvider = ({ children }: PropsWithChildren) => {
     },
     []
   );
+  const verifyAccount = useCallback(
+    async (data: VerificationFormData) => {
+      try {
+        // If user data doesn't exist, proceed with Firebase authentication
+        const response = await emailVerification(data.email_address, data.code);
+
+        if (!response.data) {
+          return {
+            message: "Account Verification Failed.",
+            type: "error",
+          };
+        }
+
+      // await storeItem("tunaresq-access-token", response.data?.tokens.access as string);
+      // await storeItem("tunaresq-refresh-token", response.data?.tokens.refresh as string);
+
+        dispatch({
+          type: AuthActionsTypes.REGISTER,
+          payload: { user: response.data?.user as User },
+        });
+        return { message: response.message, type: "success" };
+      } catch (error: any) {
+        if (error.code === "auth/email-already-in-use") {
+          return { message: "Email Address Already in use", type: "error" };
+        } else {
+          return { message: "Unable to create Account", type: "error" };
+        }
+      }
+    },
+    []
+  );
+
 
 
   // const updateUser = useCallback(
@@ -277,7 +309,8 @@ export const AuthCtxProvider = ({ children }: PropsWithChildren) => {
   // );
 
   const logout = useCallback(async () => {
-    await deleteItem("tunaresq-token");
+    await deleteItem("tunaresq-access-token");
+    await deleteItem("tunaresq-refresh-token");
     await signOut(auth);
 
     dispatch({
@@ -291,12 +324,13 @@ export const AuthCtxProvider = ({ children }: PropsWithChildren) => {
       user: authState.user,
       loginWithFacebook,
       loginWithGoogle,
+      verifyAccount,
       loginWithTwitter,
       credentialsLogin,
       credentialsSignUp,
       logout,
     }),
-    [authState, loginWithFacebook, loginWithGoogle, loginWithTwitter, credentialsLogin, credentialsSignUp, logout]
+    [authState, loginWithFacebook, loginWithGoogle, verifyAccount, loginWithTwitter, credentialsLogin, credentialsSignUp, logout]
   );
 
   return (
