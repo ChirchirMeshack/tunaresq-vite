@@ -21,13 +21,14 @@ export interface StartupDetails extends Timestamps {
     social_media?: string ;
 }
 
-// POST /startupdetails
+// POST /startup-details
 export const createStartupDetails = async (startupDetails: Omit<StartupDetails, 'id' | 'created_at' | 'updated_at'>) => {
     try {
-        const result = await axiosInstance.post('/startupdetails/', startupDetails);
+        const result = await axiosInstance.post('/startup-details/', startupDetails);
         return { data: result.data.data, error: null };
     } catch (error) {
-        console.log(error);
+        // @ts-expect-error: handleErrors may not be typed as a function in some contexts
+        if (typeof handleErrors === 'function') handleErrors(error);
         return { data: null, error };
     }
 };

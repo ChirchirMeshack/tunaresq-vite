@@ -18,10 +18,12 @@ import {
   IndividualDetailsPayload,
 } from "../../../api/individual-details";
 import { createFundraiser, FundraiserPayload } from "../../../api/fundraiser";
-import { FundraiserType } from "../../../api/fundraiser-type";
+import {
+  FundraiserType,
+  getAllFundraiserTypes,
+} from "../../../api/fundraiser-type";
 import { handleErrors } from "@lib/utils";
 import useAuthCtx from "../../../contexts/auth/use-auth";
-import { useFundraiserTypeStore } from "stores/fundraiser-form";
 
 const validationSchema = yup.object({
   title: yup
@@ -40,15 +42,11 @@ const validationSchema = yup.object({
   // image: yup.mixed().notRequired(),
 });
 
-
 export type IndividualFundraiserFormData = yup.InferType<
   typeof validationSchema
 >;
 
 const IndividualFundraiserForm = () => {
-  const { selectedFundraiserType, fundraiserTypes: categories } =
-    useFundraiserTypeStore();
-
   const methods = useForm<IndividualFundraiserFormData>({
     resolver: yupResolver(validationSchema),
     mode: "onTouched",
@@ -72,9 +70,20 @@ const IndividualFundraiserForm = () => {
         return;
       }
 
+      // Get fundraising categories to find the startup category ID
+      const { data: categories, error: categoriesError } =
+        await getAllFundraiserTypes();
+      if (categoriesError || !categories) {
+        console.error("Failed to get fundraising categories:", categoriesError);
+        handleErrors(
+          categoriesError || new Error("Failed to get fundraising categories")
+        );
+        return;
+      }
+
       // Find the individual category
-      const individualCategory = categories.find(
-        (cat: FundraiserType) => cat.id === selectedFundraiserType
+      const individualCategory = categories.find((cat: FundraiserType) =>
+        cat.name.toLowerCase().includes("yourself")
       );
 
       if (!individualCategory) {
@@ -105,11 +114,19 @@ const IndividualFundraiserForm = () => {
         return;
       }
 
+      // Extract the fundraiser ID from the response
+      const fundraiserId = fundraiserResult?.data?.id;
+      if (!fundraiserId) {
+        console.error("Fundraiser ID not found in response:", fundraiserResult);
+        handleErrors(new Error("Fundraiser ID not returned from API"));
+        return;
+      }
+
       console.log("Fundraiser created successfully:", fundraiserResult);
 
       // Step 2: Create individual details with the fundraiser ID
       const individualPayload: IndividualDetailsPayload = {
-        fundraiser: fundraiserResult.id,
+        fundraiser: fundraiserResult?.data?.id,
         fundraiser_title: data.title,
         fundraiser_details: data.details,
         fundraiser_goal: data.goal,
@@ -142,7 +159,7 @@ const IndividualFundraiserForm = () => {
   };
 
   const {
-    formState: { errors },
+    formState: { errors, isValid },
   } = methods;
 
   return (
@@ -267,9 +284,9 @@ const IndividualFundraiserForm = () => {
           </Button>
           <Button
             type="button"
-            onClick={() => handleStepComplete("fundraiser-details")}
+            onClick={methods.handleSubmit(onSubmit)}
             className="w-[120px] md:w-[150px] rounded-lg bg-orange-500 hover:bg-orange-600 text-white font-medium px-4 sm:px-6 py-2 flex items-center justify-center gap-2"
-            // disabled={!isValid}
+            disabled={!isValid}
           >
             Continue
             <ArrowRight className="size-4 sm:size-5" />

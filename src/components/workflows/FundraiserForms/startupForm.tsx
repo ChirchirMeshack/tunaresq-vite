@@ -40,11 +40,11 @@ const FundraiserDetailsSection = ()=>(
     <RHFTextAreaField
       name="details"
       label="Fundraiser details (max 100 words)"
-      placeholder="Explain how you'll use the funds and what milestones you will achieve"
-      maxLength={1000}
+        placeholder="Explain how you'll use the funds and what milestones you will achieve"
+        maxLength={1000}
       rows={4}
       style={{ lineHeight: '1.4' }}
-    />
+      />
     <RHFTextField name="goal" label="What is your fundraising goal? (In USD)" placeholder="USD 0.00" type="number" min={0} step="1.00" />
     <div className="border rounded-lg p-0 sm:p-4 flex flex-col items-center text-center  min-h-[220px] justify-center relative overflow-hidden">
       <label className="block text-sm font-medium mb-1 w-full text-left px-4 pt-4 sm:pt-0 sm:px-0">Upload your fundraiser's image</label>
@@ -171,23 +171,31 @@ const StartupFundraiserForm = () => {
         return;
       }
 
+      // Extract the fundraiser ID from the response
+      const fundraiserId = fundraiserResult?.data?.id;
+      if (!fundraiserId) {
+        console.error('Fundraiser ID not found in response:', fundraiserResult);
+        handleErrors(new Error('Fundraiser ID not returned from API'));
+        return;
+      }
+
       console.log('Fundraiser created successfully:', fundraiserResult);
 
       // Step 2: Create startup details with the fundraiser ID
       const startupPayload: Omit<StartupDetailsPayload, 'id' | 'created_at' | 'updated_at'> = {
-        fundraiser: fundraiserResult.id,
-        fundraiser_title: data.title,
-        fundraiser_details: data.details,
-        fundraiser_goal: data.goal,
-        startup_name: data.startupName,
-        business_description: data.businessDescription,
-        location: data.startupLocation,
-        industry: data.industry,
-        industry_name: '', // Set if you have a display name
-        stage: data.startupStage,
-        stage_name: '', // Set if you have a display name
-        team_size: data.teamSize,
-        team_size_name: '', // Set if you have a display name
+        fundraiser: fundraiserId,
+      fundraiser_title: data.title,
+      fundraiser_details: data.details,
+      fundraiser_goal: data.goal,
+      startup_name: data.startupName,
+      business_description: data.businessDescription,
+      location: data.startupLocation,
+      industry: data.industry,
+      industry_name: '', // Set if you have a display name
+      stage: data.startupStage,
+      stage_name: '', // Set if you have a display name
+      team_size: data.teamSize,
+      team_size_name: '', // Set if you have a display name
         website: data.website || undefined,
         social_media: data.social || undefined,
       };
@@ -198,12 +206,12 @@ const StartupFundraiserForm = () => {
       if (startupError) {
         console.error('Failed to create startup details:', startupError);
         handleErrors(startupError);
-        return;
-      }
+      return;
+    }
 
-      // Success: proceed to next step or show success message
+    // Success: proceed to next step or show success message
       console.log('Startup fundraiser created successfully:', { fundraiser: fundraiserResult, details: startupResult });
-      handleStepComplete('fundraiser-details');
+    handleStepComplete('fundraiser-details');
       
     } catch (error) {
       console.error('Unexpected error during submission:', error);
@@ -272,7 +280,7 @@ const StartupFundraiserForm = () => {
                 <FundraiserDetailsSection />
               </AccordionCard>
             </div>
-                        {/* Desktop layout: all fields visible */}
+            {/* Desktop layout: all fields visible */}
             <div className="hidden md:block space-y-4">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <RHFTextField name="startupName" label="Startup Name" placeholder="Enter Your Startup's Name" />
@@ -323,10 +331,10 @@ const StartupFundraiserForm = () => {
           </Button>
           <Button
             type="button"
-            // onClick={methods.handleSubmit(onSubmit)}
-            onClick={() => handleStepComplete('fundraiser-details')}
+            onClick={methods.handleSubmit(onSubmit)}
+            // onClick={() => handleStepComplete('fundraiser-details')}
             className="w-[120px] md:w-[150px] rounded-lg bg-orange-500 hover:bg-orange-600 text-white font-medium px-4 sm:px-6 py-2 flex items-center justify-center gap-2"
-            // disabled={!isValid}
+            disabled={!isValid}
           > 
             Continue
             <ArrowRight className="size-4 sm:size-5" />

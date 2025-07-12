@@ -1,8 +1,13 @@
 import { useState, useEffect } from 'react';
 import { getAllIndustries, Industry, getAllStartupStages, StartupStage, getAllTeamSizes, TeamSizes } from '../api/commons';
 
+interface CommonsOption {
+  value: string;
+  label: string;
+}
+
 interface CommonsDataState {
-  options: string[];
+  options: CommonsOption[];
   loading: boolean;
   error: string | null;
 }
@@ -50,7 +55,7 @@ export const useCommonsData = (): UseCommonsDataReturn => {
         });
       } else {
         setIndustryData({
-          options: Array.isArray(data) ? data.map((item: Industry) => item.name) : [],
+          options: Array.isArray(data) ? data.map((item: Industry) => ({ value: item.id, label: item.name })) : [],
           loading: false,
           error: null
         });
@@ -73,7 +78,7 @@ export const useCommonsData = (): UseCommonsDataReturn => {
         });
       } else {
         setStartupStageData({
-          options: Array.isArray(data) ? data.map((item: StartupStage) => item.name) : [],
+          options: Array.isArray(data) ? data.map((item: StartupStage) => ({ value: item.id, label: item.name })) : [],
           loading: false,
           error: null
         });
@@ -96,7 +101,7 @@ export const useCommonsData = (): UseCommonsDataReturn => {
         });
       } else {
         setTeamSizeData({
-          options: Array.isArray(data) ? data.map((item: TeamSizes) => item.name) : [],
+          options: Array.isArray(data) ? data.map((item: TeamSizes) => ({ value: item.id, label: item.name })) : [],
           loading: false,
           error: null
         });
