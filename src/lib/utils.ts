@@ -15,6 +15,21 @@ export const handleErrors = async (error: unknown) => {
 	}
 };
 
+export const formatFileSize = (bytes: number): string => {
+  if (bytes === 0) return "0 Bytes"
+  const k = 1024
+  const sizes = ["Bytes", "KB", "MB", "GB"]
+  const i = Math.floor(Math.log(bytes) / Math.log(k))
+  return Number.parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i]
+}
+
+export const formatCurrency = (value: string): string => {
+  const numericValue = value.replace(/[^0-9.]/g, "")
+  const parts = numericValue.split(".")
+  parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+  return parts.join(".")
+}
+
 
 /**
  * @param STRING | NUMBER
