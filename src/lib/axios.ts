@@ -6,8 +6,12 @@ const axiosInstance = axios.create({
 	baseURL: BASE_URL
 });
 
+export const authenticatedAxiosInstance = axios.create({
+	baseURL: BASE_URL
+});
+
 // Add request interceptor to include authentication token
-axiosInstance.interceptors.request.use(
+authenticatedAxiosInstance.interceptors.request.use(
 	async (config) => {
 		try {
 			const { retrieveItem } = useLocalStorage();
@@ -33,7 +37,7 @@ axiosInstance.interceptors.request.use(
 );
 
 // Add response interceptor to handle authentication errors
-axiosInstance.interceptors.response.use(
+authenticatedAxiosInstance.interceptors.response.use(
 	(response) => {
 		return response;
 	},
