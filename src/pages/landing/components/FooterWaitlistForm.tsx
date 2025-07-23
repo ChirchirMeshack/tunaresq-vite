@@ -6,7 +6,7 @@ import { Form } from "@components/ui/form"
 import { BASE_URL } from "config";
 import axiosInstance from "@lib/axios";
 import { handleErrors } from "@lib/utils";
-import { FormValues, formSchema, DefaultWaitListFormValues } from "@pages/landing-page/waitlist-form-validation";
+import { FormValues, formSchema, DefaultWaitListFormValues } from "@pages/landing-page/components/waitlist-form-validation";
 import { TextField } from "./form";
 import { enqueueSnackbar } from "notistack";
 
