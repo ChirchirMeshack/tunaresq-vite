@@ -1,25 +1,22 @@
 import { Navigate, useRoutes } from "react-router-dom";
 import NotFoundPage from "@pages/not-found";
 
-import HomePage from "@pages/landing-page";
-import LandingLayout from "@layouts/landing";
 import RegistrationLayout from "@layouts/registration";
-// import WelcomePage from "@components/workflows/welcome-page";
-// import FundraiserTypePage from "@components/workflows/fundraiserType-page";
-import RegistrationPage from "@pages/registration-page";
-import SamplePage from "@pages/dashboard-page";
+import RegistrationPage from "@pages/registration";
+import SamplePage from "@pages/dashboard";
 import AuthGuard from "@contexts/auth/auth-guard";
+import OnboardingFlow from "@pages/onboarding";
 
 const Router = () => {
 	const routes = useRoutes([
 		// Landing Pages
 		{
 			path: "/",
-			element: <LandingLayout />,
+			element: <RegistrationLayout />,
 			children: [
 				{
 					index: true,
-					element: <HomePage />,
+					element: <OnboardingFlow />,
 				},
 			],
 		},
