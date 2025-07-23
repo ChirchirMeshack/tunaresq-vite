@@ -1,9 +1,10 @@
-import axiosInstance from "@lib/axios";
 import { Timestamps } from './commons';
+import axiosInstance from '@lib/axios';
 
 export interface FundraiserType extends Timestamps {
     id: string,
     name: string,
+    icon: string,
     description: string
     is_active: boolean,
     created_by: string,

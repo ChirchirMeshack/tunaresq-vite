@@ -115,6 +115,24 @@ export async function verifyAccount(email: string, otp: string): Promise<VerifyA
     }
 }
 
+
+export async function resendVerificationCode(email: string): Promise<{ message: string, type:string }> {
+    try {
+        const response = await axiosInstance.post(`/users/verify/`, {
+    email_address:email
+});
+        return {
+            message: response.data.message,
+            type: "success"
+        };
+    } catch (error: any) {
+        return {
+            message: error.response?.data?.message || "verification request failed",
+            type: "error"
+        };
+    }
+}
+
 export async function forgotPassword(email: string): Promise<ForgotPasswordResponse> {
     try {
         const response = await axiosInstance.post(`/users/forgot_password/`, { email_address: email });
