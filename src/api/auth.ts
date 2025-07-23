@@ -1,6 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { SignUpFormData } from '@components/workflows/Signup-page/validation';
 import axiosInstance from '@lib/axios';
+import axios from 'axios';
+import { BASE_URL } from 'config';
 import { USER } from 'types/user';
 
 interface LoginResponse {
@@ -82,8 +84,7 @@ export async function signInWithFirebaseAuth(provider: 'google' | 'facebook' | '
     photoURL: data.photoURL,
     provider: data.providerId || provider,
         }
-        console.log('Signing in with Firebase auth:', payload);
-        const response = await axiosInstance.post(`/users/social-auth/`, payload);
+        const response = await axios.post(`${BASE_URL}/users/social-auth/`, payload);
         return {
             data: response.data.data,
             message: response.data.message

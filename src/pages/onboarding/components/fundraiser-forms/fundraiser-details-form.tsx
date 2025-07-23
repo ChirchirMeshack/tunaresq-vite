@@ -129,9 +129,9 @@ export default function FundraiserDetailsForm() {
     }
   };
 
-  const {
-    formState: { isValid },
-  } = methods;
+  // const {
+  //   formState: { isValid },
+  // } = methods;
 
   return (
       <Form {...methods}>

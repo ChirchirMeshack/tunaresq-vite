@@ -73,7 +73,8 @@ const EmailVerification: FC<EmailVerificationProps> = ({ onBack }) => {
       const result = await retryAccountVerification(user.email_address);
 
       if (result.type === "success") {
-        enqueueSnackbar(result.message || "Account verified successfully!", { variant: "success" })
+        enqueueSnackbar(result.message || "Code resent successfully!", { variant: "success" })
+        setVerificationFailed(false);
         setIsSuccess(true);
       } else {
         setVerificationFailed(true);
@@ -126,7 +127,7 @@ const EmailVerification: FC<EmailVerificationProps> = ({ onBack }) => {
             width: 96,
             height: 96,
             borderRadius: '50%',
-            border: '2px solid #B7EFC5',
+            border: '2px solid #f70808',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
