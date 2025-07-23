@@ -7,6 +7,7 @@ import type { BaseFieldProps } from "types/form"
 
 interface TextFieldProps extends BaseFieldProps {
   type?: "text" | "email" | "url" | "tel"
+  maxLength?: number
 }
 
 export function TextField({
@@ -17,6 +18,7 @@ export function TextField({
   disabled = false,
   type = "text",
   className = "",
+  maxLength,
 }: TextFieldProps) {
   const {
     control,
@@ -39,6 +41,7 @@ export function TextField({
             id={name}
             type={type}
             placeholder={placeholder}
+            maxLength={maxLength}
             disabled={disabled}
             className={`h-11 border-gray-300 focus:border-gray-400 focus:ring-0 ${error ? "border-red-500" : ""}`}
           />
