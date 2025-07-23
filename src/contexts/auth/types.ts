@@ -9,6 +9,7 @@ export type AuthCtx = {
   loginWithFacebook: () => Promise<{ message: string; type: string }>;
   loginWithTwitter: () => Promise<{ message: string; type: string }>;
   verifyAccount: (data: VerificationFormData) => Promise<{ message: string; type: string }>;
+  retryAccountVerification: (email: string) => Promise<{ message: string; type: string }>;
   credentialsLogin: (loginData: {
     email: string;
     password: string;

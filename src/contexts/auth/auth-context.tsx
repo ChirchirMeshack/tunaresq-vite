@@ -21,7 +21,7 @@ import {
 import { auth, googleAuthProvider, facebookAuthProvider, twitterAuthProvider } from "@lib/firebase";
 import { SignUpFormData, VerificationFormData } from "@components/workflows/Signup-page/validation"
 import { USER as User } from "types/user";
-import { registerWithEmailAndPassword, signInWithEmailAndPassword, verifyAccount as emailVerification, signInWithFirebaseAuth} from "api/auth";
+import { registerWithEmailAndPassword, signInWithEmailAndPassword, verifyAccount as emailVerification, signInWithFirebaseAuth, resendVerificationCode} from "api/auth";
 
 export const AuthContext = createContext<AuthCtx | null>(null);
 
@@ -60,29 +60,6 @@ const authReducer = (state: AuthState, action: AuthActions) => {
 export const AuthCtxProvider = ({ children }: PropsWithChildren) => {
   const [authState, dispatch] = useReducer(authReducer, defaultAuthState);
   const { storeItem, deleteItem } = useLocalStorage();
-
-  // useEffect(() => {
-  //   // Listen for auth state changes
-  //   const unsubscribe = onAuthStateChanged(auth, async (user) => {
-  //     if (user) {
-  //       // User is signed in, you can fetch additional user data here
-  //       const loginResp = await getLoggedInUserData(user.uid);
-
-  //       if (loginResp !== "User details not found") {
-  //         dispatch({
-  //           type: AuthActionsTypes.LOGIN,
-  //           payload: { user: loginResp },
-  //         });
-  //       }
-  //     } else {
-  //       // User is signed out, handle state reset if needed
-  //       dispatch({ type: AuthActionsTypes.LOGOUT, payload: null });
-  //     }
-  //   });
-
-  //   // Cleanup subscription on unmount
-  //   return () => unsubscribe();
-  // }, []);
 
   const loginWithGoogle = useCallback(async () => {
     try {
@@ -211,10 +188,6 @@ export const AuthCtxProvider = ({ children }: PropsWithChildren) => {
           };
         }
 
-      await storeItem("tunaresq-access-token", response.data?.tokens.access as string);
-      // await storeItem("tunaresq-user", JSON.stringify(response.data?.user));
-      await storeItem("tunaresq-refresh-token", response.data?.tokens.refresh as string);
-
         dispatch({
           type: AuthActionsTypes.REGISTER,
           payload: { user: response.data?.user as User },
@@ -244,6 +217,7 @@ export const AuthCtxProvider = ({ children }: PropsWithChildren) => {
         }
 
       // await storeItem("tunaresq-access-token", response.data?.tokens.access as string);
+      // await storeItem("tunaresq-user", JSON.stringify(response.data?.user));
       // await storeItem("tunaresq-refresh-token", response.data?.tokens.refresh as string);
 
         dispatch({
@@ -251,62 +225,35 @@ export const AuthCtxProvider = ({ children }: PropsWithChildren) => {
           payload: { user: response.data?.user as User },
         });
         return { message: response.message, type: "success" };
-      } catch (error: any) {
-        if (error.code === "auth/email-already-in-use") {
-          return { message: "Email Address Already in use", type: "error" };
-        } else {
-          return { message: "Unable to create Account", type: "error" };
-        }
+      } catch (error) {
+        console.log(error);
+        return { message: "Unable to create Account", type: "error" };
       }
     },
     []
   );
 
+  
+  const retryAccountVerification = useCallback(
+    async (email: string) => {
+      try {
+        // If user data doesn't exist, proceed with Firebase authentication
+        const response = await resendVerificationCode(email);
 
-
-  // const updateUser = useCallback(
-  //   async (data: SetupFormData) => {
-  //     const nextMonth = addMonths(new Date(), 1);
-  //     const { userId, teamName, subscriptionType } = data;
-  //     let maxUsers;
-  //     let maxProjects;
-  //     switch (subscriptionType) {
-  //       case "Basic":
-  //         maxUsers = 3;
-  //         maxProjects = 10;
-  //         break;
-  //       case "Premium":
-  //         maxUsers = 5;
-  //         maxProjects = "unlimited";
-  //         break;
-  //       default:
-  //         break;
-  //     }
-
-  //     const teamData = await createTeam({
-  //       name: teamName,
-  //       maxUsers,
-  //       maxProjects,
-  // createdAt: Timestamp.now(),
-  //     });
-
-  //     const updatedData = {
-  //       teams: [teamData.id],
-  //       subscription: {
-  //         expiresIn: nextMonth.toISOString(),
-  //         type: subscriptionType,
-  //         valid: true,
-  //       },
-  //     };
-  //     const updatedUser = await completeSetup(userId, updatedData);
-
-  //     dispatch({
-  //       type: AuthActionsTypes.UPDATEUSER,
-  //       payload: updatedUser,
-  //     });
-  //   },
-  //   [authState]
-  // );
+        if (response.type === "error") {
+          return {
+            message: "Account Verification Failed.",
+            type: "error",
+          };
+        }
+        return response;
+      } catch (error: any) {
+        console.log(error);
+          return { message: "Unable to create Account", type: "error" };
+      }
+    },
+    []
+  );
 
   const logout = useCallback(async () => {
     await deleteItem("tunaresq-access-token");
@@ -325,12 +272,13 @@ export const AuthCtxProvider = ({ children }: PropsWithChildren) => {
       loginWithFacebook,
       loginWithGoogle,
       verifyAccount,
+      retryAccountVerification,
       loginWithTwitter,
       credentialsLogin,
       credentialsSignUp,
       logout,
     }),
-    [authState, loginWithFacebook, loginWithGoogle, verifyAccount, loginWithTwitter, credentialsLogin, credentialsSignUp, logout]
+    [authState, loginWithFacebook, loginWithGoogle, verifyAccount, retryAccountVerification, loginWithTwitter, credentialsLogin, credentialsSignUp, logout]
   );
 
   return (

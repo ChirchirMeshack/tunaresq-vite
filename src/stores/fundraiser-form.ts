@@ -29,8 +29,8 @@ export const fundraiserDetails =
   
 interface FundraiserTypeStore {
   fundraiserTypes: FundraiserType[];
-  selectedFundraiserType: string | null;
-  selectFundraiserType: (type: string) => void;
+  selectedFundraiserType: { id: string; name: string } | null;
+  selectFundraiserType: (type: { id: string; name: string }) => void;
   updateFundraiserTypes: (
     fundraiserData: FundraiserType[] | FundraiserType | string
   ) => void;
