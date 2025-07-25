@@ -9,14 +9,13 @@ import { TextAreaField } from "@components/hook-form/textarea-field"
 import { ArrowLeft, ArrowRight, ChevronDown, ChevronUp } from "lucide-react"
 import { FundraisingDetailsFields } from './fundraiser-details-form';
 import { useAppStore } from 'stores/app';
-import { StartupFundraiserFormData } from '@components/workflows/FundraiserForms/startupForm';
 import { handleErrors } from '@lib/utils';
 import { FundraiserPayload, createFundraiser } from 'api/fundraiser';
 import { getAllFundraiserTypes, FundraiserType } from 'api/fundraiser-type';
 import { createStartupDetails, StartupDetails as StartupDetailsPayload } from 'api/startup-details';
 import useAuthCtx from '@contexts/auth/use-auth';
 import { Form } from '@components/ui/form';
-import { startUpDetailsSchema } from './validation';
+import { startUpDetailsSchema, StartupFundraiserFormData } from './validation';
 
 
 
@@ -38,7 +37,7 @@ export default function StartupDetailsForm() {
 
 
   const handleBack = () => {
-    handleBackStep('create-account');
+    handleBackStep("select-beneficiary");
   };
 
 

@@ -39,7 +39,7 @@ export default function FundraiserDetailsForm() {
   const { user } = useAuthCtx();
 
   const handleBack = () => {
-    handleBackStep("create-account");
+    handleBackStep("select-beneficiary");
   };
 
   const handleAccordionClick = (section: "organization" | "fundraising") => {
@@ -272,9 +272,11 @@ export default function FundraiserDetailsForm() {
 						Back
 					</button>
 					<button
-            type="submit"
-            disabled={!isValid}
-            form="fundraiser-details-form"
+            // type="submit"
+            // disabled={!isValid}
+            // form="fundraiser-details-form"
+            type="button"
+            onClick={() => handleStepComplete('payment-details')}
 						className="w-[120px] md:w-[150px] rounded-lg bg-orange-500 hover:bg-orange-600 text-white font-medium px-4 sm:px-6 py-2 flex items-center justify-center gap-2"
 					>
 						Continue

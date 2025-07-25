@@ -3,7 +3,7 @@ import { Navigate,useOutletContext } from 'react-router-dom';
 import { useFundraiserTypeStore } from 'stores/fundraiser-form';
 import { LayoutContextType } from '@layouts/registration';
 import {PATHS} from 'config'
-import { IndividualForm, OrganizationForm, StartupForm } from '@pages/onboarding/components/fundraiser-forms';
+import { IndividualForm, OrganizationForm, StartupForm } from '@components/fundraiser-forms';
 // Constants for fundraiser types to avoid hardcoded strings
 const FUNDRAISER_TYPES = {
   YOURSELF: 'yourself',

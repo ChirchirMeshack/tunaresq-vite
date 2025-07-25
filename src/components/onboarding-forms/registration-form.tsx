@@ -13,7 +13,7 @@ import {
   SignUpFormData,
   SignUpFormSchema,
   DefaultSignUpFormValues,
-} from "@components/workflows/Signup-page/validation";
+} from "@components/onboarding-forms/validation";
 import EmailVerification from "./verification-form";
 import { SocialAuthButton } from "@components/ui/social-auth-button";
 import { TextField } from "@components/hook-form";
@@ -38,7 +38,7 @@ const RegistrationForm = () => {
     defaultValues: DefaultSignUpFormValues,
   });
 
-  const { handleSubmit, reset } = methods;
+  const { handleSubmit, reset, formState: { isSubmitting } } = methods;
 
   const handleSignupWithCredentials = async (formData: SignUpFormData) => {
     try {
@@ -239,14 +239,14 @@ const RegistrationForm = () => {
           Back
         </button>
         <button
-          // type="submit"
-          type="button"
-          onClick={() => setShowEmailVerification(true)}
+          type="submit"
+          // type="button"
+          // onClick={() => setShowEmailVerification(true)}
           form="signup-form"
           className="w-[120px] md:w-[150px] rounded-lg bg-orange-500 hover:bg-orange-600 text-white font-medium px-4 sm:px-6 py-2 flex items-center justify-center gap-2"
         >
-          Continue
-          <ArrowRight className="size-4 sm:size-5" />
+          {isSubmitting && (<><Loader2 />Signing up</>)}
+          {!isSubmitting && (<>Continue<ArrowRight className="size-4 sm:size-5" /></>)}
         </button>
       </div>
     </Form>

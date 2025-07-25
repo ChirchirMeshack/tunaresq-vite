@@ -22,7 +22,7 @@ export default function FundraiserDetailsForm() {
   const { user } = useAuthCtx();
 
   const handleBack = () => {
-    handleBackStep("create-account");
+    handleBackStep("select-beneficiary");
   };
   const methods = useForm({
     resolver: yupResolver(fundraiserDetailsSchema),

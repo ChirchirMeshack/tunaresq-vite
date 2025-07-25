@@ -12,7 +12,7 @@ import { PATHS } from "config";
 import { useFundraiserTypeStore } from "stores/fundraiser-form";
 import { TextField } from "@components/hook-form";
 import { Form } from "@components/ui/form";
-import { VerificationFormData, verificationSchema } from "@components/workflows/Signup-page/validation";
+import { VerificationFormData, verificationSchema } from "@components/onboarding-forms/validation";
 
 
 interface EmailVerificationProps {
@@ -35,7 +35,7 @@ const EmailVerification: FC<EmailVerificationProps> = ({ onBack }) => {
     }
   });
   
-  const { handleSubmit, reset, formState: { isSubmitting} } = form;
+  const { handleSubmit, reset, formState: { isSubmitting } } = form;
 
   
   const handleVerification = async (formData: VerificationFormData) => {
@@ -148,7 +148,6 @@ const EmailVerification: FC<EmailVerificationProps> = ({ onBack }) => {
       </div>
     )
   }
-
   return (
     <div className="flex justify-center items-center min-h-[60vh]">
       <Card className="max-w-3xl w-full p-8 mx-auto">
@@ -160,7 +159,7 @@ const EmailVerification: FC<EmailVerificationProps> = ({ onBack }) => {
         </CardHeader>
         <CardContent>
           <Form {...form}>
-            <form onSubmit={handleSubmit(handleVerification)}>
+            <form id="verification-form" onSubmit={handleSubmit(handleVerification)}>
               <TextField
                 name="code"
                 label="The 6-digit code"
@@ -174,11 +173,12 @@ const EmailVerification: FC<EmailVerificationProps> = ({ onBack }) => {
                   <span className="text-xl">&larr;</span> Back
                 </Button>
                 <Button
-                // type="submit"
-                type="button"
-                onClick={() => setIsSuccess(true)}
+                type="submit"
+                form="verification-form"
+                // type="button"
+                // onClick={() => setIsSuccess(true)}
                 className="h-12 flex-1" disabled={isSubmitting}>
-                  Verify
+                  {isSubmitting ? 'Verifying...' : 'Verify'}
                 </Button>
               </div>
           </Form>

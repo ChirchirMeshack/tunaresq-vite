@@ -22,6 +22,7 @@ export function SelectBeneficiaryForm() {
 
 	const handleContinue = () => {
 		if (user) {
+		handleStepComplete('select-beneficiary');
 			handleStepComplete('create-account');
 		} else {
 		handleStepComplete('select-beneficiary');
@@ -94,6 +95,7 @@ export function SelectBeneficiaryForm() {
 					</button>
 					<button
             type="button"
+            disabled={!selectedFundraiserType}
             onClick={handleContinue}
 						className="w-[120px] md:w-[150px] rounded-lg bg-orange-500 hover:bg-orange-600 text-white font-medium px-4 sm:px-6 py-2 flex items-center justify-center gap-2"
 					>
