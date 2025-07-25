@@ -1,130 +1,21 @@
-import { SelectBeneficiaryForm } from "./components/select-beneficiary-form"
+import { SelectBeneficiaryForm } from "../../components/onboarding-forms/select-beneficiary-form"
 import WelcomeCard from "@components/welcome-card"
 import { LayoutContextType } from "@layouts/registration"
 import { useOutletContext } from "react-router-dom"
-import RegistrationForm from "./components/registration-form"
-import FundraiserDetailsPage from "@components/onboarding/fundraiser-details"
-import PaymentDetails from "@components/workflows/PaymentDetails"
-import FundraiserLaunchProgress from "@components/workflows/FundraiserPreview"
+import RegistrationForm from "../../components/onboarding-forms/registration-form"
+import FundraiserDetailsPage from "@pages/onboarding/fundraiser-details"
+import PaymentDetails from "@pages/onboarding/payment-details"
+import FundraiserLaunchProgress from "@components/onboarding-animation"
 
 export default function OnboardingFlow() {
   const { currentStep, handleStepComplete, handleBackStep, onboardingComplete } = useOutletContext<LayoutContextType>();
-
-
-  // const handleWelcomeCreateFundraiser = () => {
-  //   console.log("Starting fundraiser creation flow...")
-  //   setShowWelcome(false)
-  //   setShowSelectBeneficiary(true)
-  // }
-
-  // const handleWelcomeSupportOthers = () => {
-  //   console.log("Going to create account for supporting others...")
-  //   setShowWelcome(false)
-  //   // Skip select beneficiary and go directly to account creation
-  // }
-
-  // const handleSelectBeneficiaryBack = () => {
-  //   setShowSelectBeneficiary(false)
-  //   setShowWelcome(true)
-  // }
-
-  // const handleSelectBeneficiaryContinue = (data: any) => {
-  //   console.log("Beneficiary selection completed:", data)
-  //   setShowSelectBeneficiary(false)
-  //   // Show account creation form next
-  // }
-
-  // const onSubmitAccountCreation = (data: any) => {
-  //   console.log("Account creation submitted:", data)
-  //   setShowVerification(true)
-  // }
-
-  // const handleVerificationBack = () => {
-  //   setShowVerification(false)
-  // }
-
-  // const handleVerificationSubmit = (code: string) => {
-  //   console.log("Verification code submitted:", code)
-  //   setShowVerification(false)
-  //   setShowVerificationComplete(true)
-  // }
-
-  // const handleVerificationComplete = () => {
-  //   console.log("Continuing to fundraiser details...")
-  //   setShowVerificationComplete(false)
-  //   setShowFundraiserDetails(true)
-  // }
-
-  // const handleFundraiserDetailsBack = () => {
-  //   setShowFundraiserDetails(false)
-  //   setShowVerificationComplete(true)
-  // }
-
-  // const handleFundraiserDetailsContinue = (data: any) => {
-  //   console.log("Fundraiser details completed:", data)
-  //   setShowFundraiserDetails(false)
-  //   setShowStartupDetails(true)
-  // }
-
-  // const handleStartupDetailsBack = () => {
-  //   setShowStartupDetails(false)
-  //   setShowFundraiserDetails(true)
-  // }
-
-  // const handleStartupDetailsContinue = (data: any) => {
-  //   console.log("Startup details completed:", data)
-  //   // Here you would typically navigate to the next step (Payment Details)
-  // }
-
-  // Determine which view to show
-  // const renderCurrentView = () => {
-  //   if (showWelcome) {
-  //     return <Welcome onCreateFundraiser={handleWelcomeCreateFundraiser} onSupportOthers={handleWelcomeSupportOthers} />
-  //   }
-
-  //   if (showSelectBeneficiary) {
-  //     return (
-  //       <SelectBeneficiaryForm
-  //         options={beneficiaryOptions}
-  //         defaultValue="yourself"
-  //         onBack={handleSelectBeneficiaryBack}
-  //         onContinue={handleSelectBeneficiaryContinue}
-  //       />
-  //     )
-  //   }
-
-  //   if (showStartupDetails) {
-  //     return <StartupDetailsForm onBack={handleStartupDetailsBack} onContinue={handleStartupDetailsContinue} />
-  //   }
-
-  //   if (showVerificationComplete) {
-  //     return <VerificationComplete onContinue={handleVerificationComplete} />
-  //   }
-
-  //   if (showVerification) {
-  //     return <VerificationForm onBack={handleVerificationBack} onVerify={handleVerificationSubmit} />
-  //   }
-
-  //   if (showFundraiserDetails) {
-  //     return <FundraiserDetailsForm onBack={handleFundraiserDetailsBack} onContinue={handleFundraiserDetailsContinue} />
-  //   }
-
-  //   // Default: Account creation form
-  //   return (
-  //     <Registration onBack={handleSkipToSignUp} onSubmit={onSubmitAccountCreation}/>
-  //   )
-  // }
   
   const renderCurrentStep = () => {
     switch (currentStep) {
       case 'welcome':
-        return (
-          <WelcomeCard />
-        );
+        return <WelcomeCard />;
       case 'select-beneficiary':
-        return (
-        <SelectBeneficiaryForm />
-      )
+        return <SelectBeneficiaryForm />;
       case 'create-account':
         return <RegistrationForm />;
       case 'fundraiser-details':
@@ -134,9 +25,7 @@ export default function OnboardingFlow() {
       case 'launch-fundraiser':
         return <FundraiserLaunchProgress onStepComplete={onboardingComplete} />;
       default:
-        return (
-          <WelcomeCard />
-        );
+        return <WelcomeCard />;
     }
   };
 

@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { SignUpFormData, VerificationFormData } from "@components/workflows/Signup-page/validation";
+import { SignUpFormData, VerificationFormData } from "@components/onboarding-forms/validation";
 import { USER as User } from "types/user";
 
 

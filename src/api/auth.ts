@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { SignUpFormData } from '@components/workflows/Signup-page/validation';
+import { SignUpFormData } from '@components/onboarding-forms/validation';
 import axiosInstance from '@lib/axios';
 import axios from 'axios';
 import { BASE_URL } from 'config';

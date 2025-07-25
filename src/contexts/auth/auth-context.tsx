@@ -19,7 +19,7 @@ import {
   // TwitterAuthProvider,
 } from "firebase/auth";
 import { auth, googleAuthProvider, facebookAuthProvider, twitterAuthProvider } from "@lib/firebase";
-import { SignUpFormData, VerificationFormData } from "@components/workflows/Signup-page/validation"
+import { SignUpFormData, VerificationFormData } from "@components/onboarding-forms/validation"
 import { USER as User } from "types/user";
 import { registerWithEmailAndPassword, signInWithEmailAndPassword, verifyAccount as emailVerification, signInWithFirebaseAuth, resendVerificationCode} from "api/auth";
 
