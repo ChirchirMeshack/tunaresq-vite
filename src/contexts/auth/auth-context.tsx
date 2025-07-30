@@ -8,7 +8,6 @@ import {
   useReducer,
 } from "react";
 import { AuthActions, AuthActionsTypes, AuthCtx, AuthState } from "./types";
-import useLocalStorage from "@hooks/use-local-storage";
 import {
   // GoogleAuthProvider,
   signInWithPopup,
@@ -21,7 +20,7 @@ import {
 import { auth, googleAuthProvider, facebookAuthProvider, twitterAuthProvider } from "@lib/firebase";
 import { SignUpFormData, VerificationFormData } from "@components/onboarding-forms/validation"
 import { USER as User } from "types/user";
-import { registerWithEmailAndPassword, signInWithEmailAndPassword, verifyAccount as emailVerification, signInWithFirebaseAuth, resendVerificationCode} from "api/auth";
+import { registerWithEmailAndPassword, signInWithEmailAndPassword, verifyAccount as emailVerification, signInWithFirebaseAuth, resendVerificationCode, logoutUser} from "api/auth";
 
 export const AuthContext = createContext<AuthCtx | null>(null);
 
@@ -59,14 +58,10 @@ const authReducer = (state: AuthState, action: AuthActions) => {
 
 export const AuthCtxProvider = ({ children }: PropsWithChildren) => {
   const [authState, dispatch] = useReducer(authReducer, defaultAuthState);
-  const { storeItem, deleteItem } = useLocalStorage();
 
   const loginWithGoogle = useCallback(async () => {
     try {
       const result = await signInWithPopup(auth, googleAuthProvider);
-      // const credential = GoogleAuthProvider.credentialFromResult(result);
-      // const token = credential?.accessToken;
-
       // Send user details from Google to backend
       const loginResp = await signInWithFirebaseAuth('google', result.user);
 
@@ -77,8 +72,6 @@ export const AuthCtxProvider = ({ children }: PropsWithChildren) => {
           type: "error",
         };
       } else {
-      await storeItem("tunaresq-access-token", loginResp.data.access_token);
-      await storeItem("tunaresq-token-expiry", loginResp.data.expires_in.toString());
         dispatch({
           type: AuthActionsTypes.LOGIN,
           payload: { user: loginResp.data.user },
@@ -92,8 +85,6 @@ export const AuthCtxProvider = ({ children }: PropsWithChildren) => {
   const loginWithFacebook = useCallback(async () => {
     try {
       const result = await signInWithPopup(auth, facebookAuthProvider);
-      // const credential = FacebookAuthProvider.credentialFromResult(result);
-      // const token = credential?.accessToken;
 
       // Send user details from Facebook to backend
       const loginResp = await signInWithFirebaseAuth('facebook', result.user);
@@ -105,8 +96,6 @@ export const AuthCtxProvider = ({ children }: PropsWithChildren) => {
           type: "error",
         };
       } else {
-      await storeItem("tunaresq-access-token", loginResp.data.access_token);
-      await storeItem("tunaresq-token-expiry", loginResp.data.expires_in.toString());
         dispatch({
           type: AuthActionsTypes.LOGIN,
           payload: { user: loginResp.data.user },
@@ -120,9 +109,6 @@ export const AuthCtxProvider = ({ children }: PropsWithChildren) => {
   const loginWithTwitter = useCallback(async () => {
     try {
       const result = await signInWithPopup(auth, twitterAuthProvider);
-      // const credential = TwitterAuthProvider.credentialFromResult(result);
-      // const token = credential?.accessToken;
-
       // Send user details from Twitter to backend
       const loginResp = await signInWithFirebaseAuth('twitter', result.user);
 
@@ -133,8 +119,6 @@ export const AuthCtxProvider = ({ children }: PropsWithChildren) => {
           type: "error",
         };
       } else {
-      await storeItem("tunaresq-access-token", loginResp.data.access_token);
-      await storeItem("tunaresq-token-expiry", loginResp.data.expires_in.toString());
         dispatch({
           type: AuthActionsTypes.LOGIN,
           payload: { user: loginResp.data.user },
@@ -159,8 +143,6 @@ export const AuthCtxProvider = ({ children }: PropsWithChildren) => {
           type: "error",
         };
       }
-      await storeItem("tunaresq-access-token", response.data.access_token);
-      await storeItem("tunaresq-token-expiry", response.data.expires_in.toString());
       dispatch({
         type: AuthActionsTypes.LOGIN,
         payload: { user: response.data.user },
@@ -192,7 +174,17 @@ export const AuthCtxProvider = ({ children }: PropsWithChildren) => {
           type: AuthActionsTypes.REGISTER,
           payload: { user: response.data?.user as User },
         });
+
+        console.log(response.data);
+
+        if (response.data?.warning !== undefined) {
+          return {
+            message: response.data.warning,
+            type: "warning",
+          };
+        } else {
         return { message: "Sign Up Successful", type: "success" };
+        }
       } catch (error: any) {
         if (error.code === "auth/email-already-in-use") {
           return { message: "Email Address Already in use", type: "error" };
@@ -215,11 +207,6 @@ export const AuthCtxProvider = ({ children }: PropsWithChildren) => {
             type: "error",
           };
         }
-
-      // await storeItem("tunaresq-access-token", response.data?.tokens.access as string);
-      // await storeItem("tunaresq-user", JSON.stringify(response.data?.user));
-      // await storeItem("tunaresq-refresh-token", response.data?.tokens.refresh as string);
-
         dispatch({
           type: AuthActionsTypes.REGISTER,
           payload: { user: response.data?.user as User },
@@ -256,14 +243,25 @@ export const AuthCtxProvider = ({ children }: PropsWithChildren) => {
   );
 
   const logout = useCallback(async () => {
-    await deleteItem("tunaresq-access-token");
-    await deleteItem("tunaresq-refresh-token");
-    await signOut(auth);
+    try {
+      // Call backend logout endpoint to clear httpOnly cookies
+      await logoutUser();
+      
+      // Sign out from Firebase
+      await signOut(auth);
 
-    dispatch({
-      type: AuthActionsTypes.LOGOUT,
-      payload: null,
-    });
+      dispatch({
+        type: AuthActionsTypes.LOGOUT,
+        payload: null,
+      });
+    } catch (error) {
+      console.error('Logout error:', error);
+      // Even if backend logout fails, still clear local state
+      dispatch({
+        type: AuthActionsTypes.LOGOUT,
+        payload: null,
+      });
+    }
   }, []);
 
   const authCtxValue = useMemo(
