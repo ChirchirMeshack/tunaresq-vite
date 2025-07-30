@@ -21,13 +21,11 @@ export function SelectBeneficiaryForm() {
 	};
 
 	const handleContinue = () => {
+		handleStepComplete('select-beneficiary');
 		if (user) {
-		handleStepComplete('select-beneficiary');
 			handleStepComplete('create-account');
-		} else {
-		handleStepComplete('select-beneficiary');
-			
 		}
+			
 	};
 
   return (<>

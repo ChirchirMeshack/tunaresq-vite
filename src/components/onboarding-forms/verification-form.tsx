@@ -26,7 +26,7 @@ const EmailVerification: FC<EmailVerificationProps> = ({ onBack }) => {
   
   const { handleStepComplete } = useOutletContext<LayoutContextType>();
   const [isSuccess, setIsSuccess] = useState(false);
-  const [verificationFailed, setVerificationFailed] = useState(false);
+  const [verificationFailed, setVerificationFailed] = useState<boolean>(false);
   
   const form = useForm<VerificationFormData>({
     resolver: yupResolver(verificationSchema),

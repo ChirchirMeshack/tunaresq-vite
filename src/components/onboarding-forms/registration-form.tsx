@@ -17,6 +17,8 @@ import {
 import EmailVerification from "./verification-form";
 import { SocialAuthButton } from "@components/ui/social-auth-button";
 import { TextField } from "@components/hook-form";
+import VerificationFailed from "./verification-error-card";
+import { CustomButton } from "@components/ui/button";
 
 const RegistrationForm = () => {
   const { credentialsSignUp } = useAuthCtx();
@@ -26,8 +28,9 @@ const RegistrationForm = () => {
     text: string;
   } | null>(null);
   const [socialLoading, setSocialLoading] = useState<string | null>(null);
-  const { handleBackStep } = useOutletContext<LayoutContextType>();
+  const { handleBackStep, handleStepComplete } = useOutletContext<LayoutContextType>();
   const [showEmailVerification, setShowEmailVerification] = useState(false);
+  const [registerFailed, setRegisterFailed] = useState(false);
 
   const handleBack = () => {
     handleBackStep("select-beneficiary");
@@ -53,6 +56,8 @@ const RegistrationForm = () => {
         });
         // Reset form
         reset();
+      } else if (result.type === "warning") {
+        setRegisterFailed(true);
       } else {
         setMessage({
           type: "error",
@@ -106,6 +111,10 @@ const RegistrationForm = () => {
     handleBackStep("select-beneficiary");
     setShowEmailVerification(false);
   };
+
+  if (registerFailed) {
+    return <VerificationFailed handleNextStep={() => handleStepComplete('create-account')} />;
+  }
 
   if (showEmailVerification) {
     return <EmailVerification onBack={handleBackClickOnEmailVerification} />;
@@ -238,16 +247,17 @@ const RegistrationForm = () => {
           <ArrowLeft className="size-4 sm:size-5" />
           Back
         </button>
-        <button
+        <CustomButton
           type="submit"
           // type="button"
           // onClick={() => setShowEmailVerification(true)}
           form="signup-form"
-          className="w-[120px] md:w-[150px] rounded-lg bg-orange-500 hover:bg-orange-600 text-white font-medium px-4 sm:px-6 py-2 flex items-center justify-center gap-2"
+          className="w-[120px] md:w-[150px]"
+          // className="w-[120px] md:w-[150px] rounded-lg font-medium px-4 py-2"
         >
           {isSubmitting && (<><Loader2 />Signing up</>)}
           {!isSubmitting && (<>Continue<ArrowRight className="size-4 sm:size-5" /></>)}
-        </button>
+        </CustomButton>
       </div>
     </Form>
   );
