@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { SignUpFormData } from '@components/onboarding-forms/validation';
-import axiosInstance from '@lib/axios';
+import axiosInstance, { authenticatedAxiosInstance } from '@lib/axios';
 import axios from 'axios';
 import { BASE_URL } from 'config';
 import { USER } from 'types/user';
@@ -23,6 +23,7 @@ interface RegisterResponse {
             refresh: string;
             access: string;
         };
+        warning?: string;
     } | null;
 }
 interface VerifyAccountResponse {
@@ -165,5 +166,15 @@ export async function resetPassword(_email: string, otp: string, newPassword: st
             message: error.response?.data?.message || "Reset password failed",
             data: null
         };
+    }
+}
+
+// logout
+export async function logoutUser(): Promise<{ message: string; type: string }> {
+    try {
+        await authenticatedAxiosInstance.post(`/users/logout/`, {});
+        return { message: "Logout successful", type: "success" };
+    } catch (error: any) {
+        return { message: error.response?.data?.message || "Logout failed", type: "error" };
     }
 }
