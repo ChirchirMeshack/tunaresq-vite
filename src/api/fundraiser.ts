@@ -23,7 +23,7 @@ export const createFundraiser = async (
 ): Promise<{ data: FundraiserResponse | null; error: unknown }> => {
     try {
         const result = await axiosInstance.post('/fundraisers/', payload);
-        return { data: result.data as FundraiserResponse, error: null };
+        return { data: result.data.data as FundraiserResponse, error: null };
     } catch (error) {
         handleErrors(error);
         return { data: null, error: error };
@@ -40,7 +40,7 @@ export const getFundraiser = async (
 ): Promise<{ data: FundraiserResponse | null; error: unknown }> => {
     try {
         const result = await axiosInstance.get(`/fundraisers/${id}/`);
-        return { data: result.data as FundraiserResponse, error: null };
+        return { data: result.data.data as FundraiserResponse, error: null };
     } catch (error) {
         handleErrors(error);
         return { data: null, error: error };
@@ -59,7 +59,7 @@ export const updateFundraiser = async (
 ): Promise<{ data: FundraiserResponse | null; error: unknown }> => {
     try {
         const result = await axiosInstance.put(`/fundraisers/${id}/`, payload);
-        return { data: result.data as FundraiserResponse, error: null };
+        return { data: result.data.data as FundraiserResponse, error: null };
     } catch (error) {
         handleErrors(error);
         return { data: null, error: error };
