@@ -13,34 +13,68 @@ export const fundraiserDetailsSchema = yup.object({
     .typeError("Goal must be a number")
     .required("Fundraising goal is required")
     .positive("Goal must be a positive number"),
-  // image: yup.mixed().notRequired(),
+  images: yup
+    .array()
+    .of(
+      yup.object({
+        file: yup.mixed<File>().notRequired(),
+        preview: yup.string().notRequired(),
+        reference: yup.string().notRequired(),
+      })
+    )
+    .required()
+    .default([]),
 });
 
-export type IndividualFundraiserFormData = yup.InferType<
-  typeof fundraiserDetailsSchema
->;
+export type FilePicked = {
+  file?: File | null;
+  preview?: string | null;
+  reference?: string | null;
+};
 
+export type IndividualFundraiserFormData = {
+  title: string;
+  details: string;
+  goal: number;
+  images: FilePicked[];
+};
 
 export const startUpDetailsSchema = yup.object({
-  startupName: yup.string().required('Startup name is required'),
-  startupLocation: yup.string().required('Startup location is required'),
-  industry: yup.string().required('Industry is required'),
-  startupStage: yup.string().required('Startup stage is required'),
-  teamSize: yup.string().required('Team size is required'),
-  businessDescription: yup.string().required('Business description is required').max(1000, 'Description must be at most 1000 characters'),
-  website: yup.string().url('Enter a valid URL').notRequired().nullable().default(''),
-  social: yup.string().notRequired().nullable().default(''),
-  title: yup.string().required('Fundraiser title is required').max(120, 'Title must be at most 120 characters'),
-  details: yup.string().required('Fundraiser details are required').max(1000, 'Details must be at most 1000 characters'),
+  startupName: yup.string().required("Startup name is required"),
+  startupLocation: yup.string().required("Startup location is required"),
+  industry: yup.string().required("Industry is required"),
+  startupStage: yup.string().required("Startup stage is required"),
+  teamSize: yup.string().required("Team size is required"),
+  businessDescription: yup
+    .string()
+    .required("Business description is required")
+    .max(1000, "Description must be at most 1000 characters"),
+  website: yup
+    .string()
+    .url("Enter a valid URL")
+    .notRequired()
+    .nullable()
+    .default(""),
+  social: yup.string().notRequired().nullable().default(""),
+  title: yup
+    .string()
+    .required("Fundraiser title is required")
+    .max(120, "Title must be at most 120 characters"),
+  details: yup
+    .string()
+    .required("Fundraiser details are required")
+    .max(1000, "Details must be at most 1000 characters"),
   goal: yup
     .number()
-    .typeError('Goal must be a number')
-    .required('Fundraising goal is required')
-    .positive('Goal must be a positive number'),
+    .typeError("Goal must be a number")
+    .required("Fundraising goal is required")
+    .positive("Goal must be a positive number"),
   // image: yup.mixed().notRequired(),
 });
 
-export type StartupFundraiserFormData = yup.InferType<typeof startUpDetailsSchema>;
+export type StartupFundraiserFormData = yup.InferType<
+  typeof startUpDetailsSchema
+>;
 
 export const OrganizationDetailsSchema = yup.object({
   organizationName: yup.string().required("Organization name is required"),

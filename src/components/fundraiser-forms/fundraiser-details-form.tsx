@@ -1,22 +1,31 @@
-import { useOutletContext } from 'react-router-dom'
-import { useForm } from "react-hook-form"
-import { yupResolver } from "@hookform/resolvers/yup"
-import { TextField } from "@components/hook-form/text-field"
-import { TextAreaField } from "@components/hook-form/textarea-field"
-import { CurrencyField } from "@components/hook-form/currency-field"
-import { FileUploadField } from "@components/hook-form/file-upload-field"
-import { ArrowLeft, ArrowRight } from "lucide-react"
-import { LayoutContextType } from '@layouts/registration';
-import { fundraiserDetailsSchema, IndividualFundraiserFormData } from './validation'
-import { handleErrors } from '@lib/utils'
-import { createIndividualDetails, IndividualDetailsPayload } from 'api/individual-details'
-import { createFundraiser, FundraiserPayload } from 'api/fundraiser'
-import useAuthCtx from '@contexts/auth/use-auth'
-import { getAllFundraiserTypes, FundraiserType } from 'api/fundraiser-type'
-import { Form } from '@components/ui/form'
+import { useOutletContext } from "react-router-dom";
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { TextField } from "@components/hook-form/text-field";
+import { TextAreaField } from "@components/hook-form/textarea-field";
+import { CurrencyField } from "@components/hook-form/currency-field";
+import { FileUploadField } from "@components/hook-form/file-upload-field";
+import { ArrowLeft, ArrowRight } from "lucide-react";
+import { LayoutContextType } from "@layouts/registration";
+import {
+  fundraiserDetailsSchema,
+  IndividualFundraiserFormData,
+  FilePicked,
+} from "./validation";
+import { handleErrors } from "@lib/utils";
+import {
+  createIndividualDetails,
+  IndividualDetailsPayload,
+} from "api/individual-details";
+import { createFundraiser, FundraiserPayload } from "api/fundraiser";
+import useAuthCtx from "@contexts/auth/use-auth";
+import { getAllFundraiserTypes, FundraiserType } from "api/fundraiser-type";
+import { Form } from "@components/ui/form";
+import { useState } from "react";
+import { createFundraiserImage } from "api/fundraiser-image";
+import { enqueueSnackbar } from "notistack";
 
 export default function FundraiserDetailsForm() {
-    
   const { handleStepComplete, handleBackStep } =
     useOutletContext<LayoutContextType>();
   const { user } = useAuthCtx();
@@ -27,10 +36,17 @@ export default function FundraiserDetailsForm() {
   const methods = useForm({
     resolver: yupResolver(fundraiserDetailsSchema),
     mode: "onTouched",
-  })
+    defaultValues: {
+      title: "",
+      details: "",
+      goal: undefined,
+      images: [],
+    },
+  });
+  // State to manage loading indicator for image upload
+  const [imageUploading, setImageUploading] = useState(false);
 
- 
-  // Submit handler: creates fundraiser first, then individual details
+  // Submit handler: creates fundraiser first,attach user then individual details
   const onSubmit = async (data: IndividualFundraiserFormData) => {
     try {
       console.log("Starting individual fundraiser creation...");
@@ -95,6 +111,8 @@ export default function FundraiserDetailsForm() {
 
       console.log("Fundraiser created successfully:", fundraiserResult);
 
+      //Attach user to the fundraiser
+
       // Step 2: Create individual details with the fundraiser ID
       const individualPayload: IndividualDetailsPayload = {
         fundraiser: fundraiserResult?.id,
@@ -116,6 +134,49 @@ export default function FundraiserDetailsForm() {
         return;
       }
 
+      // Step 3: Upload images if any were selected
+      // Images are optional, so only proceed if there are images
+      const images = (data.images as FilePicked[]) || [];
+      if (images.length > 0) {
+        setImageUploading(true);
+        try {
+          // Upload each image sequentially (could be parallelized if needed)
+          for (const img of images) {
+            const file = img.file;
+            if (!file) continue;
+            const { error: imageError } = await createFundraiserImage({
+              image: file,
+              fundraiser: fundraiserId,
+            });
+            if (imageError) {
+              // Show error and stop if any image upload fails
+              enqueueSnackbar(
+                "Failed to upload fundraiser image. Please try again.",
+                { variant: "error" }
+              );
+              setImageUploading(false);
+              return;
+            }
+          }
+          // All images uploaded successfully
+          enqueueSnackbar("Fundraiser and images created successfully!", {
+            variant: "success",
+          });
+        } catch {
+          enqueueSnackbar("Unexpected error during image upload.", {
+            variant: "error",
+          });
+          setImageUploading(false);
+          return;
+        }
+        setImageUploading(false);
+      } else {
+        // No images, just show success for fundraiser creation
+        enqueueSnackbar("Fundraiser created successfully!", {
+          variant: "success",
+        });
+      }
+
       // Success: proceed to next step or show success message
       console.log("Individual fundraiser created successfully:", {
         fundraiser: fundraiserResult,
@@ -129,74 +190,92 @@ export default function FundraiserDetailsForm() {
     }
   };
 
-  // const {
-  //   formState: { isValid },
-  // } = methods;
+  const {
+    formState: { isValid },
+  } = methods;
 
   return (
-      <Form {...methods}>
-    <div className="bg-white rounded-lg shadow-sm p-8 border mt-8 space-y-8">
-      <div className="">
-        <h1 className="text-2xl font-bold text-gray-900 mb-2">Fundraiser details</h1>
-        <p className="text-gray-600">
-          Share the details of your fundraiser so we can know how to help you. Make it as detailed as possible
-        </p>
-      </div>
+    <Form {...methods}>
+      <div className="bg-white rounded-lg shadow-sm p-8 border mt-8 space-y-8">
+        <div className="">
+          <h1 className="text-2xl font-bold text-gray-900 mb-2">
+            Fundraiser details
+          </h1>
+          <p className="text-gray-600">
+            Share the details of your fundraiser so we can know how to help you.
+            Make it as detailed as possible
+          </p>
+        </div>
 
-        <form id="fundraiser-details-form" onSubmit={methods.handleSubmit(onSubmit)} className="space-y-6">
+        <form
+          id="fundraiser-details-form"
+          onSubmit={methods.handleSubmit(onSubmit)}
+          className="space-y-6"
+        >
           <FundraisingDetailsFields />
         </form>
-    </div>
-     <div className="w-full max-w-3xl sm:max-w-md md:max-w-3xl lg:max-w-3xl mx-auto px-2 sm:px-4 pb-6 flex flex-row justify-between gap-3 sm:gap-4 mt-4">
-					<button
+      </div>
+      <div className="w-full max-w-3xl sm:max-w-md md:max-w-3xl lg:max-w-3xl mx-auto px-2 sm:px-4 pb-6 flex flex-row justify-between gap-3 sm:gap-4 mt-4">
+        <button
           type="button"
-						onClick={handleBack}
-						className="w-[120px] border md:w-[150px] rounded-lg border-gray-300 text-gray-700 hover:bg-gray-100 font-medium px-4 sm:px-6 py-2 flex items-center justify-center gap-2"
-					>
-						<ArrowLeft className="size-4 sm:size-5" />
-						Back
-					</button>
-					<button
-            // type="submit"
-            // disabled={!isValid}
-            type='button'
-            onClick={() => handleStepComplete("fundraiser-details")}
-            form="fundraiser-details-form"
-						className="w-[120px] md:w-[150px] rounded-lg bg-orange-500 hover:bg-orange-600 text-white font-medium px-4 sm:px-6 py-2 flex items-center justify-center gap-2"
-					>
-						Continue
-						<ArrowRight className="size-4 sm:size-5" />
-					</button>
-				</div>
-      </Form>
-  )
+          onClick={handleBack}
+          className="w-[120px] border md:w-[150px] rounded-lg border-gray-300 text-gray-700 hover:bg-gray-100 font-medium px-4 sm:px-6 py-2 flex items-center justify-center gap-2"
+        >
+          <ArrowLeft className="size-4 sm:size-5" />
+          Back
+        </button>
+        <button
+          type="submit"
+          disabled={!isValid || imageUploading}
+          // type="button"
+          // onClick={() => handleStepComplete("fundraiser-details")}
+          form="fundraiser-details-form"
+          className="w-[120px] md:w-[150px] rounded-lg bg-orange-500 hover:bg-orange-600 text-white font-medium px-4 sm:px-6 py-2 flex items-center justify-center gap-2"
+        >
+          {imageUploading ? (
+            "Uploading..."
+          ) : (
+            <>
+              <span>Continue</span>
+              <ArrowRight className="size-4 sm:size-5" />
+            </>
+          )}
+        </button>
+      </div>
+    </Form>
+  );
 }
 
 export const FundraisingDetailsFields = () => (
-    <div className="space-y-4">
-      <TextField
-        name="fundraiserTitle"
-        label="Fundraiser title"
-        placeholder="Give your fundraiser a clear, attention-grabbing title"
-        required
-      />
+  <div className="space-y-4">
+    <TextField
+      name="fundraiserTitle"
+      label="Fundraiser title"
+      placeholder="Give your fundraiser a clear, attention-grabbing title"
+      required
+    />
 
-      <TextAreaField
-        name="fundraiserDetails"
-        label="Fundraiser details"
-        placeholder="Explain how you'll use the funds and what milestones you will achieve"
-        maxLength={100}
-        required
-      />
+    <TextAreaField
+      name="fundraiserDetails"
+      label="Fundraiser details"
+      placeholder="Explain how you'll use the funds and what milestones you will achieve"
+      maxLength={100}
+      required
+    />
 
-      <CurrencyField
-        name="fundraisingGoal"
-        label="What is your fundraising goal? (in USD)"
-        placeholder="0.00"
-        currency="USD"
-        required
-      />
+    <CurrencyField
+      name="fundraisingGoal"
+      label="What is your fundraising goal? (in USD)"
+      placeholder="0.00"
+      currency="USD"
+      required
+    />
 
-      <FileUploadField name="fundraiserImage" label="Upload your fundraiser's image" accept="image/*" maxSize={15} />
-    </div>
-  )
+    <FileUploadField
+      name="fundraiserImage"
+      label="Upload your fundraiser's image"
+      accept="image/*"
+      maxSize={15}
+    />
+  </div>
+);
