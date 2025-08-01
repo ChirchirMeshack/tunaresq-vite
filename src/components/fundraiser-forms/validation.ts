@@ -69,12 +69,33 @@ export const startUpDetailsSchema = yup.object({
     .typeError("Goal must be a number")
     .required("Fundraising goal is required")
     .positive("Goal must be a positive number"),
-  // image: yup.mixed().notRequired(),
+    images: yup
+    .array()
+    .of(
+      yup.object({
+        file: yup.mixed<File>().notRequired(),
+        preview: yup.string().notRequired(),
+        reference: yup.string().notRequired(),
+      })
+    )
+    .required()
+    .default([]),
 });
 
-export type StartupFundraiserFormData = yup.InferType<
-  typeof startUpDetailsSchema
->;
+export type StartupFundraiserFormData = {
+  startupName: string;
+  startupLocation: string;
+  industry: string;
+  startupStage: string;
+  teamSize: string;
+  businessDescription: string;
+  website: string | null;
+  social: string | null;
+  title: string;
+  details: string;
+  goal: number;
+  images: FilePicked[];
+}
 
 export const OrganizationDetailsSchema = yup.object({
   organizationName: yup.string().required("Organization name is required"),
@@ -103,12 +124,27 @@ export const OrganizationDetailsSchema = yup.object({
     .typeError("Goal must be a number")
     .required("Fundraising goal is required")
     .positive("Goal must be a positive number"),
-  image: yup.object().shape({
-    file: yup.mixed(),
-    preview: yup.string(),
-  }),
+  images: yup
+    .array()
+    .of(
+      yup.object({
+        file: yup.mixed<File>().notRequired(),
+        preview: yup.string().notRequired(),
+        reference: yup.string().notRequired(),
+      })
+    )
+    .required()
+    .default([]),
 });
 
-export type OrganizationFundraiserFormData = yup.InferType<
-  typeof OrganizationDetailsSchema
->;
+export type OrganizationFundraiserFormData = {
+  organizationName: string;
+  registrationNumber: string;
+  website: string | null;
+  social: string | null;
+  mission: string;
+  title: string;
+  details: string;
+  goal: number;
+  images: FilePicked[];
+}

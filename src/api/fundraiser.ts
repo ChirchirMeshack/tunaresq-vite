@@ -4,13 +4,13 @@ import { USER } from "types/user";
  
 export interface FundraiserPayload {
     user: string;
-    fundraising_category: string;
+    fundraising_category_id: string;
 }
 
 export interface FundraiserResponse {
     id: string;
     user: USER;
-    fundraising_category: string | null;
+    fundraising_category_id: string | null;
 }
 
 /**

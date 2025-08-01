@@ -26,13 +26,13 @@ import { createFundraiserImage } from "api/fundraiser-image";
 import { enqueueSnackbar } from "notistack";
 
 export default function FundraiserDetailsForm() {
-  const { handleStepComplete, handleBackStep } =
-    useOutletContext<LayoutContextType>();
+  const { handleStepComplete, handleBackStep } = useOutletContext<LayoutContextType>();
   const { user } = useAuthCtx();
 
   const handleBack = () => {
     handleBackStep("select-beneficiary");
   };
+
   const methods = useForm({
     resolver: yupResolver(fundraiserDetailsSchema),
     mode: "onTouched",
@@ -62,9 +62,7 @@ export default function FundraiserDetailsForm() {
         await getAllFundraiserTypes();
       if (categoriesError || !categories) {
         console.error("Failed to get fundraising categories:", categoriesError);
-        handleErrors(
-          categoriesError || new Error("Failed to get fundraising categories")
-        );
+        handleErrors(categoriesError || new Error("Failed to get fundraising categories"));
         return;
       }
 
@@ -155,7 +153,7 @@ export default function FundraiserDetailsForm() {
                 { variant: "error" }
               );
               setImageUploading(false);
-              return;
+              return; // Exit the function, do not proceed
             }
           }
           // All images uploaded successfully
@@ -163,11 +161,9 @@ export default function FundraiserDetailsForm() {
             variant: "success",
           });
         } catch {
-          enqueueSnackbar("Unexpected error during image upload.", {
-            variant: "error",
-          });
+          enqueueSnackbar("Unexpected error during image upload.", { variant: "error" });
           setImageUploading(false);
-          return;
+          return; // Exit the function, do not proceed
         }
         setImageUploading(false);
       } else {
@@ -190,9 +186,7 @@ export default function FundraiserDetailsForm() {
     }
   };
 
-  const {
-    formState: { isValid },
-  } = methods;
+  const { formState: { isValid } } = methods;
 
   return (
     <Form {...methods}>
@@ -226,9 +220,7 @@ export default function FundraiserDetailsForm() {
         </button>
         <button
           type="submit"
-          disabled={!isValid || imageUploading}
-          // type="button"
-          // onClick={() => handleStepComplete("fundraiser-details")}
+          disabled={!isValid}
           form="fundraiser-details-form"
           className="w-[120px] md:w-[150px] rounded-lg bg-orange-500 hover:bg-orange-600 text-white font-medium px-4 sm:px-6 py-2 flex items-center justify-center gap-2"
         >
@@ -249,14 +241,14 @@ export default function FundraiserDetailsForm() {
 export const FundraisingDetailsFields = () => (
   <div className="space-y-4">
     <TextField
-      name="fundraiserTitle"
+      name="title"
       label="Fundraiser title"
       placeholder="Give your fundraiser a clear, attention-grabbing title"
       required
     />
 
     <TextAreaField
-      name="fundraiserDetails"
+      name="details"
       label="Fundraiser details"
       placeholder="Explain how you'll use the funds and what milestones you will achieve"
       maxLength={100}
@@ -264,7 +256,7 @@ export const FundraisingDetailsFields = () => (
     />
 
     <CurrencyField
-      name="fundraisingGoal"
+      name="goal"
       label="What is your fundraising goal? (in USD)"
       placeholder="0.00"
       currency="USD"
@@ -272,8 +264,8 @@ export const FundraisingDetailsFields = () => (
     />
 
     <FileUploadField
-      name="fundraiserImage"
-      label="Upload your fundraiser's image"
+      name="images"
+      label="Upload your fundraiser's images"
       accept="image/*"
       maxSize={15}
     />
