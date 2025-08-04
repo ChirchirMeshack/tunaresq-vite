@@ -36,16 +36,54 @@ export const authenticatedAxiosInstance = axios.create({
 	}
 });
 
-// Request interceptor for debugging cookie issues
+// Helper function to get token from cookies
+const getTokenFromCookie = (name: string): string | null => {
+  const value = `; ${document.cookie}`;
+  const parts = value.split(`; ${name}=`);
+  if (parts.length === 2) {
+    const cookieValue = parts.pop()?.split(';').shift();
+    return cookieValue || null;
+  }
+  return null;
+};
+
+// Helper function to get authentication token (tries multiple cookie names)
+const getAuthToken = (): string | null => {
+  // Try common cookie names for access token
+  const possibleNames = ['access_token', 'access', 'accessToken', 'token'];
+  
+  for (const name of possibleNames) {
+    const token = getTokenFromCookie(name);
+    if (token) {
+      console.log(`🔐 Found auth token in cookie: ${name}`);
+      return token;
+    }
+  }
+  
+  console.warn('⚠️  No auth token found in cookies');
+  return null;
+};
+
+// Request interceptor for debugging cookie issues and adding authentication
 authenticatedAxiosInstance.interceptors.request.use(
   (config: InternalAxiosRequestConfig): InternalAxiosRequestConfig => {
     const baseURL = config.baseURL || BASE_URL || '';
     const url = config.url || '';
     const fullURL = baseURL + url;
 
+    // Get authentication token from cookies
+    const accessToken = getAuthToken();
+    
+    // Add Authorization header if token exists
+    if (accessToken) {
+      config.headers.Authorization = `Bearer ${accessToken}`;
+    }
+
     console.group('🚀 AXIOS REQUEST DEBUG');
     console.log('📍 Request URL:', fullURL);
     console.log('🌐 Frontend Domain:', window.location.hostname);
+    console.log('🔐 Access Token Found:', !!accessToken);
+    console.log('🔑 Authorization Header:', config.headers.Authorization || 'Not set');
     console.log('🍪 Available Cookies:', document.cookie || 'No cookies found');
     console.log('✅ withCredentials:', config.withCredentials);
     console.log('📋 Request Headers:', config.headers);
@@ -53,7 +91,7 @@ authenticatedAxiosInstance.interceptors.request.use(
     // Check if cookies should be sent
     const cookies = document.cookie;
     if (!cookies) {
-      console.warn('⚠️  NO COOKIES FOUND - Check if login endpoint set cookies');
+      console.warn('⚠️  NO COOKIES FOUND - Check if login/verify endpoint set cookies');
     } else {
       const cookieArray = cookies.split('; ');
       console.log('🔍 Cookie Details:');
@@ -61,6 +99,12 @@ authenticatedAxiosInstance.interceptors.request.use(
         const [name, value] = cookie.split('=');
         console.log(`   ${name}: ${value?.substring(0, 20)}...`);
       });
+    }
+    
+    // Authentication warning if no token found
+    if (!accessToken && !config.url?.includes('/auth/') && !config.url?.includes('/login/') && !config.url?.includes('/register/')) {
+      console.warn('⚠️  NO AUTHENTICATION TOKEN - Request may fail with 401');
+      console.warn('   Make sure your login/verify endpoint sets the access token cookie');
     }
     
     // Domain mismatch warning
@@ -108,6 +152,7 @@ authenticatedAxiosInstance.interceptors.response.use(
     console.log('💥 Error Status:', error.response?.status);
     console.log('📍 Failed URL:', error.config?.url);
     console.log('🍪 Cookies at Error Time:', document.cookie || 'No cookies');
+    console.log('🔑 Authorization Header at Error:', error.config?.headers?.Authorization || 'Not set');
     
     const originalRequest = error.config as ExtendedAxiosRequestConfig;
 
@@ -118,19 +163,38 @@ authenticatedAxiosInstance.interceptors.response.use(
       try {
         console.log('🔄 Attempting token refresh...');
         
-        // Call your refresh token endpoint
-        const refreshResponse = await authenticatedAxiosInstance.post('/auth/refresh-token/');
+        // Get refresh token from cookies
+        const refreshToken = getTokenFromCookie('refresh_token') || getTokenFromCookie('refresh');
+        
+        if (!refreshToken) {
+          console.error('❌ No refresh token found in cookies');
+          throw new Error('No refresh token available');
+        }
+        
+        // Call your refresh token endpoint - UPDATE THIS URL TO MATCH YOUR BACKEND
+        const refreshResponse = await authenticatedAxiosInstance.post('/api/auth/token/refresh/', {
+          refresh: refreshToken
+        });
         
         console.log('✅ Token refresh successful:', refreshResponse.status);
         console.log('🍪 Cookies after refresh:', document.cookie);
         
-        // Retry the original request
-        console.log('🔁 Retrying original request...');
+        // Retry the original request with new token
+        const newToken = getAuthToken();
+        if (newToken && originalRequest.headers) {
+          originalRequest.headers.Authorization = `Bearer ${newToken}`;
+        }
+        
+        console.log('🔁 Retrying original request with new token...');
         return authenticatedAxiosInstance(originalRequest);
       } catch (refreshError) {
         const refreshErr = refreshError as AxiosError;
         console.error('❌ Token refresh failed:', refreshErr.response?.status);
         console.log('🍪 Cookies after failed refresh:', document.cookie);
+        
+        // Clear potentially invalid tokens
+        document.cookie = 'access_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+        document.cookie = 'refresh_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
         
         // COMMENTED OUT FOR DEVELOPMENT - Uncomment in production
         // console.warn("Token refresh failed, redirecting to login");
@@ -147,6 +211,11 @@ authenticatedAxiosInstance.interceptors.response.use(
     // Handle other authentication errors
     if (error.response?.status === 401) {
       console.warn("❌ Authentication failed");
+      console.warn("🔍 Debugging suggestions:");
+      console.warn("   1. Check if access token cookie is set after login/verify");
+      console.warn("   2. Verify cookie domain matches your frontend domain");
+      console.warn("   3. Check if cookie is httpOnly (won't be visible in document.cookie)");
+      console.warn("   4. Ensure backend CORS settings allow credentials");
       
       // COMMENTED OUT FOR DEVELOPMENT - Uncomment in production
       // console.warn("Redirecting to login...");
@@ -225,7 +294,7 @@ window.debugCookies = debugCookies;
 console.log('🔧 Cookie debugging tools available at window.debugCookies');
 console.log('   Usage:');
 console.log('   - debugCookies.showAll() - Show all cookies');
-console.log('   - debugCookies.get("refresh") - Get specific cookie');
+console.log('   - debugCookies.get("access_token") - Get specific cookie');
 console.log('   - debugCookies.setTest() - Set test cookie');
 console.log('   - debugCookies.testRequest() - Test authenticated request');
 
