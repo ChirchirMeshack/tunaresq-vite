@@ -1,12 +1,10 @@
-
-
 import { useFormContext, Controller } from "react-hook-form"
 import { useState, useCallback } from "react"
 import { Upload, File } from "lucide-react"
 import { Label } from "@components/ui/label"
-import { Progress } from "@components/ui/progress"
 import type { FileUploadProps } from "types/form"
 import { formatFileSize } from "@lib/utils"
+import { enqueueSnackbar } from "notistack"
 
 export function FileUploadField({
   name,
@@ -19,39 +17,71 @@ export function FileUploadField({
 }: FileUploadProps) {
   const {
     control,
+    setValue,
     formState: { errors },
   } = useFormContext()
   const [isDragOver, setIsDragOver] = useState(false)
-  const [uploadProgress, setUploadProgress] = useState(0)
-  const [isUploading, setIsUploading] = useState(false)
   const error = errors[name]
 
-  const simulateUpload = useCallback((file: File, onChange: (file: File) => void) => {
-    setIsUploading(true)
-    setUploadProgress(0)
-
-    const interval = setInterval(() => {
-      setUploadProgress((prev) => {
-        if (prev >= 100) {
-          clearInterval(interval)
-          setIsUploading(false)
-          onChange(file)
-          return 100
-        }
-        return prev + 10
-      })
-    }, 100)
-  }, [])
-
   const handleFileSelect = useCallback(
-    (file: File, onChange: (file: File) => void) => {
+    (file: File) => {
       if (file.size > maxSize * 1024 * 1024) {
+        // Show an error notification if file exceeds max size
+        enqueueSnackbar(`File size exceeds ${maxSize}MB limit`)
         return
       }
-      simulateUpload(file, onChange)
+      // Directly set the form value using react-hook-form's setValue
+      setValue(name, file, { shouldValidate: true })
     },
-    [maxSize, simulateUpload],
+    [maxSize, setValue, name],
   )
+
+  const handleDragOver = useCallback((e: React.DragEvent) => {
+    e.preventDefault()
+    if (!disabled) {
+      setIsDragOver(true)
+    }
+  }, [disabled])
+
+  const handleDragLeave = useCallback(() => {
+    setIsDragOver(false)
+  }, [])
+
+  const handleDrop = useCallback((e: React.DragEvent) => {
+    e.preventDefault()
+    setIsDragOver(false)
+    
+    if (disabled) return
+
+    const files = Array.from(e.dataTransfer.files)
+    if (files.length > 0) {
+      const file = files[0]
+      if (accept && (accept.includes(file.type) || accept.includes(`.${file.name.split(".").pop()}`))) {
+        handleFileSelect(file)
+      } else if (!accept) {
+        handleFileSelect(file)
+      }
+    }
+  }, [disabled, accept, handleFileSelect])
+
+  const handleClick = useCallback(() => {
+    if (disabled) return
+    
+    const input = document.createElement("input")
+    input.type = "file"
+    input.accept = accept || ""
+    input.onchange = (e) => {
+      const file = (e.target as HTMLInputElement).files?.[0]
+      if (file) {
+        handleFileSelect(file)
+      }
+    }
+    input.click()
+  }, [disabled, accept, handleFileSelect])
+
+  const handleRemove = useCallback(() => {
+    setValue(name, null, { shouldValidate: true })
+  }, [setValue, name])
 
   return (
     <div className={`space-y-2 ${className}`}>
@@ -68,37 +98,10 @@ export function FileUploadField({
               className={`border-2 border-dashed rounded-lg p-8 text-center transition-colors ${
                 isDragOver ? "border-blue-400 bg-blue-50" : error ? "border-red-300" : "border-gray-300"
               } ${disabled ? "opacity-50 cursor-not-allowed" : "cursor-pointer"}`}
-              onDragOver={(e) => {
-                e.preventDefault()
-                if (!disabled) setIsDragOver(true)
-              }}
-              onDragLeave={() => setIsDragOver(false)}
-              onDrop={(e) => {
-                e.preventDefault()
-                setIsDragOver(false)
-                if (disabled) return
-
-                const files = Array.from(e.dataTransfer.files)
-                if (files.length > 0 && accept) {
-                  const file = files[0]
-                  if (accept.includes(file.type) || accept.includes(`.${file.name.split(".").pop()}`)) {
-                    handleFileSelect(file, field.onChange)
-                  }
-                }
-              }}
-              onClick={() => {
-                if (disabled) return
-                const input = document.createElement("input")
-                input.type = "file"
-                input.accept = accept || ""
-                input.onchange = (e) => {
-                  const file = (e.target as HTMLInputElement).files?.[0]
-                  if (file) {
-                    handleFileSelect(file, field.onChange)
-                  }
-                }
-                input.click()
-              }}
+              onDragOver={handleDragOver}
+              onDragLeave={handleDragLeave}
+              onDrop={handleDrop}
+              onClick={handleClick}
             >
               <Upload className="mx-auto h-12 w-12 text-gray-400 mb-4" />
               <div className="space-y-2">
@@ -109,17 +112,7 @@ export function FileUploadField({
               </div>
             </div>
 
-            {isUploading && (
-              <div className="space-y-2">
-                <div className="flex justify-between text-sm">
-                  <span>Uploading...</span>
-                  <span>{uploadProgress}%</span>
-                </div>
-                <Progress value={uploadProgress} className="h-2" />
-              </div>
-            )}
-
-            {field.value && !isUploading && (
+            {field.value && (
               <div className="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg">
                 <File className="h-5 w-5 text-gray-500" />
                 <div className="flex-1 min-w-0">
@@ -128,7 +121,7 @@ export function FileUploadField({
                 </div>
                 <button
                   type="button"
-                  onClick={() => field.onChange(null)}
+                  onClick={handleRemove}
                   className="text-red-600 hover:text-red-800 text-sm"
                 >
                   Remove

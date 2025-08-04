@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-
 import { useFormContext, Controller } from "react-hook-form"
 import { useState, useCallback } from "react"
 import { Upload, File, X } from "lucide-react"
@@ -26,13 +25,14 @@ export function MultiFileUploadField({
 }: MultiFileUploadFieldProps) {
   const {
     control,
+    setValue,
+    getValues,
     formState: { errors },
   } = useFormContext()
   const [isDragOver, setIsDragOver] = useState(false)
   const [uploadingFiles, setUploadingFiles] = useState<{ [key: string]: number }>({})
   const error = errors[name]
 
-  
   const simulateUpload = useCallback((file: File): Promise<File> => {
     const fileId = `${file.name}-${file.size}-${Date.now()}` // Unique ID for tracking progress
     setUploadingFiles((prev) => ({ ...prev, [fileId]: 0 }))
@@ -55,7 +55,9 @@ export function MultiFileUploadField({
   }, [])
 
   const handleFilesSelect = useCallback(
-    async (newlySelectedFiles: File[], onChange: (files: File[]) => void, currentFiles: File[]) => {
+    async (newlySelectedFiles: File[]) => {
+      const currentFiles = getValues(name) || []
+      
       const filesToUpload = newlySelectedFiles.filter((file) => {
         // Check size limit and total file limit
         return file.size <= maxSize * 1024 * 1024 && currentFiles.length + Object.keys(uploadingFiles).length < maxFiles
@@ -66,11 +68,58 @@ export function MultiFileUploadField({
       const uploadedPromises = filesToUpload.map((file) => simulateUpload(file))
       const uploadedFiles = await Promise.all(uploadedPromises)
 
-      // Combine existing files with newly uploaded files
-      onChange([...currentFiles, ...uploadedFiles])
+      // Combine existing files with newly uploaded files and update using setValue
+      const updatedFiles = [...currentFiles, ...uploadedFiles]
+      setValue(name, updatedFiles, { shouldValidate: true })
     },
-    [maxSize, maxFiles, uploadingFiles, simulateUpload],
+    [maxSize, maxFiles, uploadingFiles, simulateUpload, setValue, getValues, name],
   )
+
+  const handleFileRemove = useCallback(
+    (indexToRemove: number) => {
+      const currentFiles = getValues(name) || []
+      const newFiles = currentFiles.filter((_: any, i: any) => i !== indexToRemove)
+      setValue(name, newFiles, { shouldValidate: true })
+    },
+    [setValue, getValues, name]
+  )
+
+  const handleDragOver = useCallback((e: React.DragEvent) => {
+    e.preventDefault()
+    if (!disabled) {
+      setIsDragOver(true)
+    }
+  }, [disabled])
+
+  const handleDragLeave = useCallback(() => {
+    setIsDragOver(false)
+  }, [])
+
+  const handleDrop = useCallback((e: React.DragEvent) => {
+    e.preventDefault()
+    setIsDragOver(false)
+    if (disabled) return
+
+    const files = Array.from(e.dataTransfer.files)
+    if (files.length > 0) {
+      handleFilesSelect(files)
+    }
+  }, [disabled, handleFilesSelect])
+
+  const handleClick = useCallback(() => {
+    if (disabled) return
+    const input = document.createElement("input")
+    input.type = "file"
+    input.accept = accept || ""
+    input.multiple = true
+    input.onchange = (e) => {
+      const files = Array.from((e.target as HTMLInputElement).files || [])
+      if (files.length > 0) {
+        handleFilesSelect(files)
+      }
+    }
+    input.click()
+  }, [disabled, accept, handleFilesSelect])
 
   return (
     <div className={`space-y-2 ${className}`}>
@@ -90,35 +139,10 @@ export function MultiFileUploadField({
                 className={`border-2 border-dashed rounded-lg p-6 text-center transition-colors ${
                   isDragOver ? "border-blue-400 bg-blue-50" : error ? "border-red-300" : "border-gray-300"
                 } ${disabled ? "opacity-50 cursor-not-allowed" : "cursor-pointer"}`}
-                onDragOver={(e) => {
-                  e.preventDefault()
-                  if (!disabled) setIsDragOver(true)
-                }}
-                onDragLeave={() => setIsDragOver(false)}
-                onDrop={(e) => {
-                  e.preventDefault()
-                  setIsDragOver(false)
-                  if (disabled) return
-
-                  const files = Array.from(e.dataTransfer.files)
-                  if (files.length > 0) {
-                    handleFilesSelect(files, field.onChange, currentFiles)
-                  }
-                }}
-                onClick={() => {
-                  if (disabled) return
-                  const input = document.createElement("input")
-                  input.type = "file"
-                  input.accept = accept || ""
-                  input.multiple = true
-                  input.onchange = (e) => {
-                    const files = Array.from((e.target as HTMLInputElement).files || [])
-                    if (files.length > 0) {
-                      handleFilesSelect(files, field.onChange, currentFiles)
-                    }
-                  }
-                  input.click()
-                }}
+                onDragOver={handleDragOver}
+                onDragLeave={handleDragLeave}
+                onDrop={handleDrop}
+                onClick={handleClick}
               >
                 <Upload className="mx-auto h-8 w-8 text-gray-400 mb-3" />
                 <div className="space-y-1">
@@ -154,10 +178,7 @@ export function MultiFileUploadField({
                       </div>
                       <button
                         type="button"
-                        onClick={() => {
-                          const newFiles = currentFiles.filter((_: any, i: any) => i !== index)
-                          field.onChange(newFiles)
-                        }}
+                        onClick={() => handleFileRemove(index)}
                         className="text-red-600 hover:text-red-800 p-1"
                       >
                         <X className="h-4 w-4" />
