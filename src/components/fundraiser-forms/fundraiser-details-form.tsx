@@ -4,7 +4,6 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { TextField } from "@components/hook-form/text-field";
 import { TextAreaField } from "@components/hook-form/textarea-field";
 import { CurrencyField } from "@components/hook-form/currency-field";
-import { FileUploadField } from "@components/hook-form/file-upload-field";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import { LayoutContextType } from "@layouts/registration";
 import {
@@ -24,6 +23,7 @@ import { Form } from "@components/ui/form";
 import { useState } from "react";
 import { createFundraiserImage } from "api/fundraiser-image";
 import { enqueueSnackbar } from "notistack";
+import { MultiFileUploadField } from "@components/hook-form";
 
 export default function FundraiserDetailsForm() {
   const { handleStepComplete, handleBackStep } = useOutletContext<LayoutContextType>();
@@ -134,13 +134,13 @@ export default function FundraiserDetailsForm() {
 
       // Step 3: Upload images if any were selected
       // Images are optional, so only proceed if there are images
-      const images = (data.images as FilePicked[]) || [];
+      const images = (data.images as FilePicked) || [];
       if (images.length > 0) {
         setImageUploading(true);
         try {
           // Upload each image sequentially (could be parallelized if needed)
           for (const img of images) {
-            const file = img.file;
+            const file = img;
             if (!file) continue;
             const { error: imageError } = await createFundraiserImage({
               image: file,
@@ -186,7 +186,9 @@ export default function FundraiserDetailsForm() {
     }
   };
 
-  const { formState: { isValid } } = methods;
+  const { formState:  { isValid,errors },watch } = methods;
+  console.log("Form errors:", errors);
+  console.log("Watch form values:", watch('images'));
 
   return (
     <Form {...methods}>
@@ -263,7 +265,7 @@ export const FundraisingDetailsFields = () => (
       required
     />
 
-    <FileUploadField
+    <MultiFileUploadField
       name="images"
       label="Upload your fundraiser's images"
       accept="image/*"
