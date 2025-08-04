@@ -102,7 +102,7 @@ export default function FundraiserLaunchProgress({
       completeCurrentStep()
       // navigate to next page
       if (fundraiserDetails) {
-        navigate(PATHS.fundraiser.view(fundraiserDetails.id))
+        navigate(PATHS.fundraiser.view(fundraiserDetails))
       }
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps

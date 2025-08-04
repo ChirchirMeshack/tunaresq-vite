@@ -1,6 +1,6 @@
-import { IndividualFundraiserFormData } from '@components/workflows/FundraiserForms/individualForm';
-import { OrganizationFundraiserFormData } from '@components/workflows/FundraiserForms/OrganizationForm';
-import { StartupFundraiserFormData } from '@components/workflows/FundraiserForms/startupForm';
+import { IndividualFundraiserFormData } from '@components/fundraiser-forms/validation'
+import { OrganizationFundraiserFormData } from '@components/fundraiser-forms/validation';
+import { StartupFundraiserFormData } from '@components/fundraiser-forms/validation';
 import { create } from 'zustand';
 import { FundraiserType } from '../api/fundraiser-type';
 
@@ -34,6 +34,8 @@ interface FundraiserTypeStore {
   updateFundraiserTypes: (
     fundraiserData: FundraiserType[] | FundraiserType | string
   ) => void;
+  fundraiserDetails: string;
+  setFundraiserDetails: (details: string) => void;
   resetFundraiserTypes: () => void;
 }
 
@@ -91,6 +93,8 @@ export const useFundraiserTypeStore = create<FundraiserTypeStore>(
           fundraiserTypes: [],
         };
       }),
+    setFundraiserDetails: (details) => set({ fundraiserDetails: details }),
+    fundraiserDetails: "",
   })
 );
 

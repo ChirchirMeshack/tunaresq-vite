@@ -4,7 +4,7 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { ArrowLeft, ArrowRight, ChevronDown, ChevronUp } from "lucide-react";
 import { LayoutContextType } from '@layouts/registration';
-import { OrganizationDetailsSchema, OrganizationFundraiserFormData, FilePicked } from './validation';
+import { OrganizationDetailsSchema, OrganizationFundraiserFormData } from './validation';
 import { handleErrors } from '@lib/utils';
 import { createFundraiser, FundraiserPayload } from 'api/fundraiser';
 import useAuthCtx from '@contexts/auth/use-auth';

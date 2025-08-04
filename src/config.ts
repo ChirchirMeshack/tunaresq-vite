@@ -12,7 +12,13 @@ export const PATHS = {
     index: "/dashboard",
     profile: "/dashboard/profile",
     settings: "/dashboard/settings",
-  }
+    },
+  fundraiser: {
+      index: "/fundraisers",
+      create: "/fundraisers/create",
+      view: (id: string) => `/fundraisers/${id}`,
+      edit: (id: string) => `/fundraisers/${id}/edit`,
+    },
 };
 
 export const FIREBASE_API_KEY = import.meta.env.VITE_FIREBASE_API_KEY;
