@@ -1,82 +1,82 @@
-name: Deploy React Frontend to Server
+# name: Deploy React Frontend to Server
 
-on:
-  push:
-    branches: [vite-version]
+# on:
+#   push:
+#     branches: [vite-version]
 
-jobs:
-  build-and-deploy:
-    runs-on: ubuntu-latest
+# jobs:
+#   build-and-deploy:
+#     runs-on: ubuntu-latest
 
-    steps:
-      # Step 1: Checkout code from repository
-      - name: Checkout Code
-        uses: actions/checkout@v3
+#     steps:
+#       # Step 1: Checkout code from repository
+#       - name: Checkout Code
+#         uses: actions/checkout@v3
       
-      # Step 2: Setup Node.js environment
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: '18'
+#       # Step 2: Setup Node.js environment
+#       - name: Setup Node.js
+#         uses: actions/setup-node@v3
+#         with:
+#           node-version: '18'
 
-      # Step 3: Install project dependencies from package.json
-      - name: Install Dependencies
-        run: npm install
+#       # Step 3: Install project dependencies from package.json
+#       - name: Install Dependencies
+#         run: npm install
       
-      # Step 4: Build React app with environment variables (for Vite build)
-      - name: Build React App with Env Variable
-        run: npm run build
-        env:
-          VITE_BASE_URL: ${{ secrets.VITE_BASE_URL }}
-          VITE_GOOGLE_ANALYTICS_ID: ${{ secrets.VITE_GOOGLE_ANALYTICS_ID }}
+#       # Step 4: Build React app with environment variables (for Vite build)
+#       - name: Build React App with Env Variable
+#         run: npm run build
+#         env:
+#           VITE_BASE_URL: ${{ secrets.VITE_BASE_URL }}
+#           VITE_GOOGLE_ANALYTICS_ID: ${{ secrets.VITE_GOOGLE_ANALYTICS_ID }}
 
-      # Step 5: Setup SSH access for connecting to server
-      - name: Setup SSH Access
-        run: |
-          mkdir -p ~/.ssh
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa
-          ssh-keyscan -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
+#       # Step 5: Setup SSH access for connecting to server
+#       - name: Setup SSH Access
+#         run: |
+#           mkdir -p ~/.ssh
+#           echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+#           chmod 600 ~/.ssh/id_rsa
+#           ssh-keyscan -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
       
-      # Step 6: Upload build files to temporary directory on server
-      - name: Upload Build to Server Temp Directory
-        run: |
-          scp -r dist ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:${{ secrets.TEMP_DIR }}
+#       # Step 6: Upload build files to temporary directory on server
+#       - name: Upload Build to Server Temp Directory
+#         run: |
+#           scp -r dist ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:${{ secrets.TEMP_DIR }}
 
-      - name: Finalize Deployment on Server
-        run: |
-          ssh -i ~/.ssh/id_rsa ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << EOF
-            set -xe
+#       - name: Finalize Deployment on Server
+#         run: |
+#           ssh -i ~/.ssh/id_rsa ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << EOF
+#             set -xe
             
-            # Set environment variables for paths using secrets
-            PROJECT_PATH="${{ secrets.PROJECT_PATH }}"
-            TEMP_DIR="${{ secrets.TEMP_DIR }}"
-            BACKUP_DIR="${{ secrets.BACKUP_DIR }}"
+#             # Set environment variables for paths using secrets
+#             PROJECT_PATH="${{ secrets.PROJECT_PATH }}"
+#             TEMP_DIR="${{ secrets.TEMP_DIR }}"
+#             BACKUP_DIR="${{ secrets.BACKUP_DIR }}"
 
-            # Create project and backup directories if they don't exist
-            sudo mkdir -p \$PROJECT_PATH
-            sudo mkdir -p \$BACKUP_DIR
+#             # Create project and backup directories if they don't exist
+#             sudo mkdir -p \$PROJECT_PATH
+#             sudo mkdir -p \$BACKUP_DIR
 
-            # Log the project and temp paths (for debugging/logging purposes)
-            echo ${{ secrets.PROJECT_PATH }}
-            echo ${{ secrets.TEMP_DIR }}
+#             # Log the project and temp paths (for debugging/logging purposes)
+#             echo ${{ secrets.PROJECT_PATH }}
+#             echo ${{ secrets.TEMP_DIR }}
 
-            # If the project path already exists (meaning previous deployment exists)
-            if [ -d "\${{ secrets.PROJECT_PATH }}" ]; then
-               # Clean any existing files in the temporary directory
-              sudo rm -rf \${{ secrets.TEMP_DIR }}/*
+#             # If the project path already exists (meaning previous deployment exists)
+#             if [ -d "\${{ secrets.PROJECT_PATH }}" ]; then
+#                # Clean any existing files in the temporary directory
+#               sudo rm -rf \${{ secrets.TEMP_DIR }}/*
 
-              # Backup the current live project files to BACKUP_DIR
-              sudo cp -r \${{ secrets.PROJECT_PATH }}/* \${{ secrets.BACKUP_DIR }}/
-            fi
-            # Remove current live project files (clean slate)
-            sudo rm -rf \$PROJECT_PATH/*
+#               # Backup the current live project files to BACKUP_DIR
+#               sudo cp -r \${{ secrets.PROJECT_PATH }}/* \${{ secrets.BACKUP_DIR }}/
+#             fi
+#             # Remove current live project files (clean slate)
+#             sudo rm -rf \$PROJECT_PATH/*
 
-            # Copy new build files from TEMP_DIR to PROJECT_PATH (deploy new version)
-            sudo cp -r \$TEMP_DIR/* \$PROJECT_PATH/
+#             # Copy new build files from TEMP_DIR to PROJECT_PATH (deploy new version)
+#             sudo cp -r \$TEMP_DIR/* \$PROJECT_PATH/
 
-            # Clean up TEMP_DIR after deployment
-            sudo rm -rf \$TEMP_DIR
+#             # Clean up TEMP_DIR after deployment
+#             sudo rm -rf \$TEMP_DIR
 
-            echo "✅ Frontend deployed successfully"
-          EOF
+#             echo "✅ Frontend deployed successfully"
+#           EOF
