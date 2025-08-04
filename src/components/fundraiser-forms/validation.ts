@@ -16,27 +16,19 @@ export const fundraiserDetailsSchema = yup.object({
   images: yup
     .array()
     .of(
-      yup.object({
-        file: yup.mixed<File>().notRequired(),
-        preview: yup.string().notRequired(),
-        reference: yup.string().notRequired(),
-      })
+      yup.mixed<File>(),
     )
-    .required()
+    .required("At least one image is required")
     .default([]),
 });
 
-export type FilePicked = {
-  file?: File | null;
-  preview?: string | null;
-  reference?: string | null;
-};
+export type FilePicked = (File | undefined)[];
 
 export type IndividualFundraiserFormData = {
   title: string;
   details: string;
   goal: number;
-  images: FilePicked[];
+  images?: FilePicked;
 };
 
 export const startUpDetailsSchema = yup.object({
@@ -72,13 +64,9 @@ export const startUpDetailsSchema = yup.object({
     images: yup
     .array()
     .of(
-      yup.object({
-        file: yup.mixed<File>().notRequired(),
-        preview: yup.string().notRequired(),
-        reference: yup.string().notRequired(),
-      })
+      yup.mixed<File>(),
     )
-    .required()
+    .required("At least one image is required")
     .default([]),
 });
 
@@ -94,7 +82,7 @@ export type StartupFundraiserFormData = {
   title: string;
   details: string;
   goal: number;
-  images: FilePicked[];
+ images?: FilePicked;
 }
 
 export const OrganizationDetailsSchema = yup.object({
@@ -124,16 +112,12 @@ export const OrganizationDetailsSchema = yup.object({
     .typeError("Goal must be a number")
     .required("Fundraising goal is required")
     .positive("Goal must be a positive number"),
-  images: yup
+    images: yup
     .array()
     .of(
-      yup.object({
-        file: yup.mixed<File>().notRequired(),
-        preview: yup.string().notRequired(),
-        reference: yup.string().notRequired(),
-      })
+      yup.mixed<File>(),
     )
-    .required()
+    .required("At least one image is required")
     .default([]),
 });
 
@@ -146,5 +130,5 @@ export type OrganizationFundraiserFormData = {
   title: string;
   details: string;
   goal: number;
-  images: FilePicked[];
+  images?: FilePicked;
 }

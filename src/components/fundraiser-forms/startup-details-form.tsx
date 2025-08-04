@@ -74,7 +74,7 @@ export default function StartupDetailsForm() {
       // Step 1: Create the fundraiser first
       const fundraiserPayload: FundraiserPayload = {
         user: user.id,
-        fundraising_category: startupCategory.id
+        fundraising_category_id: startupCategory.id
       };
 
       console.log('Creating fundraiser with payload:', fundraiserPayload);
