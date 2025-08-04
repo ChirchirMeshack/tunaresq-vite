@@ -8,7 +8,7 @@ import axiosInstance from "@lib/axios";
 import { handleErrors } from "@lib/utils";
 import { FormValues, formSchema, DefaultWaitListFormValues } from "./validation";
 import { enqueueSnackbar } from "notistack";
-import { TextField } from "@components/form";
+import { TextField } from "@components/hook-form";
 
 
 export default function WaitlistForm() {

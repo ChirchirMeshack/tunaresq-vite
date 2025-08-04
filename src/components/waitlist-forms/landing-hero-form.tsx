@@ -7,7 +7,7 @@ import { BASE_URL } from "config"
 import axiosInstance from "@lib/axios"
 import { handleErrors } from "@lib/utils"
 import { enqueueSnackbar } from "notistack"
-import { TextField } from "@components/form"
+import { TextField } from "@components/hook-form"
 import { FormValues, formSchema, DefaultWaitListFormValues } from "./validation"
 
 /**
@@ -116,14 +116,12 @@ export default function WaitlistForm() {
             <div className="flex flex-col md:flex-row gap-2 w-full">
               <TextField
                 name="name"
-                hideLabel
                 label="Full Name"
                 placeholder="Enter your name"
                 className="rounded-full border-[#79767D] pr-4 w-full opacity-70 text-sm"
               />
               <TextField
                 name="email"
-                hideLabel
                 label="Email Address"
                 placeholder="Enter your email address"
                 className="rounded-full border-[#79767D] w-full px-4 py-3 opacity-70 text-sm"
