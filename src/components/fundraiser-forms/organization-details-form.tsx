@@ -143,12 +143,11 @@ export default function FundraiserDetailsForm() {
         return;
       }
 
-      const images = (data.images as FilePicked[]) || [];
+      const images = data.images || [];
       if (images.length > 0) {
         setImageUploading(true);
         try {
-          for (const img of images) {
-            const file = img.file;
+          for (const file of images) {
             if (!file) continue;
             const { error: imageError } = await createFundraiserImage({
               image: file,

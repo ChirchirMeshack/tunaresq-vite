@@ -26,8 +26,8 @@ export const createIndividualDetails = async (payload: IndividualDetailsPayload)
     try {
         console.log('Creating individual details with payload:', payload);
         const result = await authenticatedAxiosInstance.post('/individual-details/', payload);
-        console.log('Individual details created successfully:', result.data);
-        return { data: result.data, error: null };
+        console.log('Individual details created successfully:', result.data.data);
+        return { data: result.data.data, error: null };
     } catch (error) {
         console.error('Error creating individual details:', error);
         handleErrors(error);
@@ -39,7 +39,7 @@ export const createIndividualDetails = async (payload: IndividualDetailsPayload)
 export const getIndividualDetails = async (id: string) => {
     try {
         const result = await authenticatedAxiosInstance.get(`/individual-details/${id}/`);
-        return { data: result.data, error: null };
+        return { data: result.data.data, error: null };
     } catch (error) {
         console.error('Error fetching individual details:', error);
         handleErrors(error);
@@ -51,7 +51,7 @@ export const getIndividualDetails = async (id: string) => {
 export const getAllIndividualDetails = async () => {
     try {
         const result = await authenticatedAxiosInstance.get('/individual-details/');
-        return { data: result.data, error: null };
+        return { data: result.data.data, error: null };
     } catch (error) {
         console.error('Error fetching all individual details:', error);
         handleErrors(error);
@@ -63,7 +63,7 @@ export const getAllIndividualDetails = async () => {
 export const updateIndividualDetails = async (id: string, payload: Partial<IndividualDetailsPayload>) => {
     try {
         const result = await authenticatedAxiosInstance.put(`/individual-details/${id}/`, payload);
-        return { data: result.data, error: null };
+        return { data: result.data.data, error: null };
     } catch (error) {
         console.error('Error updating individual details:', error);
         handleErrors(error);

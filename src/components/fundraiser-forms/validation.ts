@@ -82,7 +82,7 @@ export type StartupFundraiserFormData = {
   title: string;
   details: string;
   goal: number;
- images?: FilePicked;
+  images: FilePicked;
 }
 
 export const OrganizationDetailsSchema = yup.object({
@@ -130,5 +130,5 @@ export type OrganizationFundraiserFormData = {
   title: string;
   details: string;
   goal: number;
-  images?: FilePicked;
+  images: FilePicked;
 }
